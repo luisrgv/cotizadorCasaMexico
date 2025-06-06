@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cotizaciones Pagadas - Casa México</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">Casa <span>México</span></div>
+    <div class="user-info">
+      <div class="avatar" id="userAvatar">CM</div>
+      <div>
+        <div id="userName">Usuario</div>
+        <div id="userRole" style="font-size: 0.8rem; color: #bdc3c7;">Rol</div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="tabs">
+      <a href="cotizador.html" class="tab" data-tab="nueva">
+        <i class="fas fa-plus"></i> Nueva Cotización
+      </a>
+      <a href="en-proceso.html" class="tab" data-tab="en_proceso">
+        <i class="fas fa-spinner"></i> En Proceso <span class="tab-badge" id="badgeEnProceso">0</span>
+      </a>
+      <div class="tab active" data-tab="pagada">
+        <i class="fas fa-check-circle"></i> Pagadas <span class="tab-badge" id="badgePagadas">0</span>
+      </div>
+      <a href="impagas.html" class="tab" data-tab="impaga">
+        <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
+      </a>
+    </div>
+    
+    <div class="tab-content active" id="pagada-tab">
+      <div class="card">
+        <h2 class="card-title">
+          <i class="fas fa-check-circle"></i> Cotizaciones Pagadas
+        </h2>
+        
+        <div class="cotizaciones-list" id="cotizacionesPagadas">
+          <!-- Se llenará dinámicamente -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+    <!-- Modal para ver cotización -->  
+  <div id="cotizacionModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modalTitle">Detalle de Cotización</h2>
+      <span class="close-modal">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div id="modalContent"></div>
+    </div>
+  </div>
+</div>
+
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="loading-content">
+    <div class="spinner"></div>
+    <p id="loadingText">Procesando...</p>
+  </div>
+</div>
+
+
+<!-- Modal Edición -->
+<div id="modalEditar" class="modal">
+  <div class="modal-content" style="max-width: 900px; width: 90%;">
+    <div class="modal-header">
+      <h2 class="card-title">
+        <i class="fas fa-edit"></i> Editar Cotización
+        <span class="close-modal-editar" style="float: right; cursor: pointer; font-size: 28px;">&times;</span>
+      </h2>
+    </div>
+    <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+      <form id="formEditar">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editStatus">📊 Estado</label>
+            <select id="editStatus" class="form-control" required>
+              <option value="en_proceso">En Proceso</option>
+              <option value="pagada">Pagada</option>
+              <option value="impaga">Impaga</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="editFecha">📅 Fecha del Evento</label>
+            <input type="date" id="editFecha" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editCliente">👤 Nombre del Cliente</label>
+            <input type="text" id="editCliente" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editNumero">📱 Número de Contacto</label>
+            <input type="tel" id="editNumero" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editHoraEvento">⏰ Hora del Evento</label>
+            <input type="time" id="editHoraEvento" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editHoraServir">⏰ Hora de Servir Alimentos</label>
+            <input type="time" id="editHoraServir" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="editHoraSalida">⏰ Hora de Salida de Casa México</label>
+            <input type="time" id="editHoraSalida" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="editServicio">🍽️ Tipo de Servicio</label>
+            <select id="editServicio" class="form-control" required>
+              <option value="">Seleccionar...</option>
+              <option value="Catering">Catering</option>
+              <option value="The Golden Handmade Tortilla">The Golden Handmade Tortilla</option>
+              <option value="Full Catering with Chef Cristina Martinez">Full Catering with Chef Cristina Martinez</option>
+              <option value="Pick Up">Pick Up</option>
+              <option value="Delivery Catering">Delivery Catering</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="editUbicacion">📍 Ubicación del Evento</label>
+            <input type="text" id="editUbicacion" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editContacto">👤 Contacto en el Lugar</label>
+            <input type="text" id="editContacto" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="editNumeroPersonas">👥 Número de Personas</label>
+            <input type="number" id="editNumeroPersonas" class="form-control" min="1" required>
+          </div>
+          
+          <!-- Contenedor para selección múltiple de platos -->
+          <div class="platos-container">
+            <label>🍛 Seleccione los platos:</label>
+            <div class="platos-list" id="editPlatosList">
+              <!-- Se llenará dinámicamente -->
+            </div>
+            
+            <div class="resumen-platos" id="editResumenPlatos" style="display: none;">
+              <h4>📋 Resumen del Pedido</h4>
+              <ul id="editListaResumen">
+                <!-- Se llenará dinámicamente -->
+              </ul>
+              <div class="resumen-linea">
+                <span class="resumen-label">Subtotal:</span>
+                <span class="resumen-valor">$<span id="editSubtotalResumen">0.00</span></span>
+              </div>
+              <div class="resumen-linea">
+                <span class="resumen-label">Tax (8%):</span>
+                <span class="resumen-valor">$<span id="editTaxResumen">0.00</span></span>
+              </div>
+              <div class="resumen-linea" id="editGratuityContainer">
+                <span class="resumen-label">
+                  Gratuity:
+                  <input type="number" id="editGratuityPercentage" value="20" min="0" max="100" step="1" 
+                         class="resumen-input" onchange="actualizarResumenPlatosEdit()">%
+                </span>
+                <span class="resumen-valor">$<span id="editGratuityResumen">0.00</span></span>
+              </div>
+              <div class="resumen-linea" id="editDeliveryContainer" style="display: none;">
+                <span class="resumen-label">
+                  Delivery Fee:
+                  <input type="number" id="editDeliveryFee" value="0" min="0" step="5" 
+                         class="resumen-input" onchange="actualizarResumenPlatosEdit()">
+                </span>
+                <span class="resumen-valor">$<span id="editDeliveryResumen">0.00</span></span>
+              </div>
+              <div class="resumen-total">
+                <span class="resumen-label">Total a pagar:</span>
+                <span class="resumen-valor">$<span id="editTotalResumen">0.00</span></span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>🍽️ Platos Desechables</label>
+            <div class="switch-container">
+              <label class="switch">
+                <input type="checkbox" id="editPlatosDesechables">
+                <span class="slider"></span>
+              </label>
+              <span id="editPlatosDesechablesText">No</span>
+            </div>
+          </div>
+          
+          <div class="form-group" id="editTipoPlatosContainer">
+            <label for="editTipoPlatos">🍽️ Tipo de Platos</label>
+            <select id="editTipoPlatos" class="form-control">
+              <option value="">Seleccionar...</option>
+              <option value="Cerámica">Cerámica</option>
+              <option value="Porcelana">Porcelana</option>
+              <option value="Vidrio">Vidrio</option>
+            </select>
+          </div>
+          
+          <div class="form-group" style="grid-column: 1 / -1; position: relative;">
+            <label for="editNotas">📝 Notas Adicionales</label>
+            <div id="editNotas"
+                class="form-control"
+                contenteditable="true"
+                style="min-height: 200px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace;">
+              <!-- Aquí se insertará dinámicamente el contenido -->
+            </div>
+            <div id="editEditadoIcono"
+                style="position: absolute; top: 5px; right: 10px; font-size: 0.9rem; color: #7f8c8d; display: none;">
+              ✏️ Editado
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer" style="padding: 15px; text-align: right; border-top: 1px solid #eee;">
+      <button type="button" class="btn btn-secondary cerrar-modal-editar" style="margin-right: 10px;">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+      <button type="button" class="btn btn-primary" id="guardarCambios">
+        <i class="fas fa-save"></i> Guardar Cambios
+      </button>
+    </div>
+  </div>
+</div>
+  <!-- Modal para ver cotización -->
+  <div class="modal" id="cotizacionModal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 id="modalTitle">Detalles de Cotización</h2>
+      <div id="modalContent">
+        <!-- Contenido dinámico -->
+      </div>
+    </div>
+  </div>
+  
+<!-- Modal Edición -->
+<div id="modalEditar" class="modal">
+  <div class="modal-contenido">
+    <div class="modal-encabezado">
+      <h2>Editar Cotización</h2>
+      <span class="cerrar-modal-editar">&times;</span>
+    </div>
+    <div class="modal-cuerpo">
+      <form id="formEditar">
+        <div class="form-group">
+          <label>Cliente:</label>
+          <input type="text" id="editCliente" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label>Teléfono:</label>
+          <input type="tel" id="editNumero" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Servicio:</label>
+          <select id="editServicio" class="form-control">
+            <option value="Evento">Evento</option>
+            <option value="Delivery">Delivery</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Ubicación:</label>
+          <input type="text" id="editUbicacion" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Número de Personas:</label>
+          <input type="number" id="editPersonas" class="form-control" min="1">
+        </div>
+        <div class="form-group">
+          <label>Notas:</label>
+          <textarea id="editNotas" class="form-control" rows="3"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-pie">
+      <button class="btn btn-secondary cerrar-modal-editar">Cancelar</button>
+      <button class="btn btn-primary" id="guardarCambios">Guardar Cambios</button>
+    </div>
+  </div>
+</div>
+
+  
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p id="loadingText">Procesando...</p>
+  </div>
+  
+  <script src="js/pagadas.js"></script>
+</body>
+</html>

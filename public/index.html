@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Cotizador</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+    }
+    .login-container {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+   .logo {
+  width: auto; /* Mantiene proporciones */
+  max-width: 150px; /* Tamaño máximo */
+  height: auto; /* Altura proporcional */
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05); /* Efecto sutil al pasar el mouse */
+}
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 1.5rem;
+      font-size: 1.8rem;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+      text-align: left;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #34495e;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+    input:focus {
+      border-color: #3498db;
+      outline: none;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+    .error-message {
+      color: #e74c3c;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .loading {
+      display: none;
+      margin-top: 1rem;
+    }
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid #3498db;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .footer {
+      margin-top: 2rem;
+      color: #7f8c8d;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+
+    <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" class="logo">
+    <h1>Iniciar Sesión</h1>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="usuario">Usuario</label>
+        <input type="text" id="usuario" placeholder="Ingresa tu usuario" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+      </div>
+      
+      <div id="errorMsg" class="error-message"></div>
+      
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Verificando credenciales...</p>
+      </div>
+      
+      <button type="submit">Entrar al Sistema</button>
+    </form>
+    
+    <div class="footer">
+      Sistema de Cotizaciones Casa México © 2025
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      iniciarSesion();
+    });
+
+    function iniciarSesion() {
+      const usuario = document.getElementById('usuario').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      const loading = document.getElementById('loading');
+
+      // Resetear mensajes
+      errorMsg.style.display = 'none';
+      errorMsg.textContent = '';
+      loading.style.display = 'block';
+
+      fetch('/login', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ usuario, password })
+      })
+      .then(response => {
+        loading.style.display = 'none';
+        
+        if (!response.ok) {
+          return response.json().then(err => { throw err; });
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.ok) {
+          window.location.href = "/cotizador";
+        } else {
+          throw new Error(data.error || 'Credenciales inválidas');
+        }
+      })
+      .catch(err => {
+        loading.style.display = 'none';
+        errorMsg.textContent = err.message || 'Error en la autenticación. Intente nuevamente.';
+        errorMsg.style.display = 'block';
+      });
+    }
+  </script>
+</body>
+</html>

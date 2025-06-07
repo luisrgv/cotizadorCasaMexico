@@ -471,14 +471,7 @@ async function guardarCotizacion() {
   mostrarLoading('Guardando cotización...');
   
   try {
-    const response = await fetch('/api/cotizaciones', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify(datos)
-    });
+    const response = await fetch('/api/cotizaciones', { credentials: 'include' });
     
     const data = await response.json();
     

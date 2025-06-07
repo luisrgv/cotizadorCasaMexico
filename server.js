@@ -27,16 +27,17 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Middlewares
 app.use(session({
-  secret: 'TU_SECRETO_AQUI',
+  secret: process.env.SESSION_SECRET || 'secretoSuperSecreto',
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
-    mongoUrl: 'TU_CONEXION_MONGODB',
+    mongoUrl: process.env.MONGODB_URI,
     collectionName: 'sessions'
   }),
   cookie: {
-    secure: false, // pon true si usas HTTPS
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
+    sameSite: 'lax',  // o 'none' si usas dominios diferentes
     maxAge: 1000 * 60 * 60 // 1 hora
   }
 }));

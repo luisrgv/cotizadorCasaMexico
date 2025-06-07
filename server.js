@@ -61,16 +61,25 @@ const requireLogin = (req, res, next) => {
 // Ruta de login
 app.post('/login', async (req, res) => {
   const { usuario, password } = req.body;
-  
+
   try {
     const user = await User.findOne({ usuario, password });
-    
+
     if (user) {
+      // ✅ GUARDAR EN LA SESIÓN
       req.session.user = {
         username: user.usuario,
         role: user.rol
       };
-      res.json({ ok: true, role: user.rol });
+
+      // ✅ FORZAR GUARDADO DE SESIÓN antes de responder
+      req.session.save((err) => {
+        if (err) {
+          console.error('Error al guardar sesión:', err);
+          return res.status(500).json({ ok: false, error: 'Error de sesión' });
+        }
+        res.json({ ok: true, role: user.rol });
+      });
     } else {
       res.status(401).json({ ok: false, error: 'Credenciales inválidas' });
     }
@@ -79,6 +88,7 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ ok: false, error: 'Error del servidor' });
   }
 });
+
 
 
 // Ruta de logout

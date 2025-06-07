@@ -121,7 +121,7 @@ guardarBtn.addEventListener('click', () => {
 // Función para verificar sesión
 async function verificarSesion() {
   try {
-    const response = await fetch('/api/user-info', { credentials: 'include' });
+    const response = await fetch('/api/user-info');
     const data = await response.json();
     
     if (!data.user) {
@@ -471,7 +471,14 @@ async function guardarCotizacion() {
   mostrarLoading('Guardando cotización...');
   
   try {
-    const response = await fetch('/api/cotizaciones', { credentials: 'include' });
+    const response = await fetch('/api/cotizaciones', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(datos)
+    });
     
     const data = await response.json();
     

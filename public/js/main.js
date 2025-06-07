@@ -121,7 +121,7 @@ guardarBtn.addEventListener('click', () => {
 // Función para verificar sesión
 async function verificarSesion() {
   try {
-    const response = await fetch('/api/user-info');
+    const response = await fetch('/api/user-info', { credentials: 'include' });
     const data = await response.json();
     
     if (!data.user) {

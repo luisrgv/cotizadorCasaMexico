@@ -151,47 +151,53 @@
   const errorMsg = document.getElementById('errorMsg');
   const loading = document.getElementById('loading');
 
-  // Resetear mensajes
-  errorMsg.style.display = 'none';
-  errorMsg.textContent = '';
+  // Validación básica
+  if (!usuario || !password) {
+    errorMsg.textContent = 'Usuario y contraseña son requeridos';
+    errorMsg.style.display = 'block';
+    return;
+  }
+
   loading.style.display = 'block';
+  errorMsg.style.display = 'none';
 
   fetch('/login', {
     method: 'POST',
     headers: { 
       'Content-Type': 'application/json',
     },
-    credentials: 'include', // ¡IMPORTANTE! Para enviar cookies
+    credentials: 'include', // Importante para cookies
     body: JSON.stringify({ usuario, password })
   })
-  .then(response => {
-    loading.style.display = 'none';
+  .then(async response => {
+    const data = await response.json();
     
     if (!response.ok) {
-      return response.json().then(err => { throw err; });
+      throw new Error(data.error || 'Error en la autenticación');
     }
-    return response.json();
-  })
-  .then(data => {
+    
     if (data.ok) {
-      // Verifica nuevamente la autenticación antes de redirigir
-      fetch('/api/user-info', { credentials: 'include' })
-        .then(res => res.json())
-        .then(userInfo => {
-          if (userInfo.user) {
-            window.location.href = "/cotizador";
-          } else {
-            throw new Error('Autenticación fallida');
-          }
-        });
+      // Verifica la sesión antes de redirigir
+      return fetch('/api/user-info', { credentials: 'include' });
     } else {
-      throw new Error(data.error || 'Credenciales inválidas');
+      throw new Error('Autenticación fallida');
+    }
+  })
+  .then(response => response.json())
+  .then(userInfo => {
+    if (userInfo.user) {
+      window.location.href = "/cotizador";
+    } else {
+      throw new Error('Sesión no establecida');
     }
   })
   .catch(err => {
-    loading.style.display = 'none';
-    errorMsg.textContent = err.message || 'Error en la autenticación. Intente nuevamente.';
+    console.error('Error en login:', err);
+    errorMsg.textContent = err.message || 'Error al iniciar sesión';
     errorMsg.style.display = 'block';
+  })
+  .finally(() => {
+    loading.style.display = 'none';
   });
 }
   </script>

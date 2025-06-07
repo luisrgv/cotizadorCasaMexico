@@ -1,13 +1,17 @@
 require('dotenv').config();
 const express = require('express');
+const session = require('express-session');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
-
+// Agrega CORS al inicio del archivo
+const cors = require('cors');
+app.use(cors({
+  origin: true, // Permite cualquier origen (ajusta según necesidades)
+  credentials: true // Permite enviar cookies
+}));
 // Modelos
 const User = require('./models/User');
 const Plato = require('./models/Plato');
@@ -30,21 +34,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'secretoSuperSecreto',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    collectionName: 'sessions'
-  }),
-  cookie: {
-  secure: process.env.NODE_ENV === 'production',
-  httpOnly: true,
-  sameSite: 'none', // <-- clave para entornos con frontend/backend separados
-  maxAge: 1000 * 60 * 60
-}
-
+  cookie: { 
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000 // 1 día
+  }
 }));
-app.get('/debug-session', (req, res) => {
-  res.json({ session: req.session });
-});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -61,22 +56,22 @@ const requireLogin = (req, res, next) => {
 // Ruta de login
 app.post('/login', async (req, res) => {
   const { usuario, password } = req.body;
-
+  
   try {
     const user = await User.findOne({ usuario, password });
-
+    
     if (user) {
-      // ✅ GUARDAR EN LA SESIÓN
       req.session.user = {
+        id: user._id, // Añade el ID del usuario
         username: user.usuario,
         role: user.rol
       };
-
-      // ✅ FORZAR GUARDADO DE SESIÓN antes de responder
-      req.session.save((err) => {
+      
+      // Guarda la sesión explícitamente
+      req.session.save(err => {
         if (err) {
           console.error('Error al guardar sesión:', err);
-          return res.status(500).json({ ok: false, error: 'Error de sesión' });
+          return res.status(500).json({ ok: false, error: 'Error del servidor' });
         }
         res.json({ ok: true, role: user.rol });
       });
@@ -88,7 +83,6 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ ok: false, error: 'Error del servidor' });
   }
 });
-
 
 
 // Ruta de logout
@@ -447,6 +441,13 @@ app.get('/', (req, res) => {
 app.get('/cotizador', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'cotizador.html'));
 });
+
+
+
+
+
+
+
 
 
 // Iniciar el servidor

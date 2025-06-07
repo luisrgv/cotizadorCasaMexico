@@ -1,11 +1,12 @@
 require('dotenv').config();
 const express = require('express');
-const session = require('express-session');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 // Modelos
 const User = require('./models/User');
@@ -26,10 +27,18 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 // Middlewares
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'secretoSuperSecreto',
+  secret: 'TU_SECRETO_AQUI',
   resave: false,
-  saveUninitialized: true,
-  cookie: { secure: process.env.NODE_ENV === 'production' }
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: 'TU_CONEXION_MONGODB',
+    collectionName: 'sessions'
+  }),
+  cookie: {
+    secure: false, // pon true si usas HTTPS
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 // 1 hora
+  }
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));

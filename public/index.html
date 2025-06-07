@@ -140,51 +140,60 @@
   </div>
 
   <script>
-  document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    iniciarSesion();
-  });
-
-  function iniciarSesion() {
-    const usuario = document.getElementById('usuario').value.trim();
-    const password = document.getElementById('password').value.trim();
-    const errorMsg = document.getElementById('errorMsg');
-    const loading = document.getElementById('loading');
-
-    // Resetear mensajes
-    errorMsg.style.display = 'none';
-    errorMsg.textContent = '';
-    loading.style.display = 'block';
-
-    fetch('/login', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include', // Muy importante para mantener sesión
-      body: JSON.stringify({ usuario, password })
-    })
-    .then(response => {
-      loading.style.display = 'none';
-      
-      if (!response.ok) {
-        return response.json().then(err => { throw err; });
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data.ok) {
-        window.location.href = "/cotizador";
-      } else {
-        throw new Error(data.error || 'Credenciales inválidas');
-      }
-    })
-    .catch(err => {
-      loading.style.display = 'none';
-      errorMsg.textContent = err.message || 'Error en la autenticación. Intente nuevamente.';
-      errorMsg.style.display = 'block';
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      iniciarSesion();
     });
-  }
-</script>
+
+    function iniciarSesion() {
+  const usuario = document.getElementById('usuario').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const errorMsg = document.getElementById('errorMsg');
+  const loading = document.getElementById('loading');
+
+  // Resetear mensajes
+  errorMsg.style.display = 'none';
+  errorMsg.textContent = '';
+  loading.style.display = 'block';
+
+  fetch('/login', {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include', // ¡IMPORTANTE! Para enviar cookies
+    body: JSON.stringify({ usuario, password })
+  })
+  .then(response => {
+    loading.style.display = 'none';
+    
+    if (!response.ok) {
+      return response.json().then(err => { throw err; });
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.ok) {
+      // Verifica nuevamente la autenticación antes de redirigir
+      fetch('/api/user-info', { credentials: 'include' })
+        .then(res => res.json())
+        .then(userInfo => {
+          if (userInfo.user) {
+            window.location.href = "/cotizador";
+          } else {
+            throw new Error('Autenticación fallida');
+          }
+        });
+    } else {
+      throw new Error(data.error || 'Credenciales inválidas');
+    }
+  })
+  .catch(err => {
+    loading.style.display = 'none';
+    errorMsg.textContent = err.message || 'Error en la autenticación. Intente nuevamente.';
+    errorMsg.style.display = 'block';
+  });
+}
+  </script>
 </body>
 </html>

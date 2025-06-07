@@ -35,12 +35,16 @@ app.use(session({
     collectionName: 'sessions'
   }),
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    sameSite: 'lax',  // o 'none' si usas dominios diferentes
-    maxAge: 1000 * 60 * 60 // 1 hora
-  }
+  secure: process.env.NODE_ENV === 'production',
+  httpOnly: true,
+  sameSite: 'none', // <-- clave para entornos con frontend/backend separados
+  maxAge: 1000 * 60 * 60
+}
+
 }));
+app.get('/debug-session', (req, res) => {
+  res.json({ session: req.session });
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -433,13 +437,6 @@ app.get('/', (req, res) => {
 app.get('/cotizador', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'cotizador.html'));
 });
-
-
-
-
-
-
-
 
 
 // Iniciar el servidor

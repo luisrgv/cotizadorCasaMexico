@@ -6,12 +6,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-// Agrega CORS al inicio del archivo
-const cors = require('cors');
-app.use(cors({
-  origin: true, // Permite cualquier origen (ajusta según necesidades)
-  credentials: true // Permite enviar cookies
-}));
+
 // Modelos
 const User = require('./models/User');
 const Plato = require('./models/Plato');
@@ -33,12 +28,8 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use(session({
   secret: process.env.SESSION_SECRET || 'secretoSuperSecreto',
   resave: false,
-  saveUninitialized: false,
-  cookie: { 
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000 // 1 día
-  }
+  saveUninitialized: true,
+  cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -62,19 +53,10 @@ app.post('/login', async (req, res) => {
     
     if (user) {
       req.session.user = {
-        id: user._id, // Añade el ID del usuario
         username: user.usuario,
         role: user.rol
       };
-      
-      // Guarda la sesión explícitamente
-      req.session.save(err => {
-        if (err) {
-          console.error('Error al guardar sesión:', err);
-          return res.status(500).json({ ok: false, error: 'Error del servidor' });
-        }
-        res.json({ ok: true, role: user.rol });
-      });
+      res.json({ ok: true, role: user.rol });
     } else {
       res.status(401).json({ ok: false, error: 'Credenciales inválidas' });
     }

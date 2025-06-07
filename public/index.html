@@ -156,13 +156,15 @@
       errorMsg.textContent = '';
       loading.style.display = 'block';
 
-      fetch('/login', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ usuario, password })
-      })
+   fetch('/login', {
+  method: 'POST',
+  credentials: 'include',  // MUY IMPORTANTE
+  body: JSON.stringify({ usuario, contraseña }),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
       .then(response => {
         loading.style.display = 'none';
         

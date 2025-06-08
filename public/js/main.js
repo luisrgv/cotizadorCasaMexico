@@ -4,6 +4,13 @@ let platosDisponibles = [];
 let platosSeleccionados = [];
 let registroActualIndex = -1;
 
+const fetchConfig = {
+  credentials: 'include',
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+};
 
 const platosDesechablesCheckbox = document.getElementById("platosDesechables");
 const tipoPlatosSelect = document.getElementById("tipoPlatos");
@@ -117,28 +124,67 @@ guardarBtn.addEventListener('click', () => {
 });
 
 });
-
+// Función de login modificada (si la manejas desde JS)
+async function login(usuario, password) {
+  try {
+    const response = await fetch('/login', {
+      ...fetchConfig,
+      method: 'POST',
+      body: JSON.stringify({ usuario, password })
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error en el login');
+    }
+    
+    const data = await response.json();
+    
+    if (data.ok) {
+      // Verificar sesión después de login exitoso
+      await verificarSesion();
+      return true;
+    }
+    
+    return false;
+  } catch (error) {
+    console.error('Error en login:', error);
+    alert(error.message);
+    return false;
+  }
+}
 // Función para verificar sesión
 async function verificarSesion() {
   try {
-    const response = await fetch('/api/user-info', {
-      credentials: 'include' // ← Esto es crucial
-    });
+    const response = await fetch('/api/user-info', fetchConfig);
     
     if (response.status === 401) {
+      console.error('Sesión no válida - Redirigiendo a login');
       window.location.href = '/';
       return;
+    }
+    
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
     }
     
     const data = await response.json();
     
     if (!data.user) {
+      console.error('No hay datos de usuario - Redirigiendo');
       window.location.href = '/';
       return;
     }
     
     currentUser = data.user;
-    // ... resto del código
+    console.log('Usuario autenticado:', currentUser);
+    
+    // Actualizar UI con datos del usuario
+    document.getElementById('userName').textContent = currentUser.username;
+    document.getElementById('userRole').textContent = currentUser.role;
+    document.getElementById('userAvatar').textContent = 
+      currentUser.username.charAt(0).toUpperCase();
+      
   } catch (error) {
     console.error('Error al verificar sesión:', error);
     window.location.href = '/';

@@ -1,0 +1,84 @@
+{
+  "platos": [
+    {
+      "nombre": "Guacamole con Chips",
+      "ingredientes": [
+        "Pechuga de pollo",
+        "Tortillas de maíz",
+        "Salsa verde",
+        "Crema",
+        "Queso fresco",
+        "Cebolla"
+        
+      ],
+      "precio_por_persona": 5
+    },
+    {
+      "nombre": "Esquites",
+      "ingredientes": [
+        "Pollo",
+        "Salsa de mole",
+        "Tortillas",
+        "Frijoles"
+      ],
+      "precio_por_persona": 3.333
+    },
+    
+    {
+      "nombre": "Esquites con chorizo",
+      "ingredientes": [
+        "Carne de cerdo",
+        "Cebolla",
+        "Cilantro",
+        "Tortillas de maíz",
+        "Salsa"
+      ],
+      "precio_por_persona": 5.67
+    },
+    {
+      "nombre": "Tacos Dorados",
+      "ingredientes": [
+        "Carne de cerdo adobada",
+        "Cebolla",
+        "Cilantro",
+        "Tortillas de maíz",
+        "Salsa roja"
+      ],
+      "precio_por_persona": 6
+    },
+    {
+      "nombre": "Ceviche",
+      "ingredientes": [
+        "Pescado",
+        "Cebolla",
+        "Cilantro"
+      ],
+      "precio_por_persona": 8
+    },
+    {
+      "nombre": "Arroz ",
+      "ingredientes": [
+        ""
+       
+      ],
+      "precio_por_persona":2.33 
+    },
+    {
+      "nombre": "Frigoles",
+      "ingredientes": [
+       
+      ],
+      "precio_por_persona": 2.33
+    },
+    {
+      "nombre": "Sopa Azteca",
+      "ingredientes": [
+        "",
+        "",
+        ""
+      ],
+      "precio_por_persona": 6
+    }
+    
+  ]
+}

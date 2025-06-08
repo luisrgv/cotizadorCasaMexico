@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendario - Casa México</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #3498db;
+      --secondary: #2c3e50;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --light: #ecf0f1;
+      --dark: #34495e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    .header {
+      background-color: var(--secondary);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .logo { font-size: 1.5rem; font-weight: bold; }
+    .logo span { color: var(--primary); }
+    .user-info { display: flex; align-items: center; gap: 10px; }
+    .back-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .back-btn:hover { background-color: #2980b9; }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .month-navigation {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .month-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      min-width: 200px;
+      text-align: center;
+    }
+    .nav-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-today {
+      background-color: var(--primary);
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .btn-today:hover { background-color: #2980b9; }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+    .day-header {
+      background-color: var(--secondary);
+      color: white;
+      padding: 0.8rem;
+      text-align: center;
+      font-weight: 600;
+      border-radius: 5px;
+    }
+    .day-cell {
+      background-color: white;
+      border: 1px solid #ddd;
+      min-height: 120px;
+      padding: 0.5rem;
+      border-radius: 5px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .day-cell:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transform: translateY(-3px);
+    }
+    .day-number {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      text-align: right;
+    }
+    .event-item {
+      padding: 0.3rem 0.5rem;
+      margin-bottom: 0.3rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      background-color: var(--light);
+      border-left: 3px solid var(--primary);
+    }
+    .event-item.pagada {
+      background-color: #d4edda;
+      border-left-color: var(--success);
+    }
+    .event-item.impaga {
+      background-color: #f8d7da;
+      border-left-color: var(--danger);
+    }
+    .event-item.proceso {
+      background-color: #fff3cd;
+      border-left-color: var(--warning);
+    }
+    .event-item:hover {
+      filter: brightness(95%);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: white;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      position: relative;
+    }
+    .close-modal {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #7f8c8d;
+    }
+    .event-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .event-detail {
+      padding: 0.5rem;
+    }
+    .event-detail.full-width {
+      grid-column: 1 / -1;
+    }
+    .event-detail strong {
+      display: block;
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      margin-bottom: 0.2rem;
+    }
+    .event-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 1rem;
+    }
+    .event-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-edit {
+      background-color: var(--primary);
+      color: white;
+    }
+    .btn-pdf {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(255,255,255,0.8);
+      z-index: 1001;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .spinner {
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid var(--primary);
+      border-radius: 50%;
+      width: 50px; height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .calendar-grid { grid-template-columns: 1fr; }
+      .day-cell { min-height: auto; }
+      .event-details { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">Calendario <span>Casa México</span></div>
+    <div class="user-info">
+      <button class="back-btn" id="backBtn">
+        <i class="fas fa-arrow-left"></i> Volver al Cotizador
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="calendar-header">
+      <div class="month-navigation">
+        <button class="nav-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+        <div class="month-title" id="monthTitle">Mes Año</div>
+        <button class="nav-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      <button class="btn-today" id="todayBtn">Hoy</button>
+    </div>
+
+    <div class="calendar-grid" id="calendarGrid">
+      <!-- Encabezados de días -->
+      <div class="day-header">Domingo</div>
+      <div class="day-header">Lunes</div>
+      <div class="day-header">Martes</div>
+      <div class="day-header">Miércoles</div>
+      <div class="day-header">Jueves</div>
+      <div class="day-header">Viernes</div>
+      <div class="day-header">Sábado</div>
+      <!-- Aquí se inyectan las celdas -->
+    </div>
+  </div>
+
+  <!-- Modal de evento -->
+  <div class="modal" id="eventModal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 id="eventTitle">Detalles del Evento</h2>
+      <div class="event-details" id="eventDetails"></div>
+      
+      
+       
+      
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p id="loadingText">Cargando calendario...</p>
+  </div>
+
+  <script>
+    let currentDate = new Date();
+    let events = [];
+    let currentEvent = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      configurarEventos();
+      cargarEventos();
+    });
+
+    async function cargarEventos() {
+      mostrarLoading('Cargando eventos...');
+      try {
+        const res = await fetch('/api/eventos');
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error || 'Error al cargar eventos');
+        
+        // Procesar eventos para asegurar formato consistente
+        events = data.eventos.map(evento => {
+          // Convertir fecha string a objeto Date si es necesario
+          const fechaEvento = evento.fecha instanceof Date ? evento.fecha : new Date(evento.fecha);
+          
+          return {
+            ...evento,
+            _id: evento._id,
+            fecha: fechaEvento,
+            cliente: evento.cliente || 'Sin nombre',
+            servicio: evento.servicio || 'Sin servicio',
+            hora_evento: evento.hora_evento || '--:--',
+            status: evento.status || 'en_proceso'
+          };
+        });
+        
+        console.log('Eventos cargados:', events);
+      } catch (error) {
+        console.error('Error cargando eventos:', error);
+        alert('Error al cargar eventos: ' + error.message);
+      } finally {
+        ocultarLoading();
+        renderCalendar();
+      }
+    }
+
+    function renderCalendar() {
+      const monthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
+                          "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+      document.getElementById('monthTitle').textContent =
+        `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+
+      const grid = document.getElementById('calendarGrid');
+      // Eliminar solo las celdas de días (mantener encabezados)
+      const dayCells = Array.from(grid.querySelectorAll('.day-cell'));
+      dayCells.forEach(cell => cell.remove());
+
+      const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      const startDay = firstDay.getDay(); // 0=Domingo, 6=Sábado
+
+      // Celdas vacías para días del mes anterior
+      for (let i = 0; i < startDay; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'day-cell';
+        grid.appendChild(emptyCell);
+      }
+
+      // Días del mes actual
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'day-cell';
+
+        // Número del día
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'day-number';
+        dayNumber.textContent = day;
+        
+        // Resaltar día actual
+        const today = new Date();
+        if (day === today.getDate() && 
+            currentDate.getMonth() === today.getMonth() && 
+            currentDate.getFullYear() === today.getFullYear()) {
+          dayNumber.style.color = 'var(--primary)';
+          dayNumber.style.fontWeight = 'bold';
+        }
+        
+        dayCell.appendChild(dayNumber);
+
+        // Filtrar eventos para este día
+        const eventosDelDia = events.filter(evento => {
+          return (
+            evento.fecha.getDate() === day &&
+            evento.fecha.getMonth() === currentDate.getMonth() &&
+            evento.fecha.getFullYear() === currentDate.getFullYear()
+          );
+        });
+
+        // Ordenar eventos por hora
+        eventosDelDia.sort((a, b) => {
+          return a.hora_evento.localeCompare(b.hora_evento);
+        });
+
+        // Mostrar eventos en la celda
+        eventosDelDia.slice(0, 3).forEach(evento => { // Mostrar máximo 3 eventos
+          const eventElement = document.createElement('div');
+          eventElement.className = `event-item ${evento.status}`;
+          eventElement.textContent = `${evento.hora_evento} - ${evento.cliente}`;
+          eventElement.addEventListener('click', () => mostrarDetalleEvento(evento));
+          dayCell.appendChild(eventElement);
+        });
+
+        // Mostrar indicador si hay más eventos
+        if (eventosDelDia.length > 3) {
+          const masEventos = document.createElement('div');
+          masEventos.className = 'event-item';
+          masEventos.textContent = `+${eventosDelDia.length - 3} más...`;
+          masEventos.style.fontStyle = 'italic';
+          dayCell.appendChild(masEventos);
+        }
+
+        grid.appendChild(dayCell);
+      }
+    }
+
+    function mostrarDetalleEvento(evento) {
+      currentEvent = evento;
+      document.getElementById('eventTitle').textContent = `Evento: ${evento.cliente}`;
+      
+      // Formatear fecha en español
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const fechaFormateada = evento.fecha.toLocaleDateString('es-MX', options);
+      
+      // Formatear estado
+      const formatStatus = (status) => {
+        const statusMap = {
+          'en_proceso': 'En proceso',
+          'pagada': 'Pagada',
+          'impaga': 'Impaga'
+        };
+        return statusMap[status] || status;
+      };
+
+      // Crear HTML de detalles
+      const detallesHTML = `
+        <div class="event-detail">
+          <strong>Fecha</strong>
+          ${fechaFormateada}
+        </div>
+        <div class="event-detail">
+          <strong>Estado</strong>
+          <span class="status-badge ${evento.status}">${formatStatus(evento.status)}</span>
+        </div>
+        <div class="event-detail">
+          <strong>Servicio</strong>
+          ${evento.servicio}
+        </div>
+        <div class="event-detail">
+          <strong>Hora del Evento</strong>
+          ${evento.hora_evento}
+        </div>
+        <div class="event-detail">
+          <strong>Hora de Servir</strong>
+          ${evento.hora_servir || '--:--'}
+        </div>
+        <div class="event-detail">
+          <strong>Ubicación</strong>
+          ${evento.ubicacion || 'No especificada'}
+        </div>
+        <div class="event-detail">
+          <strong>Número de Personas</strong>
+          ${evento.numeroPersonas}
+        </div>
+        <div class="event-detail">
+          <strong>Contacto</strong>
+          ${evento.contacto || 'No especificado'}
+        </div>
+        <div class="event-detail">
+          <strong>Teléfono</strong>
+          ${evento.numero || 'No especificado'}
+        </div>
+        <div class="event-detail full-width">
+          <strong>Platos</strong>
+          ${evento.platos?.map(p => `${p.nombre} (${p.cantidad})`).join(', ') || 'No especificados'}
+        </div>
+        <div class="event-detail">
+          <strong>Subtotal</strong>
+          $${evento.subtotal?.toFixed(2) || '0.00'}
+        </div>
+        <div class="event-detail">
+          <strong>Total</strong>
+          $${evento.precioTotal?.toFixed(2) || '0.00'}
+        </div>
+        <div class="event-detail full-width">
+          <strong>Notas</strong>
+          ${evento.notas || 'Ninguna'}
+        </div>
+        <div class="event-detail">
+          <strong>Creado por</strong>
+          ${evento.creadoPor || 'Sistema'}
+        </div>
+      `;
+
+      document.getElementById('eventDetails').innerHTML = detallesHTML;
+      document.getElementById('eventModal').style.display = 'flex';
+    }
+
+    function configurarEventos() {
+      // Navegación del calendario
+      document.getElementById('prevMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+      });
+
+      document.getElementById('nextMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+      });
+
+      document.getElementById('todayBtn').addEventListener('click', () => {
+        currentDate = new Date();
+        renderCalendar();
+      });
+
+      // Botón volver
+      document.getElementById('backBtn').addEventListener('click', () => {
+        window.location.href = '/cotizador';
+      });
+
+      // Cerrar modal
+      document.querySelector('.close-modal').addEventListener('click', () => {
+        document.getElementById('eventModal').style.display = 'none';
+      });
+
+      // Cerrar modal haciendo clic fuera
+      window.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('eventModal')) {
+          document.getElementById('eventModal').style.display = 'none';
+        }
+      });
+
+     
+
+    
+    }
+
+    function mostrarLoading(mensaje) {
+      document.getElementById('loadingText').textContent = mensaje;
+      document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function ocultarLoading() {
+      document.getElementById('loadingOverlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

@@ -59,7 +59,13 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ ok: false, error: 'Error del servidor' });
   }
 });
-
+// Middleware para verificar autenticación
+const requireLogin = (req, res, next) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'No autorizado' });
+  }
+  next();
+};
 
 // Ruta de logout
 app.get('/logout', (req, res) => {

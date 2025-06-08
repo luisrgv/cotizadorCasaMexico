@@ -28,9 +28,13 @@ mongoose.connect(process.env.MONGODB_URI, {
 app.use(session({
   secret: process.env.SESSION_SECRET || 'secretoSuperSecreto',
   resave: false,
-  saveUninitialized: true,
-  cookie: { secure: process.env.NODE_ENV === 'production' }
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // ¡IMPORTANTE! Asegura que funcione tanto en HTTP como HTTPS
+    sameSite: 'lax' // Permite compartir cookies entre frontend y backend
+  }
 }));
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

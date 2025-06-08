@@ -3,13 +3,16 @@ const express = require('express');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const path = require('path');
-const cors = require('cors');
-const MongoStore = require('connect-mongo');
 const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
-// Configuración inicial
+// Modelos
+const User = require('./models/User');
+const Plato = require('./models/Plato');
+const Cotizacion = require('./models/Cotizacion');
+
+// Configuración de la aplicación
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -17,53 +20,25 @@ const PORT = process.env.PORT || 3000;
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => console.log('✅ Conectado a MongoDB'))
-  .catch(err => console.error('❌ Error de conexión a MongoDB:', err));
-
-// Configuración CORS
-const corsOptions = {
-  origin: function (origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'https://cotizador-web.onrender.com'
-    ];
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Origen no permitido por CORS'));
-    }
-  },
-  credentials: true,
-  exposedHeaders: ['set-cookie']
-};
-app.use(cors(corsOptions));
-
-// Configuración de sesión con almacenamiento en MongoDB
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'tu-secreto-super-seguro-123',
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    ttl: 24 * 60 * 60 // 1 día
-  }),
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}));
+})
+.then(() => console.log('Conectado a MongoDB Atlas'))
+.catch(err => console.error('Error de conexión a MongoDB:', err));
 
 // Middlewares
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'secretoSuperSecreto',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
-// Middleware de autenticación
+// Middleware para verificar autenticación
 const requireLogin = (req, res, next) => {
   if (!req.session.user) {
-    console.log('🔒 Acceso no autorizado - No hay sesión activa');
     return res.status(401).json({ error: 'No autorizado' });
   }
   next();
@@ -74,89 +49,67 @@ app.post('/login', async (req, res) => {
   const { usuario, password } = req.body;
   
   try {
-    // Aquí debes reemplazar con tu modelo de User real
     const user = await User.findOne({ usuario, password });
     
-    if (!user) {
-      console.log('❌ Login fallido - Credenciales inválidas');
-      return res.status(401).json({ ok: false, error: 'Credenciales inválidas' });
+    if (user) {
+      req.session.user = {
+        username: user.usuario,
+        role: user.rol
+      };
+      res.json({ ok: true, role: user.rol });
+    } else {
+      res.status(401).json({ ok: false, error: 'Credenciales inválidas' });
     }
-
-    req.session.user = {
-      id: user._id,
-      username: user.usuario,
-      role: user.rol
-    };
-
-    console.log('✅ Login exitoso - Usuario:', user.usuario);
-
-    // Configuración explícita de la cookie
-    res.cookie('connect.sid', req.sessionID, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      maxAge: 24 * 60 * 60 * 1000
-    });
-
-    return res.json({ 
-      ok: true, 
-      user: { 
-        username: user.usuario, 
-        role: user.rol 
-      } 
-    });
-
   } catch (error) {
-    console.error('❌ Error en login:', error);
-    return res.status(500).json({ ok: false, error: 'Error del servidor' });
+    console.error('Error en login:', error);
+    res.status(500).json({ ok: false, error: 'Error del servidor' });
   }
 });
+
 
 // Ruta de logout
 app.get('/logout', (req, res) => {
-  req.session.destroy(err => {
-    if (err) {
-      console.error('❌ Error al destruir sesión:', err);
-      return res.status(500).json({ error: 'Error al cerrar sesión' });
-    }
-    
-    res.clearCookie('connect.sid', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
-    });
-    
-    console.log('✅ Sesión cerrada correctamente');
-    return res.json({ ok: true });
-  });
+  req.session.destroy();
+  res.json({ ok: true });
 });
 
-// Ruta para verificar sesión
+// Información del usuario
 app.get('/api/user-info', (req, res) => {
-  if (!req.session.user) {
-    console.log('🔒 No hay sesión activa');
-    return res.status(401).json({ error: 'No autorizado' });
+  res.json({ user: req.session.user || null });
+});
+
+// Ruta para obtener eventos del calendario
+app.get('/api/eventos', async (req, res) => {
+  try {
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    
+    const eventos = await Cotizacion.find({
+      fecha: { $gte: hoy }
+    }).sort({ fecha: 1 });
+    
+    res.json({ eventos });
+  } catch (error) {
+    console.error('Error al obtener eventos:', error);
+    res.json({ eventos: [] });
   }
-  console.log('✅ Sesión activa para:', req.session.user.username);
-  res.json({ user: req.session.user });
 });
 
-// Ruta principal protegida
-app.get('/cotizador', requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'cotizador.html'));
+// Ruta para el calendario
+app.get('/calendario', requireLogin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'calendario.html'));
 });
 
-// Ruta para obtener platos (protegida)
-app.get('/api/platos', requireLogin, async (req, res) => {
+// Obtener platos
+app.get('/api/platos', async (req, res) => {
   try {
     const platos = await Plato.find().sort({ nombre: 1 });
     res.json({ platos });
   } catch (error) {
-    console.error('❌ Error al obtener platos:', error);
-    res.status(500).json({ error: 'Error al obtener platos' });
+    console.error('Error al cargar platos:', error);
+    res.status(500).json({ error: 'Error al cargar los platos' });
   }
 });
-
 
 // Calcular proforma automática
 app.post('/api/calcular-proforma', requireLogin, async (req, res) => {
@@ -467,6 +420,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.get('/cotizador', requireLogin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'cotizador.html'));
+});
 
 
 

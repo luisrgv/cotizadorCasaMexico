@@ -36,13 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// Middleware para verificar autenticación
-const requireLogin = (req, res, next) => {
-  if (!req.session.user) {
-    return res.status(401).json({ error: 'No autorizado' });
-  }
-  next();
-};
+
 
 // Ruta de login
 app.post('/login', async (req, res) => {

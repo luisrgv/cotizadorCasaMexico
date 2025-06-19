@@ -4,8 +4,537 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cotizador - Casa México</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e63946;
+      --primary-dark: #c1121f;
+      --secondary: #457b9d;
+      --dark: #1d3557;
+      --light: #f1faee;
+      --gray: #6c757d;
+      --light-gray: #f8f9fa;
+      --success: #2a9d8f;
+      --warning: #e9c46a;
+      --danger: #e76f51;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .header {
+      background-color: var(--dark);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    .logo span {
+      color: var(--primary);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .logout-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .container {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background-color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .tab:hover {
+      background-color: var(--light-gray);
+    }
+    
+    .tab.active {
+      background-color: var(--dark);
+      color: white;
+    }
+    
+    .tab-badge {
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      margin-left: 0.3rem;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.2);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .btn-info {
+      background-color: var(--secondary);
+      color: white;
+    }
+    
+    .btn-info:hover {
+      background-color: #3a6a8a;
+    }
+    
+    .btn-warning {
+      background-color: var(--warning);
+      color: #333;
+    }
+    
+    .btn-warning:hover {
+      background-color: #e0b758;
+    }
+    
+    .btn-secondary {
+      background-color: var(--gray);
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+    
+    .platos-container {
+      grid-column: 1 / -1;
+      background-color: var(--light-gray);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    
+    .platos-categorias {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .categoria-btn {
+      padding: 0.5rem 1rem;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .categoria-btn.active {
+      background-color: var(--dark);
+      color: white;
+      border-color: var(--dark);
+    }
+    
+    .platos-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .plato-item {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .plato-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .plato-header input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .plato-nombre {
+      font-weight: 500;
+    }
+    
+    .plato-precio {
+      color: var(--success);
+      font-weight: 600;
+    }
+    
+    .plato-cantidad {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .plato-cantidad input {
+      width: 70px;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    
+    .resumen-platos {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-top: 1rem;
+    }
+    
+    .resumen-platos h4 {
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+    
+    .resumen-linea {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .resumen-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--dark);
+    }
+    
+    .resumen-input {
+      width: 50px;
+      padding: 0.3rem;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      text-align: center;
+    }
+    
+    .pago-item {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .pago-fila {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 2fr auto;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .btn-eliminar-pago {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    
+    .notas-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .notas-box {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .notas-box h4 {
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+    
+    textarea.form-control {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+    }
+    
+    .spinner {
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 5px solid white;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    #loadingText {
+      color: white;
+      font-size: 1.2rem;
+    }
+    
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    
+    /* Estilos para la tabla del resumen */
+    .resumen-platos table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    
+    .resumen-platos th, .resumen-platos td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .resumen-platos th {
+      background-color: #f8f9fa;
+      font-weight: 500;
+    }
+    
+    .resumen-platos tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    /* Estilos para los inputs en la tabla */
+    .resumen-platos input[type="text"],
+    .resumen-platos input[type="number"] {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+    }
+    
+    /* Estilo para las filas de categoría */
+    .resumen-platos .categoria-row {
+      background-color: #f1f1f1;
+      font-weight: bold;
+    }
+    
+    /* Botón eliminar fila manual */
+    .btn-eliminar-fila {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      padding: 0 5px;
+    }
+    
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .pago-fila {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      
+      .notas-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="header">
@@ -36,34 +565,46 @@
       <a href="impagas.html" class="tab" data-tab="impaga">
         <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
       </a>
-                  </button>
-            <button type="button" class="btn btn-info" id="verCalendarioBtn">
-              <i class="fas fa-calendar-alt"></i> Ver Calendario
-            </button>
+      <button type="button" class="btn btn-info" id="verCalendarioBtn">
+        <i class="fas fa-calendar-alt"></i> Ver Calendario
+      </button>
     </div>
     
-    <div class="tab-content active" id="nueva-tab">
+   <div class="tab-content active" id="nueva-tab">
       <div class="card">
         <h2 class="card-title">
-         
-                      <div class="form-group">
-              <label for="status">📊 Estado</label>
-              <select id="status" class="form-control" required>
-                <option value="en_proceso">En Proceso</option>
-                <option value="pagada">Pagada</option>
-                <option value="impaga">Impaga</option>
-              </select>
-            </div>
-        </h2>
+  <div style="display: flex; justify-content: space-between; width: 100%;">
+    <div>
+     
+      <div style="font-size: 0.9em; color: var(--gray); margin-top: 0.5rem;">Invoice #<span id="invoiceNumberDisplay">-</span></div>
+    </div>
+    <div class="form-group" style="width: 200px;">
+      <label for="status">📊 Estado</label>
+   <select id="status" class="form-control" required>
+  <option value="en_proceso">En Proceso</option> <!-- Si decides agregarlo -->
+  <option value="pagado">Pagado</option>
+  <option value="pre-pagado">Pre-pagado</option>
+  <option value="impago">Impago</option>
+</select>
+    </div>
+  </div>
+</h2>
         
         <form id="cotizacionForm">
           <div class="form-grid">
+            <!-- Información básica -->
+            <input type="hidden" id="invoiceNumber" class="form-control" readonly>
+            
             <div class="form-group">
               <label for="fecha">📅 Fecha del Evento</label>
               <input type="date" id="fecha" class="form-control" required>
             </div>
             
-
+            <div class="form-group">
+              <label for="dia">📅 Día</label>
+              <input type="text" id="dia" class="form-control" readonly>
+            </div>
+            
             
             <div class="form-group">
               <label for="cliente">👤 Nombre del Cliente</label>
@@ -75,6 +616,31 @@
               <input type="tel" id="numero" class="form-control" required>
             </div>
             
+            <div class="form-group">
+              <label for="servicio">🍽️ Tipo de Servicio</label>
+              <input type="text" id="servicio" class="form-control" list="servicios" required>
+              <datalist id="servicios">
+                <option value="Catering">
+                <option value="The Golden Handmade Tortilla">
+                <option value="Full Catering with Chef Cristina Martinez">
+                <option value="Pick Up">
+                <option value="Delivery Catering">
+                <option value="Redes Sociales">
+                <option value="Donación">
+              </datalist>
+            </div>
+            
+            <div class="form-group">
+              <label for="ubicacion">📍 Ubicación del Evento</label>
+              <input type="text" id="ubicacion" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="contacto">👤 Contacto en el Lugar</label>
+              <input type="text" id="contacto" class="form-control">
+            </div>
+            
+            <!-- Horarios -->
             <div class="form-group">
               <label for="hora_evento">⏰ Hora del Evento</label>
               <input type="time" id="hora_evento" class="form-control" required>
@@ -89,127 +655,508 @@
               <label for="hora_salida">⏰ Hora de Salida de Casa México</label>
               <input type="time" id="hora_salida" class="form-control">
             </div>
+          </div>
+          
+          <!-- Sección de platos -->
+          <div class="platos-container">
+            <h3>🍽️ Menú</h3>
             
-            <div class="form-group">
-              <label for="servicio">🍽️ Tipo de Servicio</label>
-              <select id="servicio" class="form-control" required>
-                <option value="">Seleccionar...</option>
-                <option value="Catering">Catering</option>
-                <option value="The Golden Handmade Tortilla">The Golden Handmade Tortilla</option>
-                <option value="Full Catering with Chef Cristina Martinez">Full Catering with Chef Cristina Martinez</option>
-                <option value="Pick Up">Pick Up</option>
-                <option value="Delivery Catering">Delivery Catering</option>
-              </select>
+            <div class="platos-categorias" id="categoriasMenu">
+              <button class="categoria-btn active" data-categoria="Appetizers">Appetizers</button>
+              <button class="categoria-btn" data-categoria="Tacos">Tacos Chef Cristina M.</button>
+              <button class="categoria-btn" data-categoria="Specialty">Specialty</button>
+              <button class="categoria-btn" data-categoria="Desserts">Dessert & Aguas</button>
             </div>
             
-            <div class="form-group">
-              <label for="ubicacion">📍 Ubicación del Evento</label>
-              <input type="text" id="ubicacion" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="contacto">👤 Contacto en el Lugar</label>
-              <input type="text" id="contacto" class="form-control">
-            </div>
-            
-
-            
-            <div class="form-group">
-              <label for="numeroPersonas">👥 Número de Personas</label>
-              <input type="number" id="numeroPersonas" class="form-control" min="1" required>
-            </div>
-            
-            <!-- Contenedor para selección múltiple de platos -->
-            <div class="platos-container">
-              <label>🍛 Seleccione los platos:</label>
-              <div class="platos-list" id="platosList">
-                <!-- Se llenará dinámicamente -->
+            <div class="platos-list" id="platosList">
+              <!-- Appetizers -->
+              <div class="plato-item" data-categoria="Appetizers">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-guacamole" data-nombre="Guacamole con Chips" data-precio="75">
+                  <label for="plato-guacamole" class="plato-nombre">Guacamole con Chips</label>
+                </div>
+                <div class="plato-precio">$75.00 (Half Tray) / $150.00 (Full Tray)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="half">Half Tray</option>
+                    <option value="full">Full Tray</option>
+                  </select>
+                </div>
               </div>
               
-              <div class="resumen-platos" id="resumenPlatos" style="display: none;">
-                <h4>📋 Resumen del Pedido</h4>
-                <ul id="listaResumen">
+              <div class="plato-item" data-categoria="Appetizers">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-esquites" data-nombre="Esquites" data-precio="60">
+                  <label for="plato-esquites" class="plato-nombre">Esquites</label>
+                </div>
+                <div class="plato-precio">$60.00 (Half Tray) / $100.00 (Full Tray)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="half">Half Tray</option>
+                    <option value="full">Full Tray</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Appetizers">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-esquites-chorizo" data-nombre="Esquites con chorizo" data-precio="85">
+                  <label for="plato-esquites-chorizo" class="plato-nombre">Esquites con chorizo</label>
+                </div>
+                <div class="plato-precio">$85.00 (Half Tray) / $125.00 (Full Tray)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="half">Half Tray</option>
+                    <option value="full">Full Tray</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Appetizers">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-tacos-dorados" data-nombre="Tacos Dorados" data-precio="90">
+                  <label for="plato-tacos-dorados" class="plato-nombre">Tacos Dorados</label>
+                </div>
+                <div class="plato-precio">$90.00 (Half Tray) / $180.00 (Full Tray)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="half">Half Tray</option>
+                    <option value="full">Full Tray</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Appetizers">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-ceviche" data-nombre="Ceviche" data-precio="120">
+                  <label for="plato-ceviche" class="plato-nombre">Ceviche</label>
+                </div>
+                <div class="plato-precio">$120.00 (Half Tray) / $240.00 (Full Tray)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="half">Half Tray</option>
+                    <option value="full">Full Tray</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Appetizers">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-arroz" data-nombre="Arroz" data-precio="35">
+                  <label for="plato-arroz" class="plato-nombre">Arroz</label>
+                </div>
+                <div class="plato-precio">$35.00 (Half Tray) / $70.00 (Full Tray)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="half">Half Tray</option>
+                    <option value="full">Full Tray</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Appetizers">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-frijoles" data-nombre="Frijoles" data-precio="35">
+                  <label for="plato-frijoles" class="plato-nombre">Frijoles</label>
+                </div>
+                <div class="plato-precio">$35.00 (Half Tray) / $70.00 (Full Tray)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="half">Half Tray</option>
+                    <option value="full">Full Tray</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Appetizers">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-sopa-azteca" data-nombre="Sopa Azteca" data-precio="90">
+                  <label for="plato-sopa-azteca" class="plato-nombre">Sopa Azteca</label>
+                </div>
+                <div class="plato-precio">$90.00 (Half Tray) / $165.00 (Full Tray)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="half">Half Tray</option>
+                    <option value="full">Full Tray</option>
+                  </select>
+                </div>
+              </div>
+              
+              <!-- Tacos Chef Cristina M. Proteins -->
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-grilled-steak" data-nombre="Grilled Steak" data-precio="165">
+                  <label for="plato-grilled-steak" class="plato-nombre">Grilled Steak</label>
+                </div>
+                <div class="plato-precio">$165.00 (15 pers.) / $300.00 (30 pers.)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="15">15 personas</option>
+                    <option value="30">30 personas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-grilled-chicken" data-nombre="Grilled Chicken (Tinga)" data-precio="165">
+                  <label for="plato-grilled-chicken" class="plato-nombre">Grilled Chicken (Tinga)</label>
+                </div>
+                <div class="plato-precio">$165.00 (15 pers.) / $300.00 (30 pers.)</div>
+                <div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
+                  Cooked in a sauce made with tomato, chipotle chili, and onion.
+                </div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="15">15 personas</option>
+                    <option value="30">30 personas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-chorizo" data-nombre="Chorizo" data-precio="130">
+                  <label for="plato-chorizo" class="plato-nombre">Chorizo</label>
+                </div>
+                <div class="plato-precio">$130.00 (15 pers.) / $210.00 (30 pers.)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="15">15 personas</option>
+                    <option value="30">30 personas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-pork-carnitas" data-nombre="Pork Carnitas" data-precio="150">
+                  <label for="plato-pork-carnitas" class="plato-nombre">Pork Carnitas</label>
+                </div>
+                <div class="plato-precio">$150.00 (15 pers.) / $300.00 (30 pers.)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="15">15 personas</option>
+                    <option value="30">30 personas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-pork-cochinita" data-nombre="Pork Cochinita Pibil" data-precio="150">
+                  <label for="plato-pork-cochinita" class="plato-nombre">Pork Cochinita Pibil</label>
+                </div>
+                <div class="plato-precio">$150.00 (15 pers.) / $300.00 (30 pers.)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="15">15 personas</option>
+                    <option value="30">30 personas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-salt-cured-steak" data-nombre="Salt Cured Steak" data-precio="160">
+                  <label for="plato-salt-cured-steak" class="plato-nombre">Salt Cured Steak</label>
+                </div>
+                <div class="plato-precio">$160.00 (15 pers.) / $310.00 (30 pers.)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="15">15 personas</option>
+                    <option value="30">30 personas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-crispy-fish" data-nombre="Crispy Fish" data-precio="170">
+                  <label for="plato-crispy-fish" class="plato-nombre">Crispy Fish</label>
+                </div>
+                <div class="plato-precio">$170.00 (15 pers.) / $340.00 (30 pers.)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="15">15 personas</option>
+                    <option value="30">30 personas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-crispy-shrimp" data-nombre="Crispy Shrimp" data-precio="170">
+                  <label for="plato-crispy-shrimp" class="plato-nombre">Crispy Shrimp</label>
+                </div>
+                <div class="plato-precio">$170.00 (15 pers.) / $340.00 (30 pers.)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="15">15 personas</option>
+                    <option value="30">30 personas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-root-vegetables" data-nombre="Root Vegetables" data-precio="70">
+                  <label for="plato-root-vegetables" class="plato-nombre">Root Vegetables</label>
+                </div>
+                <div class="plato-precio">$70.00 (15 pers.) / $140.00 (30 pers.)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="15">15 personas</option>
+                    <option value="30">30 personas</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Tacos">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-barbacoa" data-nombre="BARBACOA (5 KILOS)" data-precio="250">
+                  <label for="plato-barbacoa" class="plato-nombre">BARBACOA (5 KILOS)</label>
+                </div>
+                <div class="plato-precio">$250.00 (1T) / $500.00 (2T)</div>
+                <div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
+                  The magic Barbacoa. Barbacoa is more than just cooking; it's a centuries-old ritual central to celebrations and community gatherings. Slow-cooked in an earth oven for 6 to 12 hours, lamb or mutton absorbs rich flavors, resulting in tender, melt-in-your-mouth meat while preserving a deep cultural tradition.
+                </div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="1">1T (5kg)</option>
+                    <option value="2">2T (10kg)</option>
+                  </select>
+                </div>
+              </div>
+              
+              <!-- Specialty -->
+              <div class="plato-item" data-categoria="Specialty">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-chile-relleno" data-nombre="Chile Relleno" data-precio="160">
+                  <label for="plato-chile-relleno" class="plato-nombre">Chile Relleno</label>
+                </div>
+                <div class="plato-precio">$160.00 (10 pcs) / $300.00 (20 pcs)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="10">10 pcs</option>
+                    <option value="20">20 pcs</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Specialty">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-mole" data-nombre="Mole Verde / Rojo" data-precio="180">
+                  <label for="plato-mole" class="plato-nombre">Mole Verde / Rojo</label>
+                </div>
+                <div class="plato-precio">$180.00 (10 pcs) / $340.00 (20 pcs)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="10">10 pcs</option>
+                    <option value="20">20 pcs</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Specialty">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-encacahuatado" data-nombre="Encacahuatado" data-precio="180">
+                  <label for="plato-encacahuatado" class="plato-nombre">Encacahuatado</label>
+                </div>
+                <div class="plato-precio">$180.00 (10 pcs) / $340.00 (20 pcs)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                  <select class="form-control" style="width: 100px;">
+                    <option value="10">10 pcs</option>
+                    <option value="20">20 pcs</option>
+                  </select>
+                </div>
+              </div>
+              
+              <!-- Dessert & Aguas -->
+              <div class="plato-item" data-categoria="Desserts">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-tres-leches" data-nombre="Tres leches" data-precio="75">
+                  <label for="plato-tres-leches" class="plato-nombre">Tres leches</label>
+                </div>
+                <div class="plato-precio">$75.00 (Full)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Desserts">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-flan" data-nombre="Flan" data-precio="75">
+                  <label for="plato-flan" class="plato-nombre">Flan</label>
+                </div>
+                <div class="plato-precio">$75.00 (Full)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                </div>
+              </div>
+              
+              <div class="plato-item" data-categoria="Desserts">
+                <div class="plato-header">
+                  <input type="checkbox" id="plato-agua-fresca" data-nombre="Agua Fresca (1 Gallon)" data-precio="20">
+                  <label for="plato-agua-fresca" class="plato-nombre">Agua Fresca (1 Gallon)</label>
+                </div>
+                <div class="plato-precio">$20.00 (1 Gallon)</div>
+                <div class="plato-cantidad">
+                  <label>Cantidad:</label>
+                  <input type="number" min="1" value="1" class="cantidad-plato">
+                </div>
+              </div>
+            </div>
+            
+            <div class="resumen-platos" id="resumenPlatos" style="display: none;">
+              <h4>📋 Resumen del Pedido</h4>
+              <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                <thead>
+                  <tr>
+                    <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Quantity</th>
+                    <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Product</th>
+                    <th style="text-align: right; padding: 5px; border-bottom: 1px solid #ddd;">Cost</th>
+                    <th style="width: 30px;"></th>
+                  </tr>
+                </thead>
+                <tbody id="listaResumen">
                   <!-- Se llenará dinámicamente -->
-                </ul>
-                <div class="resumen-linea">
-                  <span class="resumen-label">Subtotal:</span>
-                  <span class="resumen-valor">$<span id="subtotalResumen">0.00</span></span>
-                </div>
-                <div class="resumen-linea">
-                  <span class="resumen-label">Tax (8%):</span>
-                  <span class="resumen-valor">$<span id="taxResumen">0.00</span></span>
-                </div>
-                <div class="resumen-linea" id="gratuityContainer">
-                  <span class="resumen-label">
-                    Gratuity:
-                    <input type="number" id="gratuityPercentage" value="20" min="0" max="100" step="1" 
-                           class="resumen-input" onchange="actualizarResumenPlatos()">%
-                  </span>
-                  <span class="resumen-valor">$<span id="gratuityResumen">0.00</span></span>
-                </div>
-                <div class="resumen-linea" id="deliveryContainer" style="display: none;">
-                  <span class="resumen-label">
-                    Delivery Fee:
-                    <input type="number" id="deliveryFee" value="0" min="0" step="5" 
-                           class="resumen-input" onchange="actualizarResumenPlatos()">
-                  </span>
-                  <span class="resumen-valor">$<span id="deliveryResumen">0.00</span></span>
-                </div>
-                <div class="resumen-total">
-                  <span class="resumen-label">Total a pagar:</span>
-                  <span class="resumen-valor">$<span id="totalResumen">0.00</span></span>
-                </div>
+                </tbody>
+              </table>
+              
+              <div style="text-align: right;">
+                <button type="button" class="btn btn-secondary" id="agregarFilaBtn" style="margin-bottom: 10px;">
+                  <i class="fas fa-plus"></i> Agregar Fila Manual
+                </button>
+              </div>
+              
+              <div class="resumen-linea">
+                <span class="resumen-label">Subtotal:</span>
+                <span class="resumen-valor">$<span id="subtotalResumen">0.00</span></span>
+              </div>
+              
+              <div class="resumen-linea" id="taxContainer">
+                <span class="resumen-label">
+                  Tax:
+                  <input type="number" id="taxPercentage" value="8" min="0" max="100" step="1" 
+                         class="resumen-input">%
+                </span>
+                <span class="resumen-valor">$<span id="taxResumen">0.00</span></span>
+              </div>
+              
+              <div class="resumen-linea" id="gratuityContainer">
+                <span class="resumen-label">
+                  Gratuity:
+                  <input type="number" id="gratuityPercentage" value="20" min="0" max="100" step="1" 
+                         class="resumen-input">%
+                </span>
+                <span class="resumen-valor">$<span id="gratuityResumen">0.00</span></span>
+              </div>
+              
+              <div class="resumen-linea" id="deliveryContainer" style="display: none;">
+                <span class="resumen-label">
+                  Delivery Fee:
+                  <input type="number" id="deliveryFee" value="0" min="0" step="5" 
+                         class="resumen-input">
+                </span>
+                <span class="resumen-valor">$<span id="deliveryResumen">0.00</span></span>
+              </div>
+              
+              <div class="resumen-total">
+                <span class="resumen-label">Total a pagar:</span>
+                <span class="resumen-valor">$<span id="totalResumen">0.00</span></span>
               </div>
             </div>
-            
-            <div class="form-group">
-              <label>🍽️ Platos Desechables</label>
-              <div class="switch-container">
-                <label class="switch">
-                  <input type="checkbox" id="platosDesechables">
-                  <span class="slider"></span>
-                </label>
-                <span id="platosDesechablesText">No</span>
-              </div>
-            </div>
-            
-            <div class="form-group" id="tipoPlatosContainer">
-              <label for="tipoPlatos">🍽️ Tipo de Platos</label>
-              <select id="tipoPlatos" class="form-control">
-                <option value="">Seleccionar...</option>
-                <option value="Cerámica">Cerámica</option>
-                <option value="Porcelana">Porcelana</option>
-                <option value="Vidrio">Vidrio</option>
-              </select>
-            </div>
-            
-            <div class="form-group" style="grid-column: 1 / -1; position: relative;">
-              <label for="notasArea">📝 Notas Adicionales</label>
-              <div id="notasArea"
-                  class="form-control"
-                  contenteditable="true"
-                  style="min-height: 200px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace;">
-                <!-- Aquí se insertará dinámicamente el encabezado y el contenido -->
-              </div>
-              <div id="editadoIcono"
-                  style="position: absolute; top: 5px; right: 10px; font-size: 0.9rem; color: #7f8c8d; display: none;">
-                ✏️ Editado
-              </div>
-            </div>
-</div>
-
-
-
+          </div>
           
+          <!-- Sección de pagos -->
+          <div class="form-group" style="grid-column: 1 / -1; margin-top: 1.5rem;">
+            <h3>💳 Pagos</h3>
+            <div id="pagosContainer">
+              <!-- Se llenará dinámicamente -->
+            </div>
+            <button type="button" class="btn btn-secondary" id="agregarPagoBtn" style="margin-top: 1rem;">
+              <i class="fas fa-plus"></i> Agregar Pago
+            </button>
+          </div>
+          
+          <!-- Notas -->
+          <div class="form-group" style="grid-column: 1 / -1; position: relative;">
+            <label for="notasArea">📝 Notas Adicionales</label>
+            <div id="notasArea"
+                class="form-control"
+                contenteditable="true"
+                style="min-height: 200px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace;">
+              <!-- Aquí se insertará dinámicamente el encabezado y el contenido -->
+            </div>
+            <div id="editadoIcono"
+                style="position: absolute; top: 5px; right: 10px; font-size: 0.9rem; color: #7f8c8d; display: none;">
+              ✏️ Editado
+            </div>
+          </div>
+          
+          <div class="notas-box">
+            <h4>👨‍🍳 Notas para Cocina</h4>
+            <textarea id="notasCocina" class="form-control" placeholder="Instrucciones especiales para la cocina..."></textarea>
+          </div>
+          
+          <!-- Botones de acción -->
           <div class="form-actions">
             <button type="button" class="btn btn-primary" id="guardarBtn">
               <i class="fas fa-save"></i> Guardar Cotización
-               </button>
-             
+            </button>
             
-             
-              
-            </div>
+            <button type="button" class="btn btn-info" id="generarPDFCliente">
+              <i class="fas fa-file-pdf"></i> PDF Cliente
+            </button>
+            
+            <button type="button" class="btn btn-warning" id="generarPDFCocina">
+              <i class="fas fa-file-pdf"></i> PDF Cocina
+            </button>
           </div>
         </form>
       </div>
@@ -233,6 +1180,698 @@
     <p id="loadingText">Procesando...</p>
   </div>
   
-<script src="js/main.js"></script>
+<script>
+  // Variables globales
+  let currentUser = null;
+  let platosSeleccionados = [];
+  let currentCotizacionId = null;
+  let cambiandoCategoria = false;
+  let filasManuales = [];
+  let encabezadoInsertado = false;
+  let contenidoOriginal = '';
+  
+  // DOM Content Loaded
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Verificar sesión
+    await verificarSesion();
+    
+    // Configurar eventos
+    configurarEventos();
+    
+    // Obtener y mostrar el siguiente número de invoice
+    await cargarUltimoInvoice();
+    
+    // Autocompletar día al seleccionar fecha
+    document.getElementById('fecha').addEventListener('change', function() {
+      if (this.value) {
+        const fecha = new Date(this.value);
+        fecha.setMinutes(fecha.getMinutes() + fecha.getTimezoneOffset());
+        const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        document.getElementById('dia').value = days[fecha.getDay()];
+      }
+    });
+    
+    // Actualizar servicio cuando cambia
+    document.getElementById('servicio').addEventListener('change', function() {
+      const deliveryContainer = document.getElementById('deliveryContainer');
+      if (this.value === 'Delivery Catering') {
+        deliveryContainer.style.display = 'flex';
+      } else {
+        deliveryContainer.style.display = 'none';
+      }
+      actualizarResumenPlatos();
+    });
+    
+    // Configurar filtrado por categorías
+    document.querySelectorAll('.categoria-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const categoria = this.dataset.categoria;
+        filtrarPlatosPorCategoria(categoria);
+      });
+    });
+    
+    // Mostrar todos los platos inicialmente
+    filtrarPlatosPorCategoria('Appetizers');
+    
+    // Agregar un pago inicial
+    agregarPagoInput();
+    
+    // Configurar botón para agregar filas manuales
+    document.getElementById('agregarFilaBtn').addEventListener('click', agregarFilaManual);
+    
+    // Configurar notas
+    configurarNotas();
+  });
+  
+  // Función para verificar sesión
+  async function verificarSesion() {
+    try {
+      const response = await fetch('/api/user-info');
+      const data = await response.json();
+      
+      if (!data.user) {
+        window.location.href = '/';
+        return;
+      }
+      
+      currentUser = data.user;
+      document.getElementById('userName').textContent = currentUser.username;
+      document.getElementById('userRole').textContent = currentUser.role;
+      document.getElementById('userAvatar').textContent = 
+        currentUser.username.charAt(0).toUpperCase();
+    } catch (error) {
+      console.error('Error al verificar sesión:', error);
+      window.location.href = '/';
+    }
+  }
+  
+  // Función para cargar el último invoice
+  async function cargarUltimoInvoice() {
+    try {
+      const response = await fetch('/api/cotizaciones/ultimo-invoice');
+      if (!response.ok) throw new Error('Error al obtener invoice');
+      
+      const data = await response.json();
+      const siguienteInvoice = (data.ultimoInvoice || 0) + 1;
+      
+      document.getElementById('invoiceNumber').value = siguienteInvoice;
+      document.getElementById('invoiceNumberDisplay').textContent = siguienteInvoice;
+    } catch (error) {
+      console.error('Error al obtener último invoice:', error);
+      document.getElementById('invoiceNumberDisplay').textContent = '1';
+    }
+  }
+  
+  // Función para configurar notas
+  function configurarNotas() {
+    const notasArea = document.getElementById('notasArea');
+    const editadoIcono = document.getElementById('editadoIcono');
+    
+    function crearEncabezado() {
+      const ahora = new Date();
+      const fechaHora = ahora.toLocaleString();
+      const encabezado = document.createElement('div');
+      encabezado.textContent = `${currentUser.username} - ${fechaHora}`;
+      encabezado.style.fontWeight = 'bold';
+      encabezado.contentEditable = 'false';
+      encabezado.id = 'encabezado';
+      return encabezado;
+    }
+    
+    function crearCuerpoNota(texto = '') {
+      const cuerpoNota = document.createElement('div');
+      cuerpoNota.contentEditable = 'true';
+      cuerpoNota.id = 'cuerpoNota';
+      cuerpoNota.innerText = texto;
+      return cuerpoNota;
+    }
+    
+    function colocarCursorAlFinal(elemento) {
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(elemento);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    
+    // Detectar cambios
+    notasArea.addEventListener('input', () => {
+      const cuerpoNota = document.getElementById('cuerpoNota');
+    
+      if (!encabezadoInsertado) {
+        const textoUsuario = notasArea.innerText.trim();
+        if (textoUsuario.length > 0) {
+          notasArea.innerHTML = '';
+          const encabezado = crearEncabezado();
+          const cuerpoNota = crearCuerpoNota(textoUsuario);
+          notasArea.appendChild(encabezado);
+          notasArea.appendChild(cuerpoNota);
+          colocarCursorAlFinal(cuerpoNota);
+          encabezadoInsertado = true;
+          contenidoOriginal = textoUsuario;
+        }
+      } else {
+        if (cuerpoNota && cuerpoNota.innerText.trim() === '') {
+          encabezadoInsertado = false;
+          contenidoOriginal = '';
+          notasArea.innerHTML = '';
+        }
+      }
+    });
+    
+    // Escuchar Enter para agregar nueva nota
+    notasArea.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+    
+        const ahora = new Date();
+        const fecha = ahora.toLocaleDateString('es-ES');
+        const hora = ahora.toLocaleTimeString('es-ES', { hour12: false });
+        const username = currentUser?.username || 'Usuario';
+    
+        const encabezado = document.createElement('div');
+        encabezado.textContent = `${username} - ${fecha}, ${hora}`;
+        encabezado.style.fontWeight = 'bold';
+        encabezado.contentEditable = 'false';
+        encabezado.className = 'encabezado';
+    
+        const cuerpoNota = document.createElement('div');
+        cuerpoNota.contentEditable = 'true';
+        cuerpoNota.className = 'cuerpoNota';
+        cuerpoNota.innerHTML = '&nbsp;';
+    
+        notasArea.appendChild(encabezado);
+        notasArea.appendChild(cuerpoNota);
+    
+        setTimeout(() => {
+          colocarCursorAlFinal(cuerpoNota);
+        }, 0);
+      }
+    });
+  }
+  
+  // Función para filtrar platos por categoría
+  function filtrarPlatosPorCategoria(categoria) {
+    cambiandoCategoria = true;
+    
+    document.querySelectorAll('.categoria-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.categoria === categoria) {
+        btn.classList.add('active');
+      }
+    });
+    
+    document.querySelectorAll('.plato-item').forEach(plato => {
+      if (plato.dataset.categoria === categoria) {
+        plato.style.display = 'block';
+      } else {
+        plato.style.display = 'none';
+      }
+    });
+    
+    setTimeout(() => {
+      cambiandoCategoria = false;
+    }, 100);
+  }
+  
+  // Función para agregar fila manualmente
+  function agregarFilaManual() {
+    const tbody = document.getElementById('listaResumen');
+    const tr = document.createElement('tr');
+    tr.className = 'fila-manual';
+    
+    tr.innerHTML = `
+      <td style="padding: 5px;"><input type="text" class="form-control" style="width: 60px;" placeholder="1T" value="1T"></td>
+      <td style="padding: 5px;"><input type="text" class="form-control" placeholder="Nombre del producto"></td>
+      <td style="padding: 5px; text-align: right;">
+        <input type="number" class="form-control" style="width: 100px; text-align: right;" placeholder="0.00" step="0.01" min="0" value="0">
+      </td>
+      <td style="text-align: center;">
+        <button type="button" class="btn-eliminar-fila">
+          <i class="fas fa-times"></i>
+        </button>
+      </td>
+    `;
+    
+    tbody.appendChild(tr);
+    filasManuales.push(tr);
+    
+    tr.querySelectorAll('input').forEach(input => {
+      input.addEventListener('change', actualizarTotalesDesdeTabla);
+    });
+    
+    tr.querySelector('.btn-eliminar-fila').addEventListener('click', () => {
+      tr.remove();
+      filasManuales = filasManuales.filter(fila => fila !== tr);
+      actualizarTotalesDesdeTabla();
+    });
+    
+    actualizarTotalesDesdeTabla();
+  }
+  
+  // Función para actualizar totales desde la tabla
+  function actualizarTotalesDesdeTabla() {
+    let subtotal = 0;
+    
+    platosSeleccionados.forEach(p => subtotal += p.precio_total);
+    
+    filasManuales.forEach(tr => {
+      const precioInput = tr.querySelector('input[type="number"]');
+      const precio = parseFloat(precioInput.value) || 0;
+      subtotal += precio;
+    });
+    
+    const taxPercentage = parseFloat(document.getElementById('taxPercentage').value) || 8;
+    const tax = subtotal * (taxPercentage / 100);
+    
+    const gratuityPercentage = parseFloat(document.getElementById('gratuityPercentage').value) || 20;
+    const gratuity = subtotal * (gratuityPercentage / 100);
+    
+    const servicio = document.getElementById('servicio').value;
+    const deliveryFee = servicio === 'Delivery Catering' ? 
+      (parseFloat(document.getElementById('deliveryFee').value) || 0) : 0;
+    
+    const total = subtotal + tax + gratuity + deliveryFee;
+    
+    document.getElementById('subtotalResumen').textContent = subtotal.toFixed(2);
+    document.getElementById('taxResumen').textContent = tax.toFixed(2);
+    document.getElementById('gratuityResumen').textContent = gratuity.toFixed(2);
+    document.getElementById('deliveryResumen').textContent = deliveryFee.toFixed(2);
+    document.getElementById('totalResumen').textContent = total.toFixed(2);
+  }
+  
+  // Función para actualizar el resumen de platos seleccionados
+  function actualizarResumenPlatos() {
+    if (cambiandoCategoria) return;
+    
+    const tbody = document.getElementById('listaResumen');
+    const filasAutomaticas = Array.from(tbody.querySelectorAll('tr')).filter(tr => 
+      !tr.classList.contains('fila-manual') && !tr.classList.contains('categoria-row')
+    );
+    filasAutomaticas.forEach(tr => tr.remove());
+    
+    platosSeleccionados = [];
+    const platosPorCategoria = {};
+    
+    document.querySelectorAll('#platosList input[type="checkbox"]:checked').forEach(checkbox => {
+      const platoItem = checkbox.closest('.plato-item');
+      const nombre = checkbox.getAttribute('data-nombre');
+      const precioBase = parseFloat(checkbox.getAttribute('data-precio'));
+      const cantidadInput = platoItem.querySelector('.cantidad-plato');
+      const cantidad = parseInt(cantidadInput.value) || 1;
+      const tipoSelect = platoItem.querySelector('select');
+      const categoria = platoItem.getAttribute('data-categoria');
+      
+      let precioPorPersona = precioBase;
+      let cantidadTexto = cantidad.toString();
+      
+      if (tipoSelect) {
+        const tipo = tipoSelect.value;
+        if (tipo === 'full') {
+          precioPorPersona = precioBase * 2;
+          cantidadTexto = `${cantidad}T`;
+        } else if (tipo === 'half') {
+          precioPorPersona = precioBase;
+          cantidadTexto = `${cantidad}/2 T`;
+        } else if (tipo === '30' || tipo === '20' || tipo === '2') {
+          precioPorPersona = precioBase * 2;
+          cantidadTexto = `${cantidad}T`;
+        }
+      }
+      
+      const precioTotal = precioPorPersona * cantidad;
+      
+      platosSeleccionados.push({
+        nombre,
+        precio_por_persona: precioPorPersona,
+        cantidad_personas: cantidad,
+        precio_total: precioTotal,
+        categoria,
+        cantidadTexto
+      });
+      
+      if (!platosPorCategoria[categoria]) {
+        platosPorCategoria[categoria] = [];
+      }
+      platosPorCategoria[categoria].push({
+        nombre,
+        cantidadTexto,
+        precioTotal
+      });
+    });
+    
+    for (const categoria in platosPorCategoria) {
+      let categoriaRow = Array.from(tbody.querySelectorAll('.categoria-row')).find(row => 
+        row.textContent.includes(categoria)
+      );
+      
+      if (!categoriaRow) {
+        categoriaRow = document.createElement('tr');
+        categoriaRow.className = 'categoria-row';
+        categoriaRow.innerHTML = `
+          <td colspan="4" style="padding: 5px; font-weight: bold; background-color: #f1f1f1;">${categoria}</td>
+        `;
+        
+        if (filasManuales.length > 0) {
+          tbody.insertBefore(categoriaRow, filasManuales[0]);
+        } else {
+          tbody.appendChild(categoriaRow);
+        }
+      }
+      
+      platosPorCategoria[categoria].forEach(plato => {
+        const tr = document.createElement('tr');
+        tr.className = 'fila-automatica';
+        tr.innerHTML = `
+          <td style="padding: 5px;">
+            <input type="text" class="form-control" style="width: 60px;" value="${plato.cantidadTexto}">
+          </td>
+          <td style="padding: 5px;">
+            <input type="text" class="form-control" value="${plato.nombre}">
+          </td>
+          <td style="padding: 5px; text-align: right;">
+            <input type="number" class="form-control" style="width: 100px; text-align: right;" 
+                   value="${plato.precioTotal.toFixed(2)}" step="0.01" min="0">
+          </td>
+          <td style="text-align: center;">
+            <button type="button" class="btn-eliminar-fila">
+              <i class="fas fa-times"></i>
+            </button>
+          </td>
+        `;
+        
+        tbody.insertBefore(tr, categoriaRow.nextSibling);
+        
+        tr.querySelectorAll('input').forEach(input => {
+          input.addEventListener('change', function() {
+            const index = platosSeleccionados.findIndex(p => p.nombre === plato.nombre);
+            if (index !== -1) {
+              if (this.type === 'number') {
+                platosSeleccionados[index].precio_total = parseFloat(this.value) || 0;
+              } else if (this.type === 'text') {
+                if (this.value.includes('/2 T')) {
+                  platosSeleccionados[index].cantidadTexto = this.value;
+                  platosSeleccionados[index].precio_por_persona = platosSeleccionados[index].precio_total / parseInt(this.value);
+                } else if (this.value.includes('T') && !this.value.includes('/')) {
+                  platosSeleccionados[index].cantidadTexto = this.value;
+                  platosSeleccionados[index].precio_por_persona = platosSeleccionados[index].precio_total / parseInt(this.value);
+                } else {
+                  platosSeleccionados[index].nombre = this.value;
+                }
+              }
+            }
+            actualizarTotalesDesdeTabla();
+          });
+        });
+        
+        tr.querySelector('.btn-eliminar-fila').addEventListener('click', () => {
+          const checkbox = document.querySelector(`input[data-nombre="${plato.nombre}"]`);
+          if (checkbox) {
+            checkbox.checked = false;
+          }
+          
+          platosSeleccionados = platosSeleccionados.filter(p => p.nombre !== plato.nombre);
+          tr.remove();
+          actualizarTotalesDesdeTabla();
+        });
+      });
+    }
+    
+    actualizarTotalesDesdeTabla();
+    document.getElementById('resumenPlatos').style.display = 
+      (platosSeleccionados.length > 0 || filasManuales.length > 0) ? 'block' : 'none';
+  }
+  
+  // Función para agregar inputs de pago
+  function agregarPagoInput(pago = {}) {
+    const container = document.getElementById('pagosContainer');
+    const div = document.createElement('div');
+    div.className = 'pago-item';
+    div.innerHTML = `
+      <div class="pago-fila">
+        <input type="date" class="pago-fecha form-control" value="${pago.fecha || new Date().toISOString().split('T')[0]}">
+        <input type="number" class="pago-monto form-control" placeholder="Monto" 
+               value="${pago.monto || ''}" step="0.01" min="0">
+        <select class="pago-metodo form-control">
+          <option value="square" ${pago.metodo === 'square' ? 'selected' : ''}>Square</option>
+          <option value="venmo" ${pago.metodo === 'venmo' ? 'selected' : ''}>Venmo</option>
+          <option value="toast" ${pago.metodo === 'toast' ? 'selected' : ''}>Toast</option>
+          <option value="cash" ${pago.metodo === 'cash' ? 'selected' : ''}>Cash</option>
+          <option value="PO" ${pago.metodo === 'PO' ? 'selected' : ''}>PO</option>
+          <option value="Zelle" ${pago.metodo === 'Zelle' ? 'selected' : ''}>Zelle</option>
+          <option value="otro" ${pago.metodo === 'otro' ? 'selected' : ''}>Otro</option>
+        </select>
+        <input type="text" class="pago-notas form-control" placeholder="Notas" 
+               value="${pago.notas || ''}">
+        <button type="button" class="btn btn-danger btn-eliminar-pago">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+    container.appendChild(div);
+    
+    div.querySelector('.btn-eliminar-pago').addEventListener('click', () => {
+      div.remove();
+    });
+    
+    div.querySelector('.pago-monto').addEventListener('change', actualizarTotalesDesdeTabla);
+  }
+  
+  // Función para configurar los eventos
+  function configurarEventos() {
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      try {
+        await fetch('/logout', { method: 'GET' });
+        window.location.href = '/';
+      } catch (error) {
+        console.error('Error al cerrar sesión:', error);
+      }
+    });
+    
+    document.getElementById('agregarPagoBtn').addEventListener('click', () => {
+      agregarPagoInput();
+    });
+    
+    document.getElementById('guardarBtn').addEventListener('click', guardarCotizacion);
+    
+    document.getElementById('verCalendarioBtn').addEventListener('click', () => {
+      window.location.href = '/calendario';
+    });
+    
+    document.getElementById('taxPercentage').addEventListener('change', actualizarTotalesDesdeTabla);
+    document.getElementById('gratuityPercentage').addEventListener('change', actualizarTotalesDesdeTabla);
+    document.getElementById('deliveryFee').addEventListener('change', actualizarTotalesDesdeTabla);
+    
+    document.querySelectorAll('#platosList input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        actualizarResumenPlatos();
+      });
+    });
+    
+    document.querySelectorAll('#platosList .cantidad-plato').forEach(input => {
+      input.addEventListener('change', actualizarResumenPlatos);
+    });
+    
+    document.querySelectorAll('#platosList select').forEach(select => {
+      select.addEventListener('change', actualizarResumenPlatos);
+    });
+    
+    document.getElementById('cotizacionForm').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.type !== 'submit') {
+        e.preventDefault();
+      }
+    });
+    
+    document.getElementById('cotizacionForm').addEventListener('submit', function(e) {
+      if (cambiandoCategoria) {
+        e.preventDefault();
+        return false;
+      }
+    });
+    
+    // Eventos para botones de PDF
+    document.getElementById('generarPDFCliente').addEventListener('click', async () => {
+      await generarPDF('cliente');
+    });
+    
+    document.getElementById('generarPDFCocina').addEventListener('click', async () => {
+      await generarPDF('cocina');
+    });
+  }
+  
+  // Función para generar PDFs
+  async function generarPDF(tipo) {
+    const cliente = document.getElementById('cliente').value;
+    const fecha = document.getElementById('fecha').value;
+    
+    if (!cliente || !fecha) {
+      alert('Por favor ingrese al menos el nombre del cliente y la fecha');
+      return;
+    }
+    
+    const datos = {
+      invoiceNumber: document.getElementById('invoiceNumber').value || '1',
+      fecha: document.getElementById('fecha').value,
+      dia: document.getElementById('dia').value,
+      cliente: document.getElementById('cliente').value,
+      numero: document.getElementById('numero').value,
+      hora_evento: document.getElementById('hora_evento').value,
+      hora_servir: document.getElementById('hora_servir').value,
+      hora_salida: document.getElementById('hora_salida').value,
+      servicio: document.getElementById('servicio').value,
+      ubicacion: document.getElementById('ubicacion').value,
+      contacto: document.getElementById('contacto').value,
+      status: document.getElementById('status').value,
+      platosSeleccionados: platosSeleccionados,
+      taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
+      gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
+      deliveryFee: document.getElementById('servicio').value === 'Delivery Catering' ? 
+        parseFloat(document.getElementById('deliveryFee').value) || 0 : 0,
+      notas: document.getElementById('notasArea').innerText,
+      notasCocina: document.getElementById('notasCocina').value
+    };
+    
+    if (platosSeleccionados.length === 0 && filasManuales.length > 0) {
+      datos.platosSeleccionados = filasManuales.map((tr, index) => {
+        const inputs = tr.querySelectorAll('input');
+        return {
+          nombre: inputs[1]?.value || `Producto ${index + 1}`,
+          precio_por_persona: parseFloat(inputs[2]?.value) || 0,
+          cantidad: 1,
+          precio_total: parseFloat(inputs[2]?.value) || 0
+        };
+      });
+    }
+    
+    mostrarLoading(`Generando PDF para ${tipo === 'cliente' ? 'cliente' : 'cocina'}...`);
+    
+    try {
+      const response = await fetch('/api/generar-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tipo, datos })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al generar PDF');
+      }
+      
+      const data = await response.json();
+      window.open(data.pdfUrl, '_blank');
+      
+    } catch (error) {
+      console.error('Error al generar PDF:', error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      ocultarLoading();
+    }
+  }
+  
+  // Función para guardar cotización
+  async function guardarCotizacion() {
+    const formulario = document.getElementById('cotizacionForm');
+    if (!formulario.checkValidity()) {
+      formulario.reportValidity();
+      return;
+    }
+    
+    if (platosSeleccionados.length === 0 && filasManuales.length === 0) {
+      alert('Por favor seleccione al menos un plato o agregue productos manualmente');
+      return;
+    }
+    
+    const datos = {
+      invoiceNumber: document.getElementById('invoiceNumber').value,
+      fecha: document.getElementById('fecha').value,
+      dia: document.getElementById('dia').value,
+      cliente: document.getElementById('cliente').value,
+      numero: document.getElementById('numero').value,
+      hora_evento: document.getElementById('hora_evento').value,
+      hora_servir: document.getElementById('hora_servir').value,
+      hora_salida: document.getElementById('hora_salida').value,
+      servicio: document.getElementById('servicio').value,
+      ubicacion: document.getElementById('ubicacion').value,
+      contacto: document.getElementById('contacto').value,
+      status: document.getElementById('status').value,
+      platos: platosSeleccionados,
+      taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
+      gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
+      deliveryFee: document.getElementById('servicio').value === 'Delivery Catering' ? 
+        parseFloat(document.getElementById('deliveryFee').value) || 0 : 0,
+      notas: document.getElementById('notasArea').innerText,
+      notasCocina: document.getElementById('notasCocina').value
+    };
+    
+    if (filasManuales.length > 0) {
+      datos.platos = datos.platos.concat(filasManuales.map((tr, index) => {
+        const inputs = tr.querySelectorAll('input');
+        return {
+          nombre: inputs[1]?.value || `Producto ${index + 1}`,
+          precio_por_persona: parseFloat(inputs[2]?.value) || 0,
+          cantidad: 1,
+          precio_total: parseFloat(inputs[2]?.value) || 0
+        };
+      }));
+    }
+    
+    datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
+    datos.tax = datos.subtotal * (datos.taxPercentage / 100);
+    datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
+    datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee;
+    
+    datos.pagos = Array.from(document.querySelectorAll('.pago-item')).map(item => ({
+      fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],
+      monto: parseFloat(item.querySelector('.pago-monto')?.value) || 0,
+      metodo: item.querySelector('.pago-metodo')?.value || 'cash',
+      notas: item.querySelector('.pago-notas')?.value || ''
+    }));
+    
+    mostrarLoading('Guardando cotización...');
+    
+    try {
+      const response = await fetch('/api/cotizaciones', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al guardar cotización');
+      }
+      
+      const data = await response.json();
+      alert('Cotización guardada exitosamente');
+      
+      if (data.pdfCliente && data.pdfCocina) {
+        window.open(data.pdfCliente, '_blank');
+        window.open(data.pdfCocina, '_blank');
+      }
+      
+      if (data.cotizacion && data.cotizacion.invoiceNumber) {
+        document.getElementById('invoiceNumber').value = data.cotizacion.invoiceNumber;
+        document.getElementById('invoiceNumberDisplay').textContent = data.cotizacion.invoiceNumber;
+      }
+      
+    } catch (error) {
+      console.error('Error al guardar cotización:', error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      ocultarLoading();
+    }
+  }
+  
+  // Funciones para mostrar/ocultar loading
+  function mostrarLoading(mensaje) {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    document.getElementById('loadingText').textContent = mensaje;
+  }
+  
+  function ocultarLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+  }
+</script>
 </body>
 </html>

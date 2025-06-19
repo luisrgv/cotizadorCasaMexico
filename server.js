@@ -30,17 +30,14 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // ¡IMPORTANTE! Asegura que funcione tanto en HTTP como HTTPS
-    sameSite: 'lax' // Permite compartir cookies entre frontend y backend
+    secure: false,
+    sameSite: 'lax'
   }
 }));
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-
-
 
 // Ruta de login
 app.post('/login', async (req, res) => {
@@ -63,6 +60,7 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ ok: false, error: 'Error del servidor' });
   }
 });
+
 // Middleware para verificar autenticación
 const requireLogin = (req, res, next) => {
   if (!req.session.user) {
@@ -99,11 +97,6 @@ app.get('/api/eventos', async (req, res) => {
   }
 });
 
-// Ruta para el calendario
-app.get('/calendario', requireLogin, (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'calendario.html'));
-});
-
 // Obtener platos
 app.get('/api/platos', async (req, res) => {
   try {
@@ -124,14 +117,12 @@ app.post('/api/calcular-proforma', requireLogin, async (req, res) => {
     let subtotal = 0;
     let ingredientes = [];
     
-    // Procesar cada plato seleccionado
     platosSeleccionados.forEach(platoSel => {
       const plato = platosData.find(p => p.nombre === platoSel.nombre);
       
       if (plato) {
         subtotal += numPersonas * parseFloat(plato.precio_por_persona);
         
-        // Agregar ingredientes
         if (plato.ingredientes && plato.ingredientes.length > 0) {
           plato.ingredientes.forEach(ing => {
             if (ing.trim() !== '') {
@@ -159,256 +150,261 @@ app.post('/api/calcular-proforma', requireLogin, async (req, res) => {
   }
 });
 
+// Función para generar PDFs
+const generarPDF = (tipo, datos) => {
+  return new Promise((resolve) => {
+    const doc = new PDFDocument({ margin: 50, size: 'A4' });
+    const nombreArchivo = `${tipo}_${datos.cliente.replace(/\s/g, '_')}_${Date.now()}.pdf`;
+    const rutaPDF = path.join(__dirname, 'public', 'pdfs', nombreArchivo);
+    const stream = fs.createWriteStream(rutaPDF);
+    doc.pipe(stream);
+
+    // Logo
+    const logoPath = path.join(__dirname, 'public', 'img', 'logo-casa-mexico.png');
+    if (fs.existsSync(logoPath)) {
+      doc.image(logoPath, 50, 45, { width: 100 });
+    }
+
+    // Encabezado
+    doc.fillColor('#1d3557')
+       .fontSize(20)
+       .font('Helvetica-Bold')
+       .text(tipo === 'cliente' ? 'CASA MÉXICO CATERING' : 'CASA MÉXICO CATERING', {
+         align: 'center',
+         paragraphGap: 5
+       });
+    
+    doc.fontSize(14)
+   .text(`Invoice #: ${datos.invoiceNumber || 'N/A'}`, {
+     align: 'center',
+     paragraphGap: 20
+   });
+
+
+    // Línea decorativa
+    doc.moveTo(50, 120)
+       .lineTo(550, 120)
+       .lineWidth(2)
+       .stroke('#e63946');
+
+    // Información principal
+    const infoX = 50;
+    let currentY = 140;
+
+    // Función para agregar fila de información
+    const agregarFila = (label, value, isBold = false) => {
+      doc.font(isBold ? 'Helvetica-Bold' : 'Helvetica')
+         .fontSize(10)
+         .text(label, infoX, currentY, { width: 150, align: 'left' })
+         .text(value, infoX + 160, currentY, { width: 340, align: 'left' });
+      currentY += 20;
+    };
+
+    // Status con color
+    let statusColor = '#000000';
+    if (datos.status === 'pagado') statusColor = '#2a9d8f';
+    if (datos.status === 'impago') statusColor = '#e63946';
+    if (datos.status === 'en_proceso') statusColor = '#e9c46a';
+
+    // Información común
+        agregarFila('Date:', datos.fecha, true);
+    agregarFila('Day:', datos.dia);
+    agregarFila('Client:', datos.cliente, true);
+    agregarFila('Contact Number:', datos.numero);
+    agregarFila('Event Time:', datos.hora_evento);
+    
+    if (tipo === 'cliente') {
+      // PDF Cliente (inglés)
+      agregarFila('Service:', datos.servicio);
+      agregarFila('Location:', datos.ubicacion);
+      agregarFila('Serving Time:', datos.hora_servir);
+      agregarFila('Status:', datos.status.toUpperCase(), true);
+      doc.fillColor(statusColor).text(datos.status.toUpperCase(), infoX + 160, currentY - 20);
+      doc.fillColor('#000000');
+      
+      currentY += 30;
+      
+      // Tabla de platos
+      doc.font('Helvetica-Bold')
+         .text('MENU DETAILS', infoX, currentY);
+      currentY += 20;
+      
+      doc.font('Helvetica-Bold')
+   .text('Item', infoX, currentY)
+   .text('Price', 400, currentY);
+
+      currentY += 15;
+      
+      doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
+      currentY += 10;
+      // Antes del forEach
+if (!Array.isArray(datos.platos)) {
+  datos.platos = [];
+}
+      datos.platos.forEach(plato => {
+        doc.font('Helvetica')
+           .text(plato.nombre, infoX, currentY, { width: 300 })
+           .text(`$${plato.precio_total.toFixed(2)}`, 400, currentY);
+        currentY += 20;
+      });
+      
+      // Totales
+      currentY += 20;
+      doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
+      currentY += 20;
+      
+      agregarFila('Subtotal:', `$${datos.subtotal.toFixed(2)}`);
+      agregarFila(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
+      agregarFila(`Gratuity (${datos.gratuityPercentage}%):`, `$${datos.gratuity.toFixed(2)}`);
+      if (datos.deliveryFee > 0) {
+        agregarFila('Delivery Fee:', `$${datos.deliveryFee.toFixed(2)}`);
+      }
+      
+      doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
+      currentY += 20;
+      
+      agregarFila('TOTAL:', `$${datos.precioTotal.toFixed(2)}`, true);
+      doc.font('Helvetica-Bold').text(`$${datos.precioTotal.toFixed(2)}`, 450, currentY - 20);
+      
+      // Pie de página
+      currentY = 700;
+      doc.fontSize(10)
+        
+    } else {
+      // PDF Cocina (español)
+      agregarFila('Servicio:', datos.servicio);
+      agregarFila('Ubicación:', datos.ubicacion);
+      agregarFila('Contacto en lugar:', datos.contacto);
+      agregarFila('Hora de servir:', datos.hora_servir);
+      agregarFila('Hora de salida:', datos.hora_salida);
+      agregarFila('Estado:', datos.status.toUpperCase(), true);
+      doc.fillColor(statusColor).text(datos.status.toUpperCase(), infoX + 160, currentY - 20);
+      doc.fillColor('#000000');
+      
+      currentY += 30;
+      
+      // Tabla de platos
+      doc.font('Helvetica-Bold')
+         .text('DETALLES DEL MENÚ', infoX, currentY);
+      currentY += 20;
+      
+      doc.font('Helvetica-Bold')
+          .text('Cantidad', 400, currentY)
+         .text('Plato', infoX, currentY);
+      currentY += 15;
+      
+      doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
+      currentY += 10;
+      // Antes del forEach
+if (!Array.isArray(datos.platos)) {
+  datos.platos = [];
+}
+      datos.platos.forEach(plato => {
+        doc.font('Helvetica')
+          .text((plato.cantidad_personas || 0).toString(), infoX, currentY, { width: 100 })
+          .text(plato.nombre, infoX + 120, currentY, { width: 380 });
+        currentY += 20;
+      });
+      
+      // Saldo pendiente
+      if (datos.status !== 'pagado') {
+        currentY += 20;
+        doc.font('Helvetica-Bold')
+           .fillColor('#e63946')
+           .text('SALDO PENDIENTE:', infoX, currentY)
+           .text(`$${datos.precioTotal.toFixed(2)}`, 400, currentY);
+        doc.fillColor('#000000');
+      }
+      
+      // Notas para cocina
+      if (datos.notasCocina && datos.notasCocina !== 'Ninguna') {
+        currentY += 40;
+        doc.font('Helvetica-Bold')
+           .text('INSTRUCCIONES ESPECIALES:', infoX, currentY);
+        currentY += 20;
+        
+        doc.font('Helvetica')
+           .text(datos.notasCocina, infoX, currentY, { width: 500 });
+      }
+      
+      // Pie de página
+      currentY = 700;
+      doc.fontSize(10)
+          }
+
+    doc.end();
+    stream.on('finish', () => resolve(nombreArchivo));
+  });
+};
+
 // Crear cotización
 app.post('/api/cotizaciones', requireLogin, async (req, res) => {
   const datos = req.body;
   const usuario = req.session.user.username;
 
   try {
+    // Validar datos esenciales
+    if (!datos.platos || !Array.isArray(datos.platos)) {
+      throw new Error('No se han seleccionado platos');
+    }
+
     // Crear nueva cotización
     const nuevaCotizacion = new Cotizacion({
+      invoiceNumber: datos.invoiceNumber || 1,
       fecha: datos.fecha,
+      dia: datos.dia,
       cliente: datos.cliente,
       numero: datos.numero,
-      servicio: datos.servicio,
-      ubicacion: datos.ubicacion,
-      platos: datos.platosSeleccionados.map(p => ({
-        nombre: p.nombre,
-        precio_por_persona: p.precio_por_persona,
-        cantidad: p.cantidad,
-        precio_total: p.precio_total
-      })),
       hora_evento: datos.hora_evento,
       hora_servir: datos.hora_servir,
       hora_salida: datos.hora_salida,
+      servicio: datos.servicio,
+      ubicacion: datos.ubicacion,
       contacto: datos.contacto,
-      status: datos.status,
-      numeroPersonas: datos.numeroPersonas,
+      status: datos.status || 'impago',
+      platos: datos.platos.map(p => ({
+        nombre: p.nombre,
+        precio_por_persona: p.precio_por_persona,
+        cantidad_personas: p.cantidad,
+        precio_total: p.precio_total
+      })),
+      numeroPersonas: datos.numeroPersonas || datos.platos.reduce((total, plato) => total + (plato.cantidad || 0), 0),
       subtotal: datos.subtotal,
       tax: datos.tax,
+      taxPercentage: datos.taxPercentage || 8,
       gratuity: datos.gratuity,
+      gratuityPercentage: datos.gratuityPercentage || 20,
       deliveryFee: datos.deliveryFee || 0,
       precioTotal: datos.precioTotal,
-      platosDesechables: datos.platosDesechables === 'Sí',
-      tipoPlatos: datos.tipoPlatos,
       notas: datos.notas || 'Ninguna',
-      creadoPor: usuario
+      notasCocina: datos.notasCocina || 'Ninguna',
+      creadoPor: usuario,
+      pagos: datos.pagos || []
     });
 
     await nuevaCotizacion.save();
 
-    // Función para generar PDFs
-    const generarPDF = (tipo, datos) => {
-      return new Promise((resolve) => {
-        const doc = new PDFDocument({ margin: 50 });
-        const nombreArchivo = `${tipo}_${datos.cliente.replace(/\s/g, '_')}_${Date.now()}.pdf`;
-        const rutaPDF = path.join(__dirname, 'public', 'pdfs', nombreArchivo);
-        const stream = fs.createWriteStream(rutaPDF);
-        doc.pipe(stream);
-
-        // Logo (ajusta la ruta según tu estructura de archivos)
-        const logoPath = path.join(__dirname, 'public', 'img', 'logo-casa-mexico.png');
-        if (fs.existsSync(logoPath)) {
-          doc.image(logoPath, 50, 45, { width: 100 });
-        }
-
-        // Encabezado
-        doc.fontSize(20).text(tipo === 'cliente' ? 'CASA MÉXICO CATERING' : 'CASA MÉXICO CATERING', {
-          align: 'center',
-          underline: true,
-          paragraphGap: 5
-        });
-        
-        doc.fontSize(14).text(tipo === 'cliente' ? 'QUOTATION' : 'ORDEN DE COCINA', {
-          align: 'center',
-          paragraphGap: 20
-        });
-
-        // Información principal
-        const infoX = 50;
-        const infoY = 150;
-        let currentY = infoY;
-
-        if (tipo === 'cliente') {
-          // PDF en inglés para el cliente
-          doc.fontSize(12)
-             .text(`Date: ${datos.fecha}`, infoX, currentY)
-             .text(`Quotation #: ${datos.numero}`, 300, currentY);
-          currentY += 20;
-          
-          doc.text(`Client: ${datos.cliente}`, infoX, currentY)
-             .text(`Service: ${datos.servicio}`, 300, currentY);
-          currentY += 20;
-          
-          doc.text(`Location: ${datos.ubicacion}`, infoX, currentY)
-             .text(`Guests: ${datos.numeroPersonas}`, 300, currentY);
-          currentY += 30;
-          
-          // Tabla de platos
-          doc.font('Helvetica-Bold').text('DETAILS', infoX, currentY);
-          currentY += 20;
-          
-          doc.font('Helvetica').text('Item', infoX, currentY)
-             .text('Price per person', 200, currentY)
-             .text('Quantity', 350, currentY)
-             .text('Total', 450, currentY);
-          currentY += 15;
-          
-          doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
-          currentY += 10;
-          
-          datos.platosSeleccionados.forEach(plato => {
-            doc.text(plato.nombre, infoX, currentY)
-               .text(`$${plato.precio_por_persona.toFixed(2)}`, 200, currentY)
-               .text(plato.cantidad, 350, currentY)
-               .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY);
-            currentY += 20;
-          });
-          
-          currentY += 20;
-          doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
-          currentY += 20;
-          
-          // Resumen de pagos
-          doc.font('Helvetica-Bold').text('PAYMENT SUMMARY', infoX, currentY);
-          currentY += 20;
-          
-          doc.font('Helvetica')
-             .text('Subtotal:', infoX, currentY)
-             .text(`$${datos.subtotal.toFixed(2)}`, 450, currentY);
-          currentY += 20;
-          
-          doc.text('Tax (8%):', infoX, currentY)
-             .text(`$${datos.tax.toFixed(2)}`, 450, currentY);
-          currentY += 20;
-          
-          doc.text(`Gratuity (20%):`, infoX, currentY)
-             .text(`$${datos.gratuity.toFixed(2)}`, 450, currentY);
-          currentY += 20;
-          
-          if (datos.deliveryFee > 0) {
-            doc.text('Delivery Fee:', infoX, currentY)
-               .text(`$${datos.deliveryFee.toFixed(2)}`, 450, currentY);
-            currentY += 20;
-          }
-          
-          doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
-          currentY += 20;
-          
-          doc.font('Helvetica-Bold')
-             .text('TOTAL:', infoX, currentY)
-             .text(`$${datos.precioTotal.toFixed(2)}`, 450, currentY);
-          currentY += 30;
-          
-          // Notas
-          doc.font('Helvetica')
-             .text('Notes:', infoX, currentY)
-             .text(datos.notas || 'None', infoX + 50, currentY + 20, { width: 450 });
-             
-                 } else {
-          // PDF en español para cocina
-          doc.fontSize(12)
-             .text(`Fecha: ${datos.fecha}`, infoX, currentY)
-             .text(`Orden #: ${datos.numero}`, 300, currentY);
-          currentY += 20;
-          
-          doc.text(`Cliente: ${datos.cliente}`, infoX, currentY)
-             .text(`Servicio: ${datos.servicio}`, 300, currentY);
-          currentY += 20;
-          
-          doc.text(`Ubicación: ${datos.ubicacion}`, infoX, currentY)
-             .text(`Personas: ${datos.numeroPersonas}`, 300, currentY);
-          currentY += 20;
-          
-          doc.text(`Hora de servir: ${datos.hora_servir}`, infoX, currentY)
-             .text(`Hora de salida: ${datos.hora_salida}`, 300, currentY);
-          currentY += 20;
-          
-          doc.text(`Contacto: ${datos.contacto}`, infoX, currentY);
-          currentY += 30;
-          
-          // Tabla de platos
-          doc.font('Helvetica-Bold').text('DETALLES DEL EVENTO', infoX, currentY);
-          currentY += 20;
-          
-          doc.font('Helvetica').text('Plato', infoX, currentY)
-             .text('Precio por persona', 200, currentY)
-             .text('Cantidad', 350, currentY)
-             .text('Total', 450, currentY);
-          currentY += 15;
-          
-          doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
-          currentY += 10;
-          
-          datos.platosSeleccionados.forEach(plato => {
-            doc.text(plato.nombre, infoX, currentY)
-               .text(`$${plato.precio_por_persona.toFixed(2)}`, 200, currentY)
-               .text(plato.cantidad, 350, currentY)
-               .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY);
-            currentY += 20;
-          });
-          
-          currentY += 20;
-          
-          // Ingredientes
-          if (datos.ingredientes && datos.ingredientes.length > 0) {
-            doc.font('Helvetica-Bold').text('INGREDIENTES REQUERIDOS:', infoX, currentY);
-            currentY += 20;
-            
-            datos.ingredientes.forEach(ing => {
-              doc.font('Helvetica').text(`• ${ing}`, infoX, currentY);
-              currentY += 20;
-            });
-            
-            currentY += 10;
-          }
-          
-          // Notas
-          doc.font('Helvetica-Bold').text('NOTAS:', infoX, currentY);
-          currentY += 20;
-          
-          doc.font('Helvetica')
-             .text(datos.notas || 'Ninguna', infoX, currentY, { width: 450 });
-             
-          // Pie de página
-          doc.fontSize(10)
-             .text('¡Gracias por confiar en Casa México Catering!', 50, 700, { align: 'center' });
-        }
-
-        doc.end();
-        stream.on('finish', () => resolve(nombreArchivo));
-      });
-    };
-
-    // Crear directorio para PDFs si no existe
-    if (!fs.existsSync(path.join(__dirname, 'public', 'pdfs'))) {
-      fs.mkdirSync(path.join(__dirname, 'public', 'pdfs'));
-    }
-
-    // Generar ambos PDFs
-    const pdfCliente = await generarPDF('cliente', {
-      ...datos,
-      ingredientes: datos.ingredientes || []
-    });
-    const pdfCocina = await generarPDF('cocina', {
-      ...datos,
-      ingredientes: datos.ingredientes || []
-    });
+    // Generar PDFs
+    const pdfCliente = await generarPDF('cliente', nuevaCotizacion.toObject());
+    const pdfCocina = await generarPDF('cocina', nuevaCotizacion.toObject());
 
     res.json({
       success: true,
+      cotizacion: nuevaCotizacion,
       pdfCliente: `/pdfs/${pdfCliente}`,
       pdfCocina: `/pdfs/${pdfCocina}`
     });
 
   } catch (error) {
     console.error('Error al guardar cotización:', error);
-    res.status(500).json({ error: 'Error al guardar cotización' });
+    res.status(500).json({ 
+      error: error.message || 'Error al guardar cotización',
+      detalles: error.stack 
+    });
   }
 });
 
 // Obtener cotizaciones
-
 app.get('/api/cotizaciones', requireLogin, async (req, res) => {
   try {
     const cotizaciones = await Cotizacion.find().sort({ createdAt: -1 });
@@ -416,6 +412,68 @@ app.get('/api/cotizaciones', requireLogin, async (req, res) => {
   } catch (error) {
     console.error('Error al obtener cotizaciones:', error);
     res.status(500).json({ error: 'Error al obtener cotizaciones' });
+  }
+});
+
+// Obtener último número de invoice
+app.get('/api/cotizaciones/ultimo-invoice', requireLogin, async (req, res) => {
+  try {
+    const ultimaCotizacion = await Cotizacion.findOne().sort('-invoiceNumber');
+    res.json({ 
+      success: true,
+      ultimoInvoice: ultimaCotizacion ? ultimaCotizacion.invoiceNumber : 0 
+    });
+  } catch (error) {
+    console.error('Error al obtener último invoice:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener último invoice',
+      detalles: error.stack
+    });
+  }
+});
+
+// Generar PDF sin guardar
+app.post('/api/generar-pdf', requireLogin, async (req, res) => {
+  const { tipo, datos } = req.body;
+  
+  try {
+    // Validar datos mínimos
+    if (!datos.cliente || !datos.fecha) {
+      throw new Error('Se requieren cliente y fecha');
+    }
+
+    // Asegurar que platosSeleccionados sea un array
+    if (!datos.platosSeleccionados || !Array.isArray(datos.platosSeleccionados)) {
+      datos.platosSeleccionados = [];
+    }
+
+    // Calcular totales si no están presentes
+    if (typeof datos.subtotal === 'undefined') {
+      datos.subtotal = datos.platosSeleccionados.reduce((sum, p) => sum + (p.precio_total || 0), 0);
+      datos.tax = datos.subtotal * ((datos.taxPercentage || 8) / 100);
+      datos.gratuity = datos.subtotal * ((datos.gratuityPercentage || 20) / 100);
+      datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + (datos.deliveryFee || 0);
+    }
+
+    // Crear directorio para PDFs si no existe
+    if (!fs.existsSync(path.join(__dirname, 'public', 'pdfs'))) {
+      fs.mkdirSync(path.join(__dirname, 'public', 'pdfs'));
+    }
+
+    // Generar el PDF
+    const pdfNombre = await generarPDF(tipo, datos);
+    
+    res.json({
+      success: true,
+      pdfUrl: `/pdfs/${pdfNombre}`
+    });
+
+  } catch (error) {
+    console.error('Error al generar PDF:', error);
+    res.status(500).json({ 
+      error: error.message || 'Error al generar PDF',
+      detalles: error.stack
+    });
   }
 });
 
@@ -428,13 +486,9 @@ app.get('/cotizador', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'cotizador.html'));
 });
 
-
-
-
-
-
-
-
+app.get('/calendario', requireLogin, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'calendario.html'));
+});
 
 // Iniciar el servidor
 app.listen(PORT, () => {

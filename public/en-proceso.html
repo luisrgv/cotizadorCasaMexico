@@ -4,10 +4,620 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cotizaciones en Proceso - Casa México</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="css/styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e63946;
+      --primary-dark: #c1121f;
+      --secondary: #457b9d;
+      --dark: #1d3557;
+      --light: #f1faee;
+      --gray: #6c757d;
+      --light-gray: #f8f9fa;
+      --success: #2a9d8f;
+      --warning: #e9c46a;
+      --danger: #e76f51;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+   .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #3a6a8a; /* fondo claro */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-bottom: 4px solid var(--primary);
+}
+.logo-text {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-shadow: 1px 1px 0 var(--light-gray);
+}
 
+.logo-text span {
+  color: var(--primary); /* rojo mexicano */
+}
+    
+    
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    .logo span {
+      color: var(--primary);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .logout-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .container {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background-color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .tab:hover {
+      background-color: var(--light-gray);
+    }
+    
+    .tab.active {
+      background-color: var(--dark);
+      color: white;
+    }
+    
+    .tab-badge {
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      margin-left: 0.3rem;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.2);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .btn-info {
+      background-color: var(--secondary);
+      color: white;
+    }
+    
+    .btn-info:hover {
+      background-color: #3a6a8a;
+    }
+    
+    .btn-warning {
+      background-color: var(--warning);
+      color: #333;
+    }
+    
+    .btn-warning:hover {
+      background-color: #e0b758;
+    }
+    
+    .btn-secondary {
+      background-color: var(--gray);
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+    
+    .platos-container {
+      grid-column: 1 / -1;
+      background-color: var(--light-gray);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    
+    .platos-categorias {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .categoria-btn {
+      padding: 0.5rem 1rem;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .categoria-btn.active {
+      background-color: var(--dark);
+      color: white;
+      border-color: var(--dark);
+    }
+    
+    .platos-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .plato-item {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .plato-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .plato-header input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .plato-nombre {
+      font-weight: 500;
+    }
+    
+    .plato-precio {
+      color: var(--success);
+      font-weight: 600;
+    }
+    
+    .plato-cantidad {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .plato-cantidad input {
+      width: 70px;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    
+    .resumen-platos {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-top: 1rem;
+    }
+    
+    .resumen-platos h4 {
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+    
+    .resumen-linea {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .resumen-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--dark);
+    }
+    
+    .resumen-input {
+      width: 50px;
+      padding: 0.3rem;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      text-align: center;
+    }
+    
+    .pago-item {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+    
+    .pago-fila {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 2fr auto;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .btn-eliminar-pago {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    
+    .notas-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .notas-box {
+      background-color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .notas-box h4 {
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+    
+    textarea.form-control {
+      min-height: 150px;
+      resize: vertical;
+    }
+    
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+    }
+    
+    .spinner {
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 5px solid white;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    #loadingText {
+      color: white;
+      font-size: 1.2rem;
+    }
+    
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    
+    /* Estilos para la tabla del resumen */
+    .resumen-platos table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    
+    .resumen-platos th, .resumen-platos td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .resumen-platos th {
+      background-color: #f8f9fa;
+      font-weight: 500;
+    }
+    
+    .resumen-platos tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    /* Estilos para los inputs en la tabla */
+    .resumen-platos input[type="text"],
+    .resumen-platos input[type="number"] {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+    }
+    
+    /* Estilo para las filas de categoría */
+    .resumen-platos .categoria-row {
+      background-color: #f1f1f1;
+      font-weight: bold;
+    }
+    
+    /* Botón eliminar fila manual */
+    .btn-eliminar-fila {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      padding: 0 5px;
+    }
+    
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .pago-fila {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      
+      .notas-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Estilos para las tarjetas de cotización */
+    .cotizacion-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .cotizacion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .cotizacion-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--dark);
+    }
+    
+    .cotizacion-cliente {
+      font-weight: 500;
+    }
+    
+    .cotizacion-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .status-en_proceso {
+      background-color: var(--warning);
+      color: #333;
+    }
+    
+    .cotizacion-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .cotizacion-detail-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .cotizacion-detail {
+      font-size: 0.9rem;
+    }
+    
+    .cotizacion-detail-notes {
+      grid-column: 1 / -1;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    
+    .cotizacion-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
   <div class="header">
@@ -52,37 +662,26 @@
       </div>
     </div>
   </div>
-  <!-- Modal para ver cotización -->  
-  <div id="cotizacionModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 id="modalTitle">Detalle de Cotización</h2>
+  
+  <!-- Modal para ver cotización -->
+  <div class="modal" id="cotizacionModal">
+    <div class="modal-content">
       <span class="close-modal">&times;</span>
-    </div>
-    <div class="modal-body">
-      <div id="modalContent"></div>
+      <h2 id="modalTitle">Detalles de Cotización</h2>
+      <div id="modalContent">
+        <!-- Contenido dinámico -->
+      </div>
     </div>
   </div>
-</div>
-
-<div id="loadingOverlay" class="loading-overlay">
-  <div class="loading-content">
-    <div class="spinner"></div>
-    <p id="loadingText">Procesando...</p>
-  </div>
-</div>
-
-
-<!-- Modal Edición -->
-<div id="modalEditar" class="modal">
-  <div class="modal-content" style="max-width: 900px; width: 90%;">
-    <div class="modal-header">
+  
+  <!-- Modal para editar cotización -->
+  <div class="modal" id="modalEditar">
+    <div class="modal-content" style="max-width: 900px;">
+      <span class="close-modal">&times;</span>
       <h2 class="card-title">
         <i class="fas fa-edit"></i> Editar Cotización
-        <span class="close-modal-editar" style="float: right; cursor: pointer; font-size: 28px;">&times;</span>
       </h2>
-    </div>
-    <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+      
       <form id="formEditar">
         <div class="form-grid">
           <div class="form-group">
@@ -95,8 +694,18 @@
           </div>
           
           <div class="form-group">
+            <label for="editInvoiceNumber">📅 Número de Invoice</label>
+            <input type="text" id="editInvoiceNumber" class="form-control" readonly>
+          </div>
+          
+          <div class="form-group">
             <label for="editFecha">📅 Fecha del Evento</label>
             <input type="date" id="editFecha" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editDia">📅 Día</label>
+            <input type="text" id="editDia" class="form-control" readonly>
           </div>
           
           <div class="form-group">
@@ -107,6 +716,30 @@
           <div class="form-group">
             <label for="editNumero">📱 Número de Contacto</label>
             <input type="tel" id="editNumero" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editServicio">🍽️ Tipo de Servicio</label>
+            <input type="text" id="editServicio" class="form-control" list="editServicios" required>
+            <datalist id="editServicios">
+              <option value="Catering">
+              <option value="The Golden Handmade Tortilla">
+              <option value="Full Catering with Chef Cristina Martinez">
+              <option value="Pick Up">
+              <option value="Delivery Catering">
+              <option value="Redes Sociales">
+              <option value="Donación">
+            </datalist>
+          </div>
+          
+          <div class="form-group">
+            <label for="editUbicacion">📍 Ubicación del Evento</label>
+            <input type="text" id="editUbicacion" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editContacto">👤 Contacto en el Lugar</label>
+            <input type="text" id="editContacto" class="form-control">
           </div>
           
           <div class="form-group">
@@ -123,136 +756,127 @@
             <label for="editHoraSalida">⏰ Hora de Salida de Casa México</label>
             <input type="time" id="editHoraSalida" class="form-control">
           </div>
+        </div>
+        
+        <!-- Sección de platos -->
+        <div class="platos-container">
+          <h3>🍽️ Menú</h3>
           
-          <div class="form-group">
-            <label for="editServicio">🍽️ Tipo de Servicio</label>
-            <select id="editServicio" class="form-control" required>
-              <option value="">Seleccionar...</option>
-              <option value="Catering">Catering</option>
-              <option value="The Golden Handmade Tortilla">The Golden Handmade Tortilla</option>
-              <option value="Full Catering with Chef Cristina Martinez">Full Catering with Chef Cristina Martinez</option>
-              <option value="Pick Up">Pick Up</option>
-              <option value="Delivery Catering">Delivery Catering</option>
-            </select>
+          <div class="platos-categorias" id="editCategoriasMenu">
+            <button type="button" class="categoria-btn active" data-categoria="Appetizers">Appetizers</button>
+            <button type="button" class="categoria-btn" data-categoria="Tacos">Tacos Chef Cristina M.</button>
+            <button type="button" class="categoria-btn" data-categoria="Specialty">Specialty</button>
+            <button type="button" class="categoria-btn" data-categoria="Desserts">Dessert & Aguas</button>
           </div>
           
-          <div class="form-group">
-            <label for="editUbicacion">📍 Ubicación del Evento</label>
-            <input type="text" id="editUbicacion" class="form-control" required>
+          <div class="platos-list" id="editPlatosList">
+            <!-- Se llenará dinámicamente -->
           </div>
           
-          <div class="form-group">
-            <label for="editContacto">👤 Contacto en el Lugar</label>
-            <input type="text" id="editContacto" class="form-control">
-          </div>
-          
-          <div class="form-group">
-            <label for="editNumeroPersonas">👥 Número de Personas</label>
-            <input type="number" id="editNumeroPersonas" class="form-control" min="1" required>
-          </div>
-          
-          <!-- Contenedor para selección múltiple de platos -->
-          <div class="platos-container">
-            <label>🍛 Seleccione los platos:</label>
-            <div class="platos-list" id="editPlatosList">
-              <!-- Se llenará dinámicamente -->
+          <div class="resumen-platos" id="editResumenPlatos" style="display: none;">
+            <h4>📋 Resumen del Pedido</h4>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+              <thead>
+                <tr>
+                  <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Quantity</th>
+                  <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Product</th>
+                  <th style="text-align: right; padding: 5px; border-bottom: 1px solid #ddd;">Cost</th>
+                  <th style="width: 30px;"></th>
+                </tr>
+              </thead>
+              <tbody id="editListaResumen">
+                <!-- Se llenará dinámicamente -->
+              </tbody>
+            </table>
+            
+            <div style="text-align: right;">
+              <button type="button" class="btn btn-secondary" id="editAgregarFilaBtn" style="margin-bottom: 10px;">
+                <i class="fas fa-plus"></i> Agregar Fila Manual
+              </button>
             </div>
             
-            <div class="resumen-platos" id="editResumenPlatos" style="display: none;">
-              <h4>📋 Resumen del Pedido</h4>
-              <ul id="editListaResumen">
-                <!-- Se llenará dinámicamente -->
-              </ul>
-              <div class="resumen-linea">
-                <span class="resumen-label">Subtotal:</span>
-                <span class="resumen-valor">$<span id="editSubtotalResumen">0.00</span></span>
-              </div>
-              <div class="resumen-linea">
-                <span class="resumen-label">Tax (8%):</span>
-                <span class="resumen-valor">$<span id="editTaxResumen">0.00</span></span>
-              </div>
-              <div class="resumen-linea" id="editGratuityContainer">
-                <span class="resumen-label">
-                  Gratuity:
-                  <input type="number" id="editGratuityPercentage" value="20" min="0" max="100" step="1" 
-                         class="resumen-input" onchange="actualizarResumenPlatosEdit()">%
-                </span>
-                <span class="resumen-valor">$<span id="editGratuityResumen">0.00</span></span>
-              </div>
-              <div class="resumen-linea" id="editDeliveryContainer" style="display: none;">
-                <span class="resumen-label">
-                  Delivery Fee:
-                  <input type="number" id="editDeliveryFee" value="0" min="0" step="5" 
-                         class="resumen-input" onchange="actualizarResumenPlatosEdit()">
-                </span>
-                <span class="resumen-valor">$<span id="editDeliveryResumen">0.00</span></span>
-              </div>
-              <div class="resumen-total">
-                <span class="resumen-label">Total a pagar:</span>
-                <span class="resumen-valor">$<span id="editTotalResumen">0.00</span></span>
-              </div>
+            <div class="resumen-linea">
+              <span class="resumen-label">Subtotal:</span>
+              <span class="resumen-valor">$<span id="editSubtotalResumen">0.00</span></span>
             </div>
-          </div>
-          
-          <div class="form-group">
-            <label>🍽️ Platos Desechables</label>
-            <div class="switch-container">
-              <label class="switch">
-                <input type="checkbox" id="editPlatosDesechables">
-                <span class="slider"></span>
-              </label>
-              <span id="editPlatosDesechablesText">No</span>
+            
+            <div class="resumen-linea" id="editTaxContainer">
+              <span class="resumen-label">
+                Tax:
+                <input type="number" id="editTaxPercentage" value="8" min="0" max="100" step="1" 
+                       class="resumen-input">%
+              </span>
+              <span class="resumen-valor">$<span id="editTaxResumen">0.00</span></span>
             </div>
-          </div>
-          
-          <div class="form-group" id="editTipoPlatosContainer">
-            <label for="editTipoPlatos">🍽️ Tipo de Platos</label>
-            <select id="editTipoPlatos" class="form-control">
-              <option value="">Seleccionar...</option>
-              <option value="Cerámica">Cerámica</option>
-              <option value="Porcelana">Porcelana</option>
-              <option value="Vidrio">Vidrio</option>
-            </select>
-          </div>
-          
-          <div class="form-group" style="grid-column: 1 / -1; position: relative;">
-            <label for="editNotas">📝 Notas Adicionales</label>
-            <div id="editNotas"
-                class="form-control"
-                contenteditable="true"
-                style="min-height: 200px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace;">
-              <!-- Aquí se insertará dinámicamente el contenido -->
+            
+            <div class="resumen-linea" id="editGratuityContainer">
+              <span class="resumen-label">
+                Gratuity:
+                <input type="number" id="editGratuityPercentage" value="20" min="0" max="100" step="1" 
+                       class="resumen-input">%
+              </span>
+              <span class="resumen-valor">$<span id="editGratuityResumen">0.00</span></span>
             </div>
-            <div id="editEditadoIcono"
-                style="position: absolute; top: 5px; right: 10px; font-size: 0.9rem; color: #7f8c8d; display: none;">
-              ✏️ Editado
+            
+            <div class="resumen-linea" id="editDeliveryContainer" style="display: none;">
+              <span class="resumen-label">
+                Delivery Fee:
+                <input type="number" id="editDeliveryFee" value="0" min="0" step="5" 
+                       class="resumen-input">
+              </span>
+              <span class="resumen-valor">$<span id="editDeliveryResumen">0.00</span></span>
+            </div>
+            
+            <div class="resumen-total">
+              <span class="resumen-label">Total a pagar:</span>
+              <span class="resumen-valor">$<span id="editTotalResumen">0.00</span></span>
             </div>
           </div>
         </div>
+        
+        <!-- Sección de pagos -->
+        <div class="form-group" style="grid-column: 1 / -1; margin-top: 1.5rem;">
+          <h3>💳 Pagos</h3>
+          <div id="editPagosContainer">
+            <!-- Se llenará dinámicamente -->
+          </div>
+          <button type="button" class="btn btn-secondary" id="editAgregarPagoBtn" style="margin-top: 1rem;">
+            <i class="fas fa-plus"></i> Agregar Pago
+          </button>
+        </div>
+        
+        <!-- Notas -->
+        <div class="notas-container">
+          <div class="notas-box">
+            <h4>📝 Notas Adicionales</h4>
+            <div id="editNotas" class="form-control" contenteditable="true" 
+                 style="min-height: 200px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace;">
+            </div>
+          </div>
+          
+          <div class="notas-box">
+            <h4>👨‍🍳 Notas para Cocina</h4>
+            <textarea id="editNotasCocina" class="form-control" placeholder="Instrucciones especiales para la cocina..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="guardarCambios">
+            <i class="fas fa-save"></i> Guardar Cambios
+          </button>
+          
+          <button type="button" class="btn btn-info" id="editGenerarPDFCliente">
+            <i class="fas fa-file-pdf"></i> PDF Cliente
+          </button>
+          
+          <button type="button" class="btn btn-warning" id="editGenerarPDFCocina">
+            <i class="fas fa-file-pdf"></i> PDF Cocina
+          </button>
+        </div>
       </form>
     </div>
-    <div class="modal-footer" style="padding: 15px; text-align: right; border-top: 1px solid #eee;">
-      <button type="button" class="btn btn-secondary cerrar-modal-editar" style="margin-right: 10px;">
-        <i class="fas fa-times"></i> Cancelar
-      </button>
-      <button type="button" class="btn btn-primary" id="guardarCambios">
-        <i class="fas fa-save"></i> Guardar Cambios
-      </button>
-    </div>
   </div>
-</div>
-  <!-- Modal para ver cotización -->
-  <div class="modal" id="cotizacionModal">
-    <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2 id="modalTitle">Detalles de Cotización</h2>
-      <div id="modalContent">
-        <!-- Contenido dinámico -->
-      </div>
-    </div>
-  </div>
-  
-
   
   <!-- Loading overlay -->
   <div class="loading-overlay" id="loadingOverlay">
@@ -261,9 +885,5 @@
   </div>
   
   <script src="js/en-proceso.js"></script>
-
-
-
-  
 </body>
 </html>

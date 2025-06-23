@@ -33,7 +33,7 @@
       line-height: 1.6;
     }
     
-   .header {
+  .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -52,7 +52,6 @@
 .logo-text span {
   color: var(--primary); /* rojo mexicano */
 }
-    
     
     .logo {
       font-size: 1.8rem;
@@ -639,30 +638,30 @@
       <a href="cotizador.html" class="tab" data-tab="nueva">
         <i class="fas fa-plus"></i> Nueva Cotización
       </a>
-      <div class="tab active" data-tab="en_proceso">
+      <a href="en-proceso.html" class="tab" data-tab="en_proceso">
         <i class="fas fa-spinner"></i> En Proceso <span class="tab-badge" id="badgeEnProceso">0</span>
-      </div>
+      </a>
       <a href="pagadas.html" class="tab" data-tab="pagada">
         <i class="fas fa-check-circle"></i> Pagadas <span class="tab-badge" id="badgePagadas">0</span>
       </a>
-      <a href="impagas.html" class="tab" data-tab="impaga">
+      <div class="tab active" data-tab="impaga">
         <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
-      </a>
+      </div>
     </div>
     
-    <div class="tab-content active" id="en_proceso-tab">
+    <div class="tab-content active" id="impaga-tab">
       <div class="card">
         <h2 class="card-title">
-          <i class="fas fa-spinner"></i> Cotizaciones en Proceso
+          <i class="fas fa-times-circle"></i> Cotizaciones Impagas
         </h2>
         
-        <div class="cotizaciones-list" id="cotizacionesEnProceso">
+        <div class="cotizaciones-list" id="cotizacionesImpagas">
           <!-- Se llenará dinámicamente -->
         </div>
       </div>
     </div>
   </div>
-  
+    
   <!-- Modal para ver cotización -->
   <div class="modal" id="cotizacionModal">
     <div class="modal-content">
@@ -884,6 +883,8 @@
     <p id="loadingText">Procesando...</p>
   </div>
   
-  <script src="js/en-proceso.js"></script>
+ 
+
+  <script src="js/impagas.js"></script>
 </body>
 </html>

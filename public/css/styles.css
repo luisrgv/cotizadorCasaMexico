@@ -58,6 +58,81 @@
   gap: 10px;
   margin-top: 20px;
 }
+/* Agrega esto a tu archivo de estilos */
+.card-title h2 small {
+  font-size: 0.7em;
+  color: var(--gray);
+  margin-left: 10px;
+}
+
+/* Estilo para indicar modo edición */
+.edit-mode-indicator {
+  background-color: var(--warning);
+  color: #333;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  margin-left: 10px;
+  display: inline-block;
+}
+/* Estilos para los botones de PDF */
+.btn-pdf {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #457b9d 0%, #1d3557 100%);
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-pdf:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-pdf i {
+  font-size: 1.2rem;
+}
+
+/* Estilo para el número de invoice */
+.invoice-number {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--dark);
+  background-color: var(--light);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  display: inline-block;
+  margin-left: 0.5rem;
+}
+/* Estilos para los inputs de cantidad */
+.plato-cantidad {
+  width: 50px;
+  margin-left: 10px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.plato-cantidad-input {
+  width: 50px;
+  margin: 0 10px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Estilos para los botones de PDF */
+#generarPDFCliente, #generarPDFCocina {
+  margin-left: 10px;
+}
 
 /* Loading */
 .loading-overlay {

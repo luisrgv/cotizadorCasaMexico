@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cotizador - Casa México</title>
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -33,59 +34,76 @@
       line-height: 1.6;
     }
     
-    .header {
-      background-color: var(--dark);
-      color: white;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-    }
-    
-    .logo span {
-      color: var(--primary);
-    }
-    
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-    
-    .logout-btn {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
-    }
-    
-    .logout-btn:hover {
-      background-color: var(--primary-dark);
-    }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #3a6a8a; /* fondo claro */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-bottom: 4px solid var(--primary);
+}
+
+.branding {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-img {
+  max-height: 65px;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
+}
+
+.logo-img:hover {
+  transform: scale(1.1);
+}
+
+.logo-text {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-shadow: 1px 1px 0 var(--light-gray);
+}
+
+.logo-text span {
+  color: var(--primary); /* rojo mexicano */
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  background: var(--secondary); /* azul fuerte */
+  color: white;
+  padding: 0.6rem 0.9rem;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.logout-btn:hover {
+  color: var(--primary-dark);
+}
+
+#userRole {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+
     
     .container {
       padding: 2rem;
@@ -537,19 +555,24 @@
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="logo">Casa <span>México</span></div>
-    <div class="user-info">
-      <div class="avatar" id="userAvatar">CM</div>
-      <div>
-        <div id="userName">Usuario</div>
-        <div id="userRole" style="font-size: 0.8rem; color: #bdc3c7;">Rol</div>
-      </div>
-      <button class="logout-btn" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i> Salir
-      </button>
-    </div>
+ <div class="header">
+  <div class="branding">
+    <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" class="logo-img">
+    <div class="logo-text">Casa <span>México</span></div>
   </div>
+
+  <div class="user-info">
+    <div class="avatar" id="userAvatar">CM</div>
+    <div>
+      <div id="userName">Usuario</div>
+      <div id="userRole" style="font-size: 0.9rem; color: #bdc3c7;">Rol</div>
+    </div>
+    <button class="logout-btn" id="logoutBtn">
+      <i class="fas fa-sign-out-alt"></i> Salir
+    </button>
+  </div>
+</div>
+
   
   <div class="container">
     <div class="tabs">
@@ -568,6 +591,8 @@
       <button type="button" class="btn btn-info" id="verCalendarioBtn">
         <i class="fas fa-calendar-alt"></i> Ver Calendario
       </button>
+      
+
     </div>
     
    <div class="tab-content active" id="nueva-tab">
@@ -576,15 +601,14 @@
   <div style="display: flex; justify-content: space-between; width: 100%;">
     <div>
      
-      <div style="font-size: 0.9em; color: var(--gray); margin-top: 0.5rem;">Invoice #<span id="invoiceNumberDisplay">-</span></div>
+      <div style="font-size: 0.9em; color: var(--gray); margin-top: 0.5rem;">INVOICE#<span id="invoiceNumberDisplay">-</span></div>
     </div>
     <div class="form-group" style="width: 200px;">
       <label for="status">📊 Estado</label>
    <select id="status" class="form-control" required>
   <option value="en_proceso">En Proceso</option> <!-- Si decides agregarlo -->
   <option value="pagado">Pagado</option>
-  <option value="pre-pagado">Pre-pagado</option>
-  <option value="impago">Impago</option>
+    <option value="impago">Impago</option>
 </select>
     </div>
   </div>
@@ -1191,15 +1215,24 @@
   let contenidoOriginal = '';
   
   // DOM Content Loaded
-  document.addEventListener('DOMContentLoaded', async () => {
-    // Verificar sesión
-    await verificarSesion();
-    
-    // Configurar eventos
-    configurarEventos();
-    
-    // Obtener y mostrar el siguiente número de invoice
+document.addEventListener('DOMContentLoaded', async () => {
+  // Detectar si hay ID de edición
+  const params = new URLSearchParams(window.location.search);
+  const idCotizacion = params.get('edit');
+
+  // Verificar sesión
+  await verificarSesion();
+
+  // Configurar eventos
+  configurarEventos();
+
+  if (idCotizacion) {
+    // Cargar cotización existente
+    await cargarCotizacionParaEditar(idCotizacion);
+  } else {
+    // Generar nuevo número de invoice si no estamos editando
     await cargarUltimoInvoice();
+  }
     
     // Autocompletar día al seleccionar fecha
     document.getElementById('fecha').addEventListener('change', function() {
@@ -1637,7 +1670,72 @@
     
     div.querySelector('.pago-monto').addEventListener('change', actualizarTotalesDesdeTabla);
   }
-  
+  // editar
+async function cargarCotizacionParaEditar(id) {
+  try {
+    const response = await fetch(`/api/cotizaciones/${id}`);
+    const { cotizacion } = await response.json();
+    if (!cotizacion) return;
+
+    document.getElementById('invoiceNumber').value = cotizacion.invoiceNumber;
+    document.getElementById('invoiceNumberDisplay').textContent = cotizacion.invoiceNumber;
+
+    document.getElementById('status').value = cotizacion.status || 'en_proceso';
+    document.getElementById('fecha').value = cotizacion.fecha?.split('T')[0] || '';
+    document.getElementById('dia').value = cotizacion.dia || '';
+    document.getElementById('cliente').value = cotizacion.cliente || '';
+    document.getElementById('numero').value = cotizacion.numero || '';
+    document.getElementById('hora_evento').value = cotizacion.hora_evento || '';
+    document.getElementById('hora_servir').value = cotizacion.hora_servir || '';
+    document.getElementById('hora_salida').value = cotizacion.hora_salida || '';
+    document.getElementById('servicio').value = cotizacion.servicio || '';
+    document.getElementById('ubicacion').value = cotizacion.ubicacion || '';
+    document.getElementById('contacto').value = cotizacion.contacto || '';
+    document.getElementById('taxPercentage').value = cotizacion.taxPercentage || 8;
+    document.getElementById('gratuityPercentage').value = cotizacion.gratuityPercentage || 20;
+    document.getElementById('deliveryFee').value = cotizacion.deliveryFee || 0;
+    document.getElementById('notasCocina').value = cotizacion.notasCocina || '';
+
+    const notasArea = document.getElementById('notasArea');
+    if (notasArea && cotizacion.notas) {
+      notasArea.innerText = cotizacion.notas;
+    }
+
+    // Cargar platos
+    if (Array.isArray(cotizacion.platos)) {
+      cotizacion.platos.forEach(plato => {
+        const checkbox = document.querySelector(`input[type="checkbox"][data-nombre="${plato.nombre}"]`);
+        if (checkbox) {
+          checkbox.checked = true;
+          const cantidadInput = checkbox.closest('.plato-item').querySelector('.cantidad-plato');
+          if (cantidadInput) cantidadInput.value = plato.cantidad_personas;
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+          agregarFilaManual({
+            nombre: plato.nombre,
+            cantidadTexto: `${plato.cantidad_personas || 1}`,
+            precio_total: plato.precio_total
+          });
+        }
+      });
+      if (typeof actualizarResumenPlatos === 'function') actualizarResumenPlatos();
+    }
+
+    // Cargar pagos
+    if (Array.isArray(cotizacion.pagos)) {
+      cotizacion.pagos.forEach(pago => agregarPagoInput(pago));
+    }
+
+    const titulo = document.querySelector('.card-title');
+    if (titulo) titulo.innerHTML += ` <span style="color: orange;">(Edición)</span>`;
+
+  } catch (err) {
+    console.error('Error al cargar cotización para editar:', err);
+    alert('No se pudo cargar la cotización');
+  }
+}
+
+
   // Función para configurar los eventos
   function configurarEventos() {
     document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -1872,6 +1970,9 @@
   function ocultarLoading() {
     document.getElementById('loadingOverlay').style.display = 'none';
   }
+
+ 
 </script>
+
 </body>
 </html>

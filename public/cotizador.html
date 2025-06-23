@@ -1636,14 +1636,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       (platosSeleccionados.length > 0 || filasManuales.length > 0) ? 'block' : 'none';
   }
   
-  // Función para agregar inputs de pago
+// Función para agregar inputs de pago
+  function formatearFecha(fecha) {
+  if (!fecha) return new Date().toISOString().split('T')[0];
+  const date = new Date(fecha);
+  if (isNaN(date)) return new Date().toISOString().split('T')[0];
+  return date.toISOString().split('T')[0];
+}
+
   function agregarPagoInput(pago = {}) {
     const container = document.getElementById('pagosContainer');
     const div = document.createElement('div');
     div.className = 'pago-item';
-    div.innerHTML = yyyy-MM-dd;
+    div.innerHTML = `
       <div class="pago-fila">
-        <input type="date" class="pago-fecha form-control" value="${pago.fecha || new Date().toISOString().split('T')[0]}">
+        <input type="date" class="pago-fecha form-control" value="${formatearFecha(pago.fecha)}">
         <input type="number" class="pago-monto form-control" placeholder="Monto" 
                value="${pago.monto || ''}" step="0.01" min="0">
         <select class="pago-metodo form-control">

@@ -23,15 +23,25 @@
       color: #333;
       line-height: 1.6;
     }
-    .header {
-      background-color: var(--secondary);
-      color: white;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
+  .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #3a6a8a; /* fondo claro */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-bottom: 4px solid var(--primary);
+}
+.logo-text {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--dark);
+  text-shadow: 1px 1px 0 var(--light-gray);
+}
+
+.logo-text span {
+  color: var(--primary); /* rojo mexicano */
+}
     .logo { font-size: 1.5rem; font-weight: bold; }
     .logo span { color: var(--primary); }
     .user-info { display: flex; align-items: center; gap: 10px; }
@@ -435,8 +445,8 @@
       const formatStatus = (status) => {
         const statusMap = {
           'en_proceso': 'En proceso',
-          'pagada': 'Pagada',
-          'impaga': 'Impaga'
+          'pagado': 'Pagada',
+          'impago': 'Impaga'
         };
         return statusMap[status] || status;
       };

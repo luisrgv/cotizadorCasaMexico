@@ -343,14 +343,14 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
   const usuario = req.session.user.username;
 
   try {
-    // Validar datos esenciales
     if (!datos.platos || !Array.isArray(datos.platos)) {
       throw new Error('No se han seleccionado platos');
     }
 
-    // Crear nueva cotización
-    const nuevaCotizacion = new Cotizacion({
-      invoiceNumber: datos.invoiceNumber || 1,
+    // Buscar si ya existe cotización con ese invoiceNumber
+    let cotizacion = await Cotizacion.findOne({ invoiceNumber: datos.invoiceNumber });
+
+    const cotizacionData = {
       fecha: datos.fecha,
       dia: datos.dia,
       cliente: datos.cliente,
@@ -365,10 +365,10 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       platos: datos.platos.map(p => ({
         nombre: p.nombre,
         precio_por_persona: p.precio_por_persona,
-        cantidad_personas: p.cantidad,
+        cantidad_personas: p.cantidad || 1,
         precio_total: p.precio_total
       })),
-      numeroPersonas: datos.numeroPersonas || datos.platos.reduce((total, plato) => total + (plato.cantidad || 0), 0),
+      numeroPersonas: datos.numeroPersonas || datos.platos.reduce((total, p) => total + (p.cantidad || 0), 0),
       subtotal: datos.subtotal,
       tax: datos.tax,
       taxPercentage: datos.taxPercentage || 8,
@@ -379,30 +379,46 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       notas: datos.notas || 'Ninguna',
       notasCocina: datos.notasCocina || 'Ninguna',
       creadoPor: usuario,
-      pagos: datos.pagos || []
-    });
+      pagos: datos.pagos || [],
+      updatedAt: new Date()
+    };
 
-    await nuevaCotizacion.save();
+    if (cotizacion) {
+      // Actualizar la cotización existente
+      await Cotizacion.updateOne({ invoiceNumber: datos.invoiceNumber }, cotizacionData);
+    } else {
+      // Crear nueva cotización
+      cotizacion = new Cotizacion({
+        invoiceNumber: datos.invoiceNumber,
+        ...cotizacionData
+      });
+      await cotizacion.save();
+    }
+
+    // Recargar la cotización completa desde la BD
+    const cotizacionActualizada = await Cotizacion.findOne({ invoiceNumber: datos.invoiceNumber });
 
     // Generar PDFs
-    const pdfCliente = await generarPDF('cliente', nuevaCotizacion.toObject());
-    const pdfCocina = await generarPDF('cocina', nuevaCotizacion.toObject());
+    const pdfCliente = await generarPDF('cliente', cotizacionActualizada.toObject());
+    const pdfCocina = await generarPDF('cocina', cotizacionActualizada.toObject());
 
     res.json({
       success: true,
-      cotizacion: nuevaCotizacion,
+      cotizacion: cotizacionActualizada,
       pdfCliente: `/pdfs/${pdfCliente}`,
       pdfCocina: `/pdfs/${pdfCocina}`
     });
 
   } catch (error) {
     console.error('Error al guardar cotización:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: error.message || 'Error al guardar cotización',
-      detalles: error.stack 
+      detalles: error.stack
     });
   }
 });
+
+   
 
 // Obtener cotizaciones
 app.get('/api/cotizaciones', requireLogin, async (req, res) => {
@@ -474,6 +490,17 @@ app.post('/api/generar-pdf', requireLogin, async (req, res) => {
       error: error.message || 'Error al generar PDF',
       detalles: error.stack
     });
+  }
+});
+
+// cargar cotizacion para editar
+app.get('/api/cotizaciones/:id', requireLogin, async (req, res) => {
+  try {
+    const cotizacion = await Cotizacion.findById(req.params.id);
+    if (!cotizacion) return res.status(404).json({ error: 'Cotización no encontrada' });
+    res.json({ cotizacion });
+  } catch (err) {
+    res.status(500).json({ error: 'Error al obtener la cotización' });
   }
 });
 

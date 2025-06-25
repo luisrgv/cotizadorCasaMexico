@@ -591,7 +591,9 @@
       <button type="button" class="btn btn-info" id="verCalendarioBtn">
         <i class="fas fa-calendar-alt"></i> Ver Calendario
       </button>
-      
+      <a href="menu.html" class="tab" data-tab="menu">
+  <i class="fas fa-utensils"></i> Menú
+</a>
 
     </div>
     
@@ -692,389 +694,9 @@
               <button class="categoria-btn" data-categoria="Desserts">Dessert & Aguas</button>
             </div>
             
-            <div class="platos-list" id="platosList">
-              <!-- Appetizers -->
-              <div class="plato-item" data-categoria="Appetizers">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-guacamole" data-nombre="Guacamole con Chips" data-precio="75">
-                  <label for="plato-guacamole" class="plato-nombre">Guacamole con Chips</label>
-                </div>
-                <div class="plato-precio">$75.00 (Half Tray) / $150.00 (Full Tray)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="half">Half Tray</option>
-                    <option value="full">Full Tray</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Appetizers">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-esquites" data-nombre="Esquites" data-precio="60">
-                  <label for="plato-esquites" class="plato-nombre">Esquites</label>
-                </div>
-                <div class="plato-precio">$60.00 (Half Tray) / $100.00 (Full Tray)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="half">Half Tray</option>
-                    <option value="full">Full Tray</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Appetizers">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-esquites-chorizo" data-nombre="Esquites con chorizo" data-precio="85">
-                  <label for="plato-esquites-chorizo" class="plato-nombre">Esquites con chorizo</label>
-                </div>
-                <div class="plato-precio">$85.00 (Half Tray) / $125.00 (Full Tray)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="half">Half Tray</option>
-                    <option value="full">Full Tray</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Appetizers">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-tacos-dorados" data-nombre="Tacos Dorados" data-precio="90">
-                  <label for="plato-tacos-dorados" class="plato-nombre">Tacos Dorados</label>
-                </div>
-                <div class="plato-precio">$90.00 (Half Tray) / $180.00 (Full Tray)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="half">Half Tray</option>
-                    <option value="full">Full Tray</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Appetizers">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-ceviche" data-nombre="Ceviche" data-precio="120">
-                  <label for="plato-ceviche" class="plato-nombre">Ceviche</label>
-                </div>
-                <div class="plato-precio">$120.00 (Half Tray) / $240.00 (Full Tray)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="half">Half Tray</option>
-                    <option value="full">Full Tray</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Appetizers">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-arroz" data-nombre="Arroz" data-precio="35">
-                  <label for="plato-arroz" class="plato-nombre">Arroz</label>
-                </div>
-                <div class="plato-precio">$35.00 (Half Tray) / $70.00 (Full Tray)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="half">Half Tray</option>
-                    <option value="full">Full Tray</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Appetizers">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-frijoles" data-nombre="Frijoles" data-precio="35">
-                  <label for="plato-frijoles" class="plato-nombre">Frijoles</label>
-                </div>
-                <div class="plato-precio">$35.00 (Half Tray) / $70.00 (Full Tray)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="half">Half Tray</option>
-                    <option value="full">Full Tray</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Appetizers">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-sopa-azteca" data-nombre="Sopa Azteca" data-precio="90">
-                  <label for="plato-sopa-azteca" class="plato-nombre">Sopa Azteca</label>
-                </div>
-                <div class="plato-precio">$90.00 (Half Tray) / $165.00 (Full Tray)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="half">Half Tray</option>
-                    <option value="full">Full Tray</option>
-                  </select>
-                </div>
-              </div>
-              
-              <!-- Tacos Chef Cristina M. Proteins -->
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-grilled-steak" data-nombre="Grilled Steak" data-precio="165">
-                  <label for="plato-grilled-steak" class="plato-nombre">Grilled Steak</label>
-                </div>
-                <div class="plato-precio">$165.00 (15 pers.) / $300.00 (30 pers.)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="15">15 personas</option>
-                    <option value="30">30 personas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-grilled-chicken" data-nombre="Grilled Chicken (Tinga)" data-precio="165">
-                  <label for="plato-grilled-chicken" class="plato-nombre">Grilled Chicken (Tinga)</label>
-                </div>
-                <div class="plato-precio">$165.00 (15 pers.) / $300.00 (30 pers.)</div>
-                <div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
-                  Cooked in a sauce made with tomato, chipotle chili, and onion.
-                </div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="15">15 personas</option>
-                    <option value="30">30 personas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-chorizo" data-nombre="Chorizo" data-precio="130">
-                  <label for="plato-chorizo" class="plato-nombre">Chorizo</label>
-                </div>
-                <div class="plato-precio">$130.00 (15 pers.) / $210.00 (30 pers.)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="15">15 personas</option>
-                    <option value="30">30 personas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-pork-carnitas" data-nombre="Pork Carnitas" data-precio="150">
-                  <label for="plato-pork-carnitas" class="plato-nombre">Pork Carnitas</label>
-                </div>
-                <div class="plato-precio">$150.00 (15 pers.) / $300.00 (30 pers.)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="15">15 personas</option>
-                    <option value="30">30 personas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-pork-cochinita" data-nombre="Pork Cochinita Pibil" data-precio="150">
-                  <label for="plato-pork-cochinita" class="plato-nombre">Pork Cochinita Pibil</label>
-                </div>
-                <div class="plato-precio">$150.00 (15 pers.) / $300.00 (30 pers.)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="15">15 personas</option>
-                    <option value="30">30 personas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-salt-cured-steak" data-nombre="Salt Cured Steak" data-precio="160">
-                  <label for="plato-salt-cured-steak" class="plato-nombre">Salt Cured Steak</label>
-                </div>
-                <div class="plato-precio">$160.00 (15 pers.) / $310.00 (30 pers.)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="15">15 personas</option>
-                    <option value="30">30 personas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-crispy-fish" data-nombre="Crispy Fish" data-precio="170">
-                  <label for="plato-crispy-fish" class="plato-nombre">Crispy Fish</label>
-                </div>
-                <div class="plato-precio">$170.00 (15 pers.) / $340.00 (30 pers.)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="15">15 personas</option>
-                    <option value="30">30 personas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-crispy-shrimp" data-nombre="Crispy Shrimp" data-precio="170">
-                  <label for="plato-crispy-shrimp" class="plato-nombre">Crispy Shrimp</label>
-                </div>
-                <div class="plato-precio">$170.00 (15 pers.) / $340.00 (30 pers.)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="15">15 personas</option>
-                    <option value="30">30 personas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-root-vegetables" data-nombre="Root Vegetables" data-precio="70">
-                  <label for="plato-root-vegetables" class="plato-nombre">Root Vegetables</label>
-                </div>
-                <div class="plato-precio">$70.00 (15 pers.) / $140.00 (30 pers.)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="15">15 personas</option>
-                    <option value="30">30 personas</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Tacos">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-barbacoa" data-nombre="BARBACOA (5 KILOS)" data-precio="250">
-                  <label for="plato-barbacoa" class="plato-nombre">BARBACOA (5 KILOS)</label>
-                </div>
-                <div class="plato-precio">$250.00 (1T) / $500.00 (2T)</div>
-                <div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
-                  The magic Barbacoa. Barbacoa is more than just cooking; it's a centuries-old ritual central to celebrations and community gatherings. Slow-cooked in an earth oven for 6 to 12 hours, lamb or mutton absorbs rich flavors, resulting in tender, melt-in-your-mouth meat while preserving a deep cultural tradition.
-                </div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="1">1T (5kg)</option>
-                    <option value="2">2T (10kg)</option>
-                  </select>
-                </div>
-              </div>
-              
-              <!-- Specialty -->
-              <div class="plato-item" data-categoria="Specialty">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-chile-relleno" data-nombre="Chile Relleno" data-precio="160">
-                  <label for="plato-chile-relleno" class="plato-nombre">Chile Relleno</label>
-                </div>
-                <div class="plato-precio">$160.00 (10 pcs) / $300.00 (20 pcs)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="10">10 pcs</option>
-                    <option value="20">20 pcs</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Specialty">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-mole" data-nombre="Mole Verde / Rojo" data-precio="180">
-                  <label for="plato-mole" class="plato-nombre">Mole Verde / Rojo</label>
-                </div>
-                <div class="plato-precio">$180.00 (10 pcs) / $340.00 (20 pcs)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="10">10 pcs</option>
-                    <option value="20">20 pcs</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Specialty">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-encacahuatado" data-nombre="Encacahuatado" data-precio="180">
-                  <label for="plato-encacahuatado" class="plato-nombre">Encacahuatado</label>
-                </div>
-                <div class="plato-precio">$180.00 (10 pcs) / $340.00 (20 pcs)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                  <select class="form-control" style="width: 100px;">
-                    <option value="10">10 pcs</option>
-                    <option value="20">20 pcs</option>
-                  </select>
-                </div>
-              </div>
-              
-              <!-- Dessert & Aguas -->
-              <div class="plato-item" data-categoria="Desserts">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-tres-leches" data-nombre="Tres leches" data-precio="75">
-                  <label for="plato-tres-leches" class="plato-nombre">Tres leches</label>
-                </div>
-                <div class="plato-precio">$75.00 (Full)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Desserts">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-flan" data-nombre="Flan" data-precio="75">
-                  <label for="plato-flan" class="plato-nombre">Flan</label>
-                </div>
-                <div class="plato-precio">$75.00 (Full)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                </div>
-              </div>
-              
-              <div class="plato-item" data-categoria="Desserts">
-                <div class="plato-header">
-                  <input type="checkbox" id="plato-agua-fresca" data-nombre="Agua Fresca (1 Gallon)" data-precio="20">
-                  <label for="plato-agua-fresca" class="plato-nombre">Agua Fresca (1 Gallon)</label>
-                </div>
-                <div class="plato-precio">$20.00 (1 Gallon)</div>
-                <div class="plato-cantidad">
-                  <label>Cantidad:</label>
-                  <input type="number" min="1" value="1" class="cantidad-plato">
-                </div>
-              </div>
-            </div>
+           <div class="platos-list" id="platosList">
+  <!-- Los platos se cargarán dinámicamente aquí -->
+</div>
             
             <div class="resumen-platos" id="resumenPlatos" style="display: none;">
               <h4>📋 Resumen del Pedido</h4>
@@ -1141,11 +763,11 @@
           <div class="form-group" style="grid-column: 1 / -1; margin-top: 1.5rem;">
             <h3>💳 Pagos</h3>
             <div id="pagosContainer">
-              <!-- Se llenará dinámicamente -->
+                  <!-- No habrá pago inicial, se agregará al hacer clic en el botón -->
             </div>
             <button type="button" class="btn btn-secondary" id="agregarPagoBtn" style="margin-top: 1rem;">
               <i class="fas fa-plus"></i> Agregar Pago
-            </button>
+           </button>
           </div>
           
           <!-- Notas -->
@@ -1225,6 +847,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Configurar eventos
   configurarEventos();
+// Cargar platos desde la base de datos
+  await cargarPlatosDesdeBD();
 
   if (idCotizacion) {
     // Cargar cotización existente
@@ -1266,8 +890,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Mostrar todos los platos inicialmente
     filtrarPlatosPorCategoria('Appetizers');
     
-    // Agregar un pago inicial
-    agregarPagoInput();
+    
     
     // Configurar botón para agregar filas manuales
     document.getElementById('agregarFilaBtn').addEventListener('click', agregarFilaManual);
@@ -1637,38 +1260,61 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   // Función para agregar inputs de pago
-  function formatearFecha(fecha) {
-  if (!fecha) return new Date().toISOString().split('T')[0];
-  const date = new Date(fecha);
-  if (isNaN(date)) return new Date().toISOString().split('T')[0];
-  return date.toISOString().split('T')[0];
-}
-
   function agregarPagoInput(pago = {}) {
-    const container = document.getElementById('pagosContainer');
-    const div = document.createElement('div');
-    div.className = 'pago-item';
-    div.innerHTML = `
-      <div class="pago-fila">
-        <input type="date" class="pago-fecha form-control" value="${formatearFecha(pago.fecha)}">
-        <input type="number" class="pago-monto form-control" placeholder="Monto" 
-               value="${pago.monto || ''}" step="0.01" min="0">
-        <select class="pago-metodo form-control">
-          <option value="square" ${pago.metodo === 'square' ? 'selected' : ''}>Square</option>
-          <option value="venmo" ${pago.metodo === 'venmo' ? 'selected' : ''}>Venmo</option>
-          <option value="toast" ${pago.metodo === 'toast' ? 'selected' : ''}>Toast</option>
-          <option value="cash" ${pago.metodo === 'cash' ? 'selected' : ''}>Cash</option>
-          <option value="PO" ${pago.metodo === 'PO' ? 'selected' : ''}>PO</option>
-          <option value="Zelle" ${pago.metodo === 'Zelle' ? 'selected' : ''}>Zelle</option>
-          <option value="otro" ${pago.metodo === 'otro' ? 'selected' : ''}>Otro</option>
-        </select>
-        <input type="text" class="pago-notas form-control" placeholder="Notas" 
-               value="${pago.notas || ''}">
-        <button type="button" class="btn btn-danger btn-eliminar-pago">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-    `;
+  const container = document.getElementById('pagosContainer');
+  const div = document.createElement('div');
+  div.className = 'pago-item';
+  
+  // Formatear la fecha correctamente
+  let fechaFormateada = '';
+  if (pago.fecha) {
+    // Si la fecha viene con tiempo (formato ISO)
+    if (typeof pago.fecha === 'string' && pago.fecha.includes('T')) {
+      fechaFormateada = pago.fecha.split('T')[0];
+    } 
+    // Si es un objeto Date
+    else if (pago.fecha instanceof Date) {
+      fechaFormateada = pago.fecha.toISOString().split('T')[0];
+    }
+    // Si ya está en formato yyyy-MM-dd
+    else if (typeof pago.fecha === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(pago.fecha)) {
+      fechaFormateada = pago.fecha;
+    }
+    // Si es una fecha válida pero en otro formato
+    else if (!isNaN(new Date(pago.fecha).getTime())) {
+      const dateObj = new Date(pago.fecha);
+      fechaFormateada = dateObj.toISOString().split('T')[0];
+    }
+  } else {
+    // Fecha por defecto (hoy)
+    fechaFormateada = new Date().toISOString().split('T')[0];
+  }
+
+  // Asegurar que el monto sea un número válido
+  const monto = typeof pago.monto === 'number' ? pago.monto.toFixed(2) : 
+               (pago.monto ? parseFloat(pago.monto).toFixed(2) : '0.00');
+
+  div.innerHTML = `
+    <div class="pago-fila">
+      <input type="date" class="pago-fecha form-control" value="${fechaFormateada}" required>
+      <input type="number" class="pago-monto form-control" placeholder="Monto" 
+             value="${monto}" step="0.01" min="0" required>
+      <select class="pago-metodo form-control" required>
+        <option value="square" ${pago.metodo === 'square' ? 'selected' : ''}>Square</option>
+        <option value="venmo" ${pago.metodo === 'venmo' ? 'selected' : ''}>Venmo</option>
+        <option value="toast" ${pago.metodo === 'toast' ? 'selected' : ''}>Toast</option>
+        <option value="cash" ${pago.metodo === 'cash' ? 'selected' : ''}>Cash</option>
+        <option value="PO" ${pago.metodo === 'PO' ? 'selected' : ''}>PO</option>
+        <option value="Zelle" ${pago.metodo === 'Zelle' ? 'selected' : ''}>Zelle</option>
+        <option value="otro" ${pago.metodo === 'otro' ? 'selected' : ''}>Otro</option>
+      </select>
+      <input type="text" class="pago-notas form-control" placeholder="Notas" 
+             value="${pago.notas || ''}">
+      <button type="button" class="btn btn-danger btn-eliminar-pago">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  `;
     container.appendChild(div);
     
     div.querySelector('.btn-eliminar-pago').addEventListener('click', () => {
@@ -1977,8 +1623,137 @@ async function cargarCotizacionParaEditar(id) {
   function ocultarLoading() {
     document.getElementById('loadingOverlay').style.display = 'none';
   }
-
- 
+// Función para cargar los platos desde la base de datos
+async function cargarPlatosDesdeBD() {
+  try {
+    const response = await fetch('/api/platos');
+    const data = await response.json();
+    
+    if (!data.platos || data.platos.length === 0) {
+      console.warn('No se encontraron platos en la base de datos');
+      return;
+    }
+    
+    const platosList = document.getElementById('platosList');
+    platosList.innerHTML = '';
+    
+    // Ordenar por categoría
+    const categorias = ['Appetizers', 'Tacos', 'Specialty', 'Desserts'];
+    
+    categorias.forEach(categoria => {
+      const platosCategoria = data.platos.filter(p => p.categoria === categoria);
+      
+      if (platosCategoria.length > 0) {
+        platosCategoria.forEach(plato => {
+          const platoItem = document.createElement('div');
+          platoItem.className = 'plato-item';
+          platoItem.dataset.categoria = plato.categoria;
+          
+          // Construir el HTML del plato según su categoría
+          if (categoria === 'Appetizers') {
+            platoItem.innerHTML = `
+              <div class="plato-header">
+                <input type="checkbox" id="plato-${plato._id}" 
+                       data-nombre="${plato.nombre}" 
+                       data-precio="${plato.precio_15}">
+                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
+              </div>
+              <div class="plato-precio">$${plato.precio_15.toFixed(2)} (Half Tray) / $${plato.precio_30.toFixed(2)} (Full Tray)</div>
+              <div class="plato-cantidad">
+                <label>Cantidad:</label>
+                <input type="number" min="1" value="1" class="cantidad-plato">
+                <select class="form-control" style="width: 100px;">
+                  <option value="half">Half Tray</option>
+                  <option value="full">Full Tray</option>
+                </select>
+              </div>
+              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
+                ${plato.descripcion}
+              </div>` : ''}
+            `;
+          } else if (categoria === 'Tacos') {
+            platoItem.innerHTML = `
+              <div class="plato-header">
+                <input type="checkbox" id="plato-${plato._id}" 
+                       data-nombre="${plato.nombre}" 
+                       data-precio="${plato.precio_15}">
+                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
+              </div>
+              <div class="plato-precio">$${plato.precio_15.toFixed(2)} (15 pers.) / $${plato.precio_30.toFixed(2)} (30 pers.)</div>
+              <div class="plato-cantidad">
+                <label>Cantidad:</label>
+                <input type="number" min="1" value="1" class="cantidad-plato">
+                <select class="form-control" style="width: 100px;">
+                  <option value="15">15 personas</option>
+                  <option value="30">30 personas</option>
+                </select>
+              </div>
+              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
+                ${plato.descripcion}
+              </div>` : ''}
+            `;
+          } else if (categoria === 'Specialty') {
+            platoItem.innerHTML = `
+              <div class="plato-header">
+                <input type="checkbox" id="plato-${plato._id}" 
+                       data-nombre="${plato.nombre}" 
+                       data-precio="${plato.precio_15}">
+                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
+              </div>
+              <div class="plato-precio">$${plato.precio_15.toFixed(2)} (10 pcs) / $${plato.precio_30.toFixed(2)} (20 pcs)</div>
+              <div class="plato-cantidad">
+                <label>Cantidad:</label>
+                <input type="number" min="1" value="1" class="cantidad-plato">
+                <select class="form-control" style="width: 100px;">
+                  <option value="10">10 pcs</option>
+                  <option value="20">20 pcs</option>
+                </select>
+              </div>
+              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
+                ${plato.descripcion}
+              </div>` : ''}
+            `;
+          } else if (categoria === 'Desserts') {
+            platoItem.innerHTML = `
+              <div class="plato-header">
+                <input type="checkbox" id="plato-${plato._id}" 
+                       data-nombre="${plato.nombre}" 
+                       data-precio="${plato.precio_full}">
+                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
+              </div>
+              <div class="plato-precio">$${plato.precio_full.toFixed(2)} (Full)</div>
+              <div class="plato-cantidad">
+                <label>Cantidad:</label>
+                <input type="number" min="1" value="1" class="cantidad-plato">
+              </div>
+              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
+                ${plato.descripcion}
+              </div>` : ''}
+            `;
+          }
+          
+          platosList.appendChild(platoItem);
+        });
+      }
+    });
+    
+    // Configurar eventos para los nuevos elementos
+    document.querySelectorAll('#platosList input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', actualizarResumenPlatos);
+    });
+    
+    document.querySelectorAll('#platosList .cantidad-plato').forEach(input => {
+      input.addEventListener('change', actualizarResumenPlatos);
+    });
+    
+    document.querySelectorAll('#platosList select').forEach(select => {
+      select.addEventListener('change', actualizarResumenPlatos);
+    });
+    
+  } catch (error) {
+    console.error('Error al cargar platos:', error);
+  }
+} 
 </script>
 
 </body>

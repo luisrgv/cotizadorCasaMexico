@@ -320,7 +320,7 @@ if (!Array.isArray(datos.platos)) {
       if (datos.notasCocina && datos.notasCocina !== 'Ninguna') {
         currentY += 40;
         doc.font('Helvetica-Bold')
-           .text('INSTRUCCIONES ESPECIALES:', infoX, currentY);
+           .text('Notas para cocina:', infoX, currentY);
         currentY += 20;
         
         doc.font('Helvetica')
@@ -516,7 +516,88 @@ app.get('/cotizador', requireLogin, (req, res) => {
 app.get('/calendario', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'calendario.html'));
 });
+// Rutas para platos
+app.get('/api/platos', async (req, res) => {
+  try {
+    const platos = await Plato.find().sort({ categoria: 1, nombre: 1 });
+    res.json({ platos });
+  } catch (error) {
+    console.error('Error al obtener platos:', error);
+    res.status(500).json({ error: 'Error al obtener platos' });
+  }
+});
 
+app.post('/api/platos', requireLogin, async (req, res) => {
+  try {
+    const { nombre, categoria, precio_15, precio_30, precio_full, descripcion } = req.body;
+    
+    const platoData = {
+      nombre,
+      categoria,
+      descripcion
+    };
+    
+    if (categoria === 'Desserts') {
+      platoData.precio_full = precio_full;
+    } else {
+      platoData.precio_15 = precio_15;
+      platoData.precio_30 = precio_30;
+    }
+    
+    const plato = new Plato(platoData);
+    await plato.save();
+    
+    res.json({ success: true, plato });
+  } catch (error) {
+    console.error('Error al crear plato:', error);
+    res.status(500).json({ error: 'Error al crear plato' });
+  }
+});
+
+app.put('/api/platos/:id', requireLogin, async (req, res) => {
+  try {
+    const { nombre, categoria, precio_15, precio_30, precio_full, descripcion } = req.body;
+    
+    const platoData = {
+      nombre,
+      categoria,
+      descripcion
+    };
+    
+    if (categoria === 'Desserts') {
+      platoData.precio_full = precio_full;
+    } else {
+      platoData.precio_15 = precio_15;
+      platoData.precio_30 = precio_30;
+    }
+    
+    const plato = await Plato.findByIdAndUpdate(req.params.id, platoData, { new: true });
+    
+    if (!plato) {
+      return res.status(404).json({ error: 'Plato no encontrado' });
+    }
+    
+    res.json({ success: true, plato });
+  } catch (error) {
+    console.error('Error al actualizar plato:', error);
+    res.status(500).json({ error: 'Error al actualizar plato' });
+  }
+});
+
+app.delete('/api/platos/:id', requireLogin, async (req, res) => {
+  try {
+    const plato = await Plato.findByIdAndDelete(req.params.id);
+    
+    if (!plato) {
+      return res.status(404).json({ error: 'Plato no encontrado' });
+    }
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error al eliminar plato:', error);
+    res.status(500).json({ error: 'Error al eliminar plato' });
+  }
+});
 // Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor en http://localhost:${PORT}`);

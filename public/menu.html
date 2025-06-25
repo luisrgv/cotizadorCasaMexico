@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrar Menú - Casa México</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #e63946;
+      --primary-dark: #c1121f;
+      --secondary: #457b9d;
+      --dark: #1d3557;
+      --light: #f1faee;
+      --gray: #6c757d;
+      --light-gray: #f8f9fa;
+      --success: #2a9d8f;
+      --warning: #e9c46a;
+      --danger: #e76f51;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #3a6a8a;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-bottom: 4px solid var(--primary);
+    }
+    
+    .branding {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .logo-img {
+      max-height: 65px;
+      transition: transform 0.3s ease;
+      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
+    }
+    
+    .logo-img:hover {
+      transform: scale(1.1);
+    }
+    
+    .logo-text {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--dark);
+      text-shadow: 1px 1px 0 var(--light-gray);
+    }
+    
+    .logo-text span {
+      color: var(--primary);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .avatar {
+      background: var(--secondary);
+      color: white;
+      padding: 0.6rem 0.9rem;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+    
+    .logout-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    
+    .logout-btn:hover {
+      color: var(--primary-dark);
+    }
+    
+    #userRole {
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+    
+    .container {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .tab {
+      padding: 0.75rem 1.5rem;
+      background-color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .tab:hover {
+      background-color: var(--light-gray);
+    }
+    
+    .tab.active {
+      background-color: var(--dark);
+      color: white;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .btn-secondary {
+      background-color: var(--gray);
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+    
+    .btn-success {
+      background-color: var(--success);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background-color: #218838;
+    }
+    
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.2);
+    }
+    
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+    
+    .table th, .table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+    
+    .table tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .table-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .precio-input {
+      width: 100px;
+      text-align: right;
+    }
+    
+    .descripcion-textarea {
+      min-height: 60px;
+    }
+    
+    .tabla-platos th {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+    
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+    }
+    
+    .spinner {
+      border: 5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 5px solid white;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    #loadingText {
+      color: white;
+      font-size: 1.2rem;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .tabs {
+        flex-direction: column;
+      }
+      
+      .table-responsive {
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="branding">
+      <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" class="logo-img">
+      <div class="logo-text">Casa <span>México</span></div>
+    </div>
+
+    <div class="user-info">
+      <div class="avatar" id="userAvatar">CM</div>
+      <div>
+        <div id="userName">Usuario</div>
+        <div id="userRole" style="font-size: 0.9rem; color: #bdc3c7;">Rol</div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="tabs">
+      <a href="/cotizador" class="tab">
+        <i class="fas fa-plus"></i> Nueva Cotización
+      </a>
+      <a href="en-proceso.html" class="tab">
+        <i class="fas fa-spinner"></i> En Proceso
+      </a>
+      <a href="pagadas.html" class="tab">
+        <i class="fas fa-check-circle"></i> Pagadas
+      </a>
+      <a href="impagas.html" class="tab">
+        <i class="fas fa-times-circle"></i> Impagas
+      </a>
+      <a href="calendario.html" class="tab">
+        <i class="fas fa-calendar-alt"></i> Calendario
+      </a>
+      <div class="tab active">
+        <i class="fas fa-utensils"></i> Menú
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-title">
+        Administración del Menú
+        <button class="btn btn-primary" id="agregarPlatoBtn">
+          <i class="fas fa-plus"></i> Agregar Plato
+        </button>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="table tabla-platos" id="tablaPlatos">
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Nombre</th>
+              <th>15 Personas/Half</th>
+              <th>30 Personas/Full</th>
+              <th>Full/10 PCS</th>
+              <th>Descripción</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="listaPlatos">
+            <!-- Se llenará dinámicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal para agregar/editar plato -->
+  <div class="modal" id="platoModal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 id="modalPlatoTitle">Agregar Plato</h2>
+      <form id="platoForm">
+        <input type="hidden" id="platoId">
+        
+        <div class="form-group">
+          <label for="platoCategoria">Categoría</label>
+          <select id="platoCategoria" class="form-control" required>
+            <option value="Appetizers">Appetizers (Half/Full Tray)</option>
+            <option value="Tacos">Tacos Chef Cristina M. (15/30 personas)</option>
+            <option value="Specialty">Specialty (10/20 PCS)</option>
+            <option value="Desserts">Dessert & Aguas (Full)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="platoNombre">Nombre del Plato</label>
+          <input type="text" id="platoNombre" class="form-control" required>
+        </div>
+        
+        <div class="form-row" id="preciosContainer">
+          <!-- Se llenará dinámicamente según la categoría -->
+        </div>
+        
+        <div class="form-group">
+          <label for="platoDescripcion">Descripción</label>
+          <textarea id="platoDescripcion" class="form-control descripcion-textarea"></textarea>
+        </div>
+        
+        <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+          <button type="button" class="btn btn-secondary" id="cancelarPlatoBtn">
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Guardar Plato
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <p id="loadingText">Procesando...</p>
+  </div>
+  
+  <script>
+    // Variables globales
+    let currentUser = null;
+    let platos = [];
+    let currentPlatoId = null;
+    
+    // DOM Content Loaded
+    document.addEventListener('DOMContentLoaded', async () => {
+      await verificarSesion();
+      await cargarPlatos();
+      configurarEventos();
+      
+      // Configurar cambio de categoría en el modal
+      document.getElementById('platoCategoria').addEventListener('change', actualizarCamposPrecio);
+    });
+    
+    // Función para verificar sesión
+    async function verificarSesion() {
+      try {
+        const response = await fetch('/api/user-info');
+        const data = await response.json();
+        
+        if (!data.user) {
+          window.location.href = '/';
+          return;
+        }
+        
+        currentUser = data.user;
+        document.getElementById('userName').textContent = currentUser.username;
+        document.getElementById('userRole').textContent = currentUser.role;
+        document.getElementById('userAvatar').textContent = 
+          currentUser.username.charAt(0).toUpperCase();
+      } catch (error) {
+        console.error('Error al verificar sesión:', error);
+        window.location.href = '/';
+      }
+    }
+    
+    // Función para cargar los platos
+    async function cargarPlatos() {
+      mostrarLoading('Cargando menú...');
+      
+      try {
+        const response = await fetch('/api/platos');
+        if (!response.ok) throw new Error('Error al cargar platos');
+        
+        const data = await response.json();
+        platos = data.platos || [];
+        renderizarPlatos();
+      } catch (error) {
+        console.error('Error al cargar platos:', error);
+        alert('Error al cargar el menú');
+      } finally {
+        ocultarLoading();
+      }
+    }
+    
+    // Función para renderizar los platos en la tabla
+    function renderizarPlatos() {
+      const tbody = document.getElementById('listaPlatos');
+      tbody.innerHTML = '';
+      
+      if (platos.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center;">No hay platos registrados</td>
+          </tr>
+        `;
+        return;
+      }
+      
+      // Ordenar por categoría
+      const categorias = ['Appetizers', 'Tacos', 'Specialty', 'Desserts'];
+      
+      categorias.forEach(categoria => {
+        const platosCategoria = platos.filter(p => p.categoria === categoria);
+        
+        if (platosCategoria.length > 0) {
+          platosCategoria.forEach((plato, index) => {
+            const tr = document.createElement('tr');
+            tr.dataset.id = plato._id;
+            
+            // Mostrar precios según categoría
+            let precioCol1 = '-';
+            let precioCol2 = '-';
+            let precioCol3 = '-';
+            
+            if (categoria === 'Appetizers') {
+              precioCol1 = plato.precio_15 ? `$${plato.precio_15.toFixed(2)}` : '-';
+              precioCol2 = plato.precio_30 ? `$${plato.precio_30.toFixed(2)}` : '-';
+            } else if (categoria === 'Tacos') {
+              precioCol1 = plato.precio_15 ? `$${plato.precio_15.toFixed(2)}` : '-';
+              precioCol2 = plato.precio_30 ? `$${plato.precio_30.toFixed(2)}` : '-';
+            } else if (categoria === 'Specialty') {
+              precioCol1 = plato.precio_15 ? `$${plato.precio_15.toFixed(2)}` : '-';
+              precioCol2 = plato.precio_30 ? `$${plato.precio_30.toFixed(2)}` : '-';
+            } else if (categoria === 'Desserts') {
+              precioCol3 = plato.precio_full ? `$${plato.precio_full.toFixed(2)}` : '-';
+            }
+            
+            tr.innerHTML = `
+              <td>${categoria}</td>
+              <td>${plato.nombre}</td>
+              <td>${precioCol1}</td>
+              <td>${precioCol2}</td>
+              <td>${precioCol3}</td>
+              <td>${plato.descripcion || ''}</td>
+              <td class="table-actions">
+                <button class="btn btn-success btn-sm editar-plato" data-id="${plato._id}">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-danger btn-sm eliminar-plato" data-id="${plato._id}">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            `;
+            
+            tbody.appendChild(tr);
+          });
+        }
+      });
+    }
+    
+    // Función para actualizar campos de precio según categoría
+    function actualizarCamposPrecio() {
+      const categoria = document.getElementById('platoCategoria').value;
+      const preciosContainer = document.getElementById('preciosContainer');
+      
+      preciosContainer.innerHTML = '';
+      
+      if (categoria === 'Appetizers') {
+        preciosContainer.innerHTML = `
+          <div class="form-group col-md-6">
+            <label for="platoPrecio15">Precio Half Tray</label>
+            <input type="number" step="0.01" min="0" id="platoPrecio15" class="form-control precio-input" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="platoPrecio30">Precio Full Tray</label>
+            <input type="number" step="0.01" min="0" id="platoPrecio30" class="form-control precio-input" required>
+          </div>
+        `;
+      } else if (categoria === 'Tacos') {
+        preciosContainer.innerHTML = `
+          <div class="form-group col-md-6">
+            <label for="platoPrecio15">Precio 15 personas</label>
+            <input type="number" step="0.01" min="0" id="platoPrecio15" class="form-control precio-input" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="platoPrecio30">Precio 30 personas</label>
+            <input type="number" step="0.01" min="0" id="platoPrecio30" class="form-control precio-input" required>
+          </div>
+        `;
+      } else if (categoria === 'Specialty') {
+        preciosContainer.innerHTML = `
+          <div class="form-group col-md-6">
+            <label for="platoPrecio15">Precio 10 PCS</label>
+            <input type="number" step="0.01" min="0" id="platoPrecio15" class="form-control precio-input" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="platoPrecio30">Precio 20 PCS</label>
+            <input type="number" step="0.01" min="0" id="platoPrecio30" class="form-control precio-input" required>
+          </div>
+        `;
+      } else if (categoria === 'Desserts') {
+        preciosContainer.innerHTML = `
+          <div class="form-group col-md-12">
+            <label for="platoPrecioFull">Precio Full</label>
+            <input type="number" step="0.01" min="0" id="platoPrecioFull" class="form-control precio-input" required>
+          </div>
+        `;
+      }
+    }
+    
+    // Función para abrir modal de plato
+    function abrirModalPlato(plato = null) {
+      const modal = document.getElementById('platoModal');
+      const form = document.getElementById('platoForm');
+      const title = document.getElementById('modalPlatoTitle');
+      
+      form.reset();
+      
+      if (plato) {
+        title.textContent = 'Editar Plato';
+        document.getElementById('platoId').value = plato._id;
+        document.getElementById('platoNombre').value = plato.nombre;
+        document.getElementById('platoCategoria').value = plato.categoria;
+        document.getElementById('platoDescripcion').value = plato.descripcion || '';
+        
+        // Actualizar campos de precio según categoría
+        actualizarCamposPrecio();
+        
+        if (plato.categoria === 'Desserts') {
+          document.getElementById('platoPrecioFull').value = plato.precio_full || '';
+        } else {
+          document.getElementById('platoPrecio15').value = plato.precio_15 || '';
+          document.getElementById('platoPrecio30').value = plato.precio_30 || '';
+        }
+        
+        currentPlatoId = plato._id;
+      } else {
+        title.textContent = 'Agregar Plato';
+        currentPlatoId = null;
+        actualizarCamposPrecio();
+      }
+      
+      modal.style.display = 'flex';
+    }
+    
+    // Función para guardar plato
+    async function guardarPlato(e) {
+      e.preventDefault();
+      
+      const nombre = document.getElementById('platoNombre').value;
+      const categoria = document.getElementById('platoCategoria').value;
+      const descripcion = document.getElementById('platoDescripcion').value;
+      
+      const platoData = {
+        nombre,
+        categoria,
+        descripcion
+      };
+      
+      if (categoria === 'Desserts') {
+        platoData.precio_full = parseFloat(document.getElementById('platoPrecioFull').value);
+      } else {
+        platoData.precio_15 = parseFloat(document.getElementById('platoPrecio15').value);
+        platoData.precio_30 = parseFloat(document.getElementById('platoPrecio30').value);
+      }
+      
+      mostrarLoading('Guardando plato...');
+      
+      try {
+        let response;
+        
+        if (currentPlatoId) {
+          // Actualizar plato existente
+          response = await fetch(`/api/platos/${currentPlatoId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(platoData)
+          });
+        } else {
+          // Crear nuevo plato
+          response = await fetch('/api/platos', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(platoData)
+          });
+        }
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Error al guardar plato');
+        }
+        
+        // Cerrar modal y recargar lista
+        document.getElementById('platoModal').style.display = 'none';
+        await cargarPlatos();
+        
+      } catch (error) {
+        console.error('Error al guardar plato:', error);
+        alert(`Error: ${error.message}`);
+      } finally {
+        ocultarLoading();
+      }
+    }
+    
+    // Función para eliminar plato
+    async function eliminarPlato(id) {
+      if (!confirm('¿Estás seguro de que deseas eliminar este plato?')) return;
+      
+      mostrarLoading('Eliminando plato...');
+      
+      try {
+        const response = await fetch(`/api/platos/${id}`, {
+          method: 'DELETE'
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Error al eliminar plato');
+        }
+        
+        await cargarPlatos();
+      } catch (error) {
+        console.error('Error al eliminar plato:', error);
+        alert(`Error: ${error.message}`);
+      } finally {
+        ocultarLoading();
+      }
+    }
+    
+    // Función para configurar eventos
+    function configurarEventos() {
+      // Logout
+      document.getElementById('logoutBtn').addEventListener('click', async () => {
+        try {
+          await fetch('/logout', { method: 'GET' });
+          window.location.href = '/';
+        } catch (error) {
+          console.error('Error al cerrar sesión:', error);
+        }
+      });
+      
+      // Agregar plato
+      document.getElementById('agregarPlatoBtn').addEventListener('click', () => {
+        abrirModalPlato();
+      });
+      
+      // Cancelar modal
+      document.getElementById('cancelarPlatoBtn').addEventListener('click', () => {
+        document.getElementById('platoModal').style.display = 'none';
+      });
+      
+      // Cerrar modal con X
+      document.querySelector('.close-modal').addEventListener('click', () => {
+        document.getElementById('platoModal').style.display = 'none';
+      });
+      
+      // Guardar plato
+      document.getElementById('platoForm').addEventListener('submit', guardarPlato);
+      
+      // Delegación de eventos para botones de editar/eliminar
+      document.getElementById('listaPlatos').addEventListener('click', (e) => {
+        if (e.target.closest('.editar-plato')) {
+          const id = e.target.closest('.editar-plato').dataset.id;
+          const plato = platos.find(p => p._id === id);
+          if (plato) abrirModalPlato(plato);
+        }
+        
+        if (e.target.closest('.eliminar-plato')) {
+          const id = e.target.closest('.eliminar-plato').dataset.id;
+          eliminarPlato(id);
+        }
+      });
+    }
+    
+    // Funciones para mostrar/ocultar loading
+    function mostrarLoading(mensaje) {
+      document.getElementById('loadingOverlay').style.display = 'flex';
+      document.getElementById('loadingText').textContent = mensaje;
+    }
+    
+    function ocultarLoading() {
+      document.getElementById('loadingOverlay').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

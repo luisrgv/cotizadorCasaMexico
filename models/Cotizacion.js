@@ -26,12 +26,15 @@ const CotizacionSchema = new mongoose.Schema({
     },
     notas: String
   }],
-  platos: [{
-    nombre: String,
-    precio_por_persona: Number,
-    cantidad_personas: Number, // Cantidad modificable por plato
-    precio_total: Number
-  }],
+    platos: [{
+      nombre: String,
+      precio_por_persona: Number,
+      cantidad_personas: Number,
+      cantidad: Number, // NUEVO: para guardar 1, 0.5, etc.
+      cantidadTexto: String, // NUEVO: para guardar "1T", "½T", etc.
+      precio_total: Number
+    }],
+
   numeroPersonas: { type: Number, required: true },
   subtotal: { type: Number, required: true },
   tax: { type: Number, required: true },

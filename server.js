@@ -169,17 +169,16 @@ const generarPDF = (tipo, datos) => {
     doc.fillColor('#1d3557')
        .fontSize(20)
        .font('Helvetica-Bold')
-       .text(tipo === 'cliente' ? 'CASA MÉXICO CATERING' : 'CASA MÉXICO CATERING', {
+       .text('CASA MÉXICO CATERING', {
          align: 'center',
          paragraphGap: 5
        });
     
     doc.fontSize(14)
-   .text(`Invoice #: ${datos.invoiceNumber || 'N/A'}`, {
-     align: 'center',
-     paragraphGap: 20
-   });
-
+       .text(`Invoice #: ${datos.invoiceNumber || 'N/A'}`, {
+         align: 'center',
+         paragraphGap: 20
+       });
 
     // Línea decorativa
     doc.moveTo(50, 120)
@@ -191,7 +190,12 @@ const generarPDF = (tipo, datos) => {
     const infoX = 50;
     let currentY = 140;
 
-    // Función para agregar fila de información
+    // Formato de fecha
+    const fechaFormateada = new Date(datos.fecha).toLocaleDateString('es-ES', {
+
+    });
+
+    // Agrega fila de texto
     const agregarFila = (label, value, isBold = false) => {
       doc.font(isBold ? 'Helvetica-Bold' : 'Helvetica')
          .fontSize(10)
@@ -200,76 +204,81 @@ const generarPDF = (tipo, datos) => {
       currentY += 20;
     };
 
-    // Status con color
+    
+    // Color de estado
     let statusColor = '#000000';
     if (datos.status === 'pagado') statusColor = '#2a9d8f';
     if (datos.status === 'impago') statusColor = '#e63946';
     if (datos.status === 'en_proceso') statusColor = '#e9c46a';
 
-    // Información común
-        agregarFila('Date:', datos.fecha, true);
-    agregarFila('Day:', datos.dia);
-    agregarFila('Client:', datos.cliente, true);
-    agregarFila('Contact Number:', datos.numero);
-    agregarFila('Event Time:', datos.hora_evento);
-    
+    // Información básica común
+    agregarFila(tipo === 'cliente' ? 'Date:' : 'Fecha:', fechaFormateada, true);
+    agregarFila(tipo === 'cliente' ? 'Day:' : 'Día:', datos.dia);
+    agregarFila(tipo === 'cliente' ? 'Client:' : 'Cliente:', datos.cliente, true);
+    agregarFila(tipo === 'cliente' ? 'Contact Number:' : 'Número de contacto:', datos.numero);
+    agregarFila(tipo === 'cliente' ? 'Event Time:' : 'Hora del evento:', datos.hora_evento);
+
     if (tipo === 'cliente') {
-      // PDF Cliente (inglés)
+      // PDF del cliente (inglés)
       agregarFila('Service:', datos.servicio);
       agregarFila('Location:', datos.ubicacion);
       agregarFila('Serving Time:', datos.hora_servir);
       agregarFila('Status:', datos.status.toUpperCase(), true);
       doc.fillColor(statusColor).text(datos.status.toUpperCase(), infoX + 160, currentY - 20);
       doc.fillColor('#000000');
-      
-      currentY += 30;
-      
-      // Tabla de platos
-      doc.font('Helvetica-Bold')
-         .text('MENU DETAILS', infoX, currentY);
+
+       currentY += 30;
+      doc.font('Helvetica-Bold').text('MENU DETAILS', infoX, currentY);
       currentY += 20;
-      
+
       doc.font('Helvetica-Bold')
-   .text('Item', infoX, currentY)
-   .text('Price', 400, currentY);
+         .text('Quantity', infoX, currentY, { width: 80 })
+         .text('Product', infoX + 90, currentY, { width: 250 })
+         .text('Cost', 450, currentY, { align: 'right' });
 
       currentY += 15;
-      
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
-      // Antes del forEach
-if (!Array.isArray(datos.platos)) {
-  datos.platos = [];
-}
+
+      if (!Array.isArray(datos.platos)) datos.platos = [];
       datos.platos.forEach(plato => {
         doc.font('Helvetica')
-           .text(plato.nombre, infoX, currentY, { width: 300 })
-           .text(`$${plato.precio_total.toFixed(2)}`, 400, currentY);
+           .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
+           .text(plato.nombre, infoX + 90, currentY, { width: 250 })
+           .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
         currentY += 20;
       });
-      
-      // Totales
+
       currentY += 20;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
-      currentY += 20;
+      currentY += 10;
       
-      agregarFila('Subtotal:', `$${datos.subtotal.toFixed(2)}`);
-      agregarFila(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
-      agregarFila(`Gratuity (${datos.gratuityPercentage}%):`, `$${datos.gratuity.toFixed(2)}`);
+      const agregarFilaDerecha = (label, value, isBold = false) => {
+        doc.font(isBold ? 'Helvetica-Bold' : 'Helvetica')
+          .fontSize(10)
+          .text(label, infoX, currentY, { width: 150, align: 'left' })
+          .text(value, infoX + 160, currentY, { width: 340, align: 'right' });
+        currentY += 20;
+      };
+
+
+      agregarFilaDerecha('Subtotal:', `$${datos.subtotal.toFixed(2)}`);
+      agregarFilaDerecha(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
+      agregarFilaDerecha(`Gratuity (${datos.gratuityPercentage}%):`, `$${datos.gratuity.toFixed(2)}`);
       if (datos.deliveryFee > 0) {
-        agregarFila('Delivery Fee:', `$${datos.deliveryFee.toFixed(2)}`);
-      }
-      
+        agregarFilaDerecha('Delivery Fee:', `$${datos.deliveryFee.toFixed(2)}`);
+}
+
+
+      currentY += 10;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
+      currentY += 10;
+
+      doc.font('Helvetica-Bold')
+         .text('TOTAL:', infoX, currentY, { width: 150, align: 'left' })
+         .text(`$${datos.precioTotal.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
       currentY += 20;
-      
-      agregarFila('TOTAL:', `$${datos.precioTotal.toFixed(2)}`, true);
-      doc.font('Helvetica-Bold').text(`$${datos.precioTotal.toFixed(2)}`, 450, currentY - 20);
-      
-      // Pie de página
-      currentY = 700;
-      doc.fontSize(10)
-        
+
     } else {
       // PDF Cocina (español)
       agregarFila('Servicio:', datos.servicio);
@@ -280,32 +289,29 @@ if (!Array.isArray(datos.platos)) {
       agregarFila('Estado:', datos.status.toUpperCase(), true);
       doc.fillColor(statusColor).text(datos.status.toUpperCase(), infoX + 160, currentY - 20);
       doc.fillColor('#000000');
-      
+
       currentY += 30;
-      
-      // Tabla de platos
+
+      // Tabla de menú
       doc.font('Helvetica-Bold')
          .text('DETALLES DEL MENÚ', infoX, currentY);
       currentY += 20;
-      
+
       doc.font('Helvetica-Bold')
-          .text('Cantidad', 400, currentY)
-         .text('Plato', infoX, currentY);
+         .text('Cantidad', infoX, currentY, { width: 80 })
+         .text('Producto', infoX + 90, currentY, { width: 350 });
       currentY += 15;
-      
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
-      // Antes del forEach
-if (!Array.isArray(datos.platos)) {
-  datos.platos = [];
-}
+
+      if (!Array.isArray(datos.platos)) datos.platos = [];
       datos.platos.forEach(plato => {
         doc.font('Helvetica')
-          .text((plato.cantidad_personas || 0).toString(), infoX, currentY, { width: 100 })
-          .text(plato.nombre, infoX + 120, currentY, { width: 380 });
+           .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
+           .text(plato.nombre, infoX + 90, currentY, { width: 350 });
         currentY += 20;
       });
-      
+
       // Saldo pendiente
       if (datos.status !== 'pagado') {
         currentY += 20;
@@ -315,27 +321,24 @@ if (!Array.isArray(datos.platos)) {
            .text(`$${datos.precioTotal.toFixed(2)}`, 400, currentY);
         doc.fillColor('#000000');
       }
-      
+
       // Notas para cocina
       if (datos.notasCocina && datos.notasCocina !== 'Ninguna') {
         currentY += 40;
         doc.font('Helvetica-Bold')
            .text('Notas para cocina:', infoX, currentY);
         currentY += 20;
-        
         doc.font('Helvetica')
            .text(datos.notasCocina, infoX, currentY, { width: 500 });
       }
-      
-      // Pie de página
-      currentY = 700;
-      doc.fontSize(10)
-          }
+    }
 
+    // Finalizar PDF
     doc.end();
     stream.on('finish', () => resolve(nombreArchivo));
   });
 };
+
 
 // Crear cotización
 app.post('/api/cotizaciones', requireLogin, async (req, res) => {
@@ -362,12 +365,15 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       ubicacion: datos.ubicacion,
       contacto: datos.contacto,
       status: datos.status || 'impago',
-      platos: datos.platos.map(p => ({
-        nombre: p.nombre,
-        precio_por_persona: p.precio_por_persona,
-        cantidad_personas: p.cantidad || 1,
-        precio_total: p.precio_total
-      })),
+     platos: datos.platos.map(p => ({
+      nombre: p.nombre,
+      precio_por_persona: p.precio_por_persona,
+      cantidad_personas: p.cantidad || 1,
+      cantidad: p.cantidad || 1,
+      cantidadTexto: p.cantidadTexto || (p.cantidad === 0.5 ? '½T' : `${p.cantidad}T`),
+      precio_total: p.precio_total
+    })) ,
+
       numeroPersonas: datos.numeroPersonas || datos.platos.reduce((total, p) => total + (p.cantidad || 0), 0),
       subtotal: datos.subtotal,
       tax: datos.tax,

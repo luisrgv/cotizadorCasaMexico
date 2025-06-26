@@ -642,10 +642,11 @@ function mostrarDetalleCotizacion(cotizacion) {
   if (cotizacion.platos && cotizacion.platos.length > 0) {
     platosHTML = cotizacion.platos.map(plato => `
       <tr>
-        <td>${plato.nombre}</td>
-        <td style="text-align: center;">${plato.cantidad}</td>
-        <td style="text-align: right;">$${plato.precio_total?.toFixed(2) || '0.00'}</td>
-      </tr>
+  <td style="text-align: center;">${plato.cantidadTexto || plato.cantidad || '-'}</td>
+  <td>${plato.nombre}</td>
+  <td style="text-align: right;">$${plato.precio_total?.toFixed(2) || '0.00'}</td>
+</tr>
+
     `).join('');
   } else {
     platosHTML = '<tr><td colspan="3">No hay platos registrados</td></tr>';
@@ -656,7 +657,7 @@ function mostrarDetalleCotizacion(cotizacion) {
   if (cotizacion.pagos && cotizacion.pagos.length > 0) {
     pagosHTML = cotizacion.pagos.map(pago => `
       <tr>
-        <td>${pago.fecha}</td>
+        <td>${new Date(pago.fecha).toLocaleDateString('es-ES')}</td>
         <td>$${pago.monto?.toFixed(2) || '0.00'}</td>
         <td>${pago.metodo}</td>
         <td>${pago.notas || ''}</td>
@@ -675,8 +676,9 @@ function mostrarDetalleCotizacion(cotizacion) {
       </div>
 
       <div style="text-align: center; margin-bottom: 1.5rem;">
- <!-- Logo -->
+      <!-- Logo -->
          <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" style="max-height: 100px; margin-bottom: 0.5rem;">
+
         <h2 style="margin: 0; color: var(--dark);">CASA MÉXICO CATERING</h2>
         <h3 style="margin: 0.5rem 0 1rem; color: var(--primary);">Detalle de Cotización</h3>
         <div style="font-size: 1.1rem; font-weight: 500;">Invoice #${cotizacion.invoiceNumber}</div>
@@ -703,9 +705,9 @@ function mostrarDetalleCotizacion(cotizacion) {
         <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
           <thead>
             <tr style="background: var(--light-gray);">
-              <th style="text-align: left; padding: 0.75rem;">Nombre</th>
               <th style="text-align: center; padding: 0.75rem;">Cantidad</th>
-              <th style="text-align: right; padding: 0.75rem;">Total</th>
+              <th style="text-align: left; padding: 0.75rem;">Nombre</th>
+              <th style="text-align: right; padding: 0.75rem;">Costo</th>
             </tr>
           </thead>
           <tbody>
@@ -782,6 +784,7 @@ function mostrarDetalleCotizacion(cotizacion) {
       </div>
     </div>
   `;
+  
   
   // Configurar eventos para los botones del modal
   document.getElementById('imprimirPDFCliente').addEventListener('click', () => {

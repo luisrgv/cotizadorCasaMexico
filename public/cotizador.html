@@ -1159,12 +1159,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       const precioTotal = precioPorPersona * cantidad;
       
       platosSeleccionados.push({
-        nombre,
+       nombre,
         precio_por_persona: precioPorPersona,
         cantidad_personas: cantidad,
+        cantidad: cantidad, // Añadir esto
+        cantidadTexto: cantidadTexto, // Añadir esto
         precio_total: precioTotal,
-        categoria,
-        cantidadTexto
+        categoria
       });
       
       if (!platosPorCategoria[categoria]) {
@@ -1474,7 +1475,7 @@ async function cargarCotizacionParaEditar(id) {
       ubicacion: document.getElementById('ubicacion').value,
       contacto: document.getElementById('contacto').value,
       status: document.getElementById('status').value,
-      platosSeleccionados: platosSeleccionados,
+      platos: platosSeleccionados,
       taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
       gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
       deliveryFee: document.getElementById('servicio').value === 'Delivery Catering' ? 
@@ -1483,17 +1484,34 @@ async function cargarCotizacionParaEditar(id) {
       notasCocina: document.getElementById('notasCocina').value
     };
     
-    if (platosSeleccionados.length === 0 && filasManuales.length > 0) {
-      datos.platosSeleccionados = filasManuales.map((tr, index) => {
-        const inputs = tr.querySelectorAll('input');
-        return {
-          nombre: inputs[1]?.value || `Producto ${index + 1}`,
-          precio_por_persona: parseFloat(inputs[2]?.value) || 0,
-          cantidad: 1,
-          precio_total: parseFloat(inputs[2]?.value) || 0
-        };
-      });
-    }
+   if (platosSeleccionados.length === 0 && filasManuales.length > 0) {
+  datos.platos = filasManuales.map((tr, index) => {
+    const inputs = tr.querySelectorAll('input');
+    return {
+      nombre: inputs[1]?.value || `Producto ${index + 1}`,
+      precio_por_persona: parseFloat(inputs[2]?.value) || 0,
+      cantidad: 1,
+      cantidadTexto: inputs[0]?.value || '-',
+      precio_total: parseFloat(inputs[2]?.value) || 0
+    };
+  });
+}
+// Calcular totales para PDF
+let subtotal = 0;
+(datos.platos || []).forEach(p => {
+  subtotal += parseFloat(p.precio_total) || 0;
+});
+
+const tax = subtotal * (datos.taxPercentage / 100);
+const gratuity = subtotal * (datos.gratuityPercentage / 100);
+const total = subtotal + tax + gratuity + (datos.deliveryFee || 0);
+
+// Asignar al objeto datos
+datos.subtotal = subtotal;
+datos.tax = tax;
+datos.gratuity = gratuity;
+datos.precioTotal = total;
+
     
     mostrarLoading(`Generando PDF para ${tipo === 'cliente' ? 'cliente' : 'cocina'}...`);
     
@@ -1556,15 +1574,18 @@ async function cargarCotizacionParaEditar(id) {
     };
     
     if (filasManuales.length > 0) {
-      datos.platos = datos.platos.concat(filasManuales.map((tr, index) => {
-        const inputs = tr.querySelectorAll('input');
-        return {
-          nombre: inputs[1]?.value || `Producto ${index + 1}`,
-          precio_por_persona: parseFloat(inputs[2]?.value) || 0,
-          cantidad: 1,
-          precio_total: parseFloat(inputs[2]?.value) || 0
-        };
-      }));
+     datos.platos = datos.platos.concat(filasManuales.map((tr, index) => {
+  const inputs = tr.querySelectorAll('input');
+  const cantidadTexto = inputs[0]?.value || '-';
+  return {
+    nombre: inputs[1]?.value || `Producto ${index + 1}`,
+    precio_por_persona: parseFloat(inputs[2]?.value) || 0,
+    cantidad: 1,
+    cantidadTexto,
+    precio_total: parseFloat(inputs[2]?.value) || 0
+  };
+}));
+
     }
     
     datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);

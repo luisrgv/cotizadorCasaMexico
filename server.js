@@ -150,6 +150,22 @@ app.post('/api/calcular-proforma', requireLogin, async (req, res) => {
   }
 });
 
+
+
+// Eliminar cotización por ID
+app.delete('/api/cotizaciones/:id', requireLogin, async (req, res) => {
+  try {
+    const result = await Cotizacion.findByIdAndDelete(req.params.id);
+    if (!result) return res.status(404).json({ error: 'Cotización no encontrada' });
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error al eliminar cotización:', error);
+    res.status(500).json({ error: 'Error al eliminar cotización' });
+  }
+});
+
+
+
 // Función para generar PDFs
 const generarPDF = (tipo, datos) => {
   return new Promise((resolve) => {
@@ -158,6 +174,9 @@ const generarPDF = (tipo, datos) => {
     const rutaPDF = path.join(__dirname, 'public', 'pdfs', nombreArchivo);
     const stream = fs.createWriteStream(rutaPDF);
     doc.pipe(stream);
+const totalPagado = (datos.pagos || []).reduce((suma, p) => suma + (p.monto || 0), 0);
+const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
+
 
     // Logo
     const logoPath = path.join(__dirname, 'public', 'img', 'logo-casa-mexico.png');
@@ -278,6 +297,15 @@ const generarPDF = (tipo, datos) => {
          .text('TOTAL:', infoX, currentY, { width: 150, align: 'left' })
          .text(`$${datos.precioTotal.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
       currentY += 20;
+   
+      if (saldoPendiente > 0) {
+    currentY += 10;
+    doc.font('Helvetica-Bold')
+      .fillColor('#e63946')
+      .text('OUTSTANDING BALANCE:', infoX, currentY, { width: 150, align: 'left' })
+     .text(`$${saldoPendiente.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
+    doc.fillColor('#000000');
+    }
 
     } else {
       // PDF Cocina (español)
@@ -311,16 +339,19 @@ const generarPDF = (tipo, datos) => {
            .text(plato.nombre, infoX + 90, currentY, { width: 350 });
         currentY += 20;
       });
-
+// agrega estos valores al objeto datos si no están
+datos.totalPagado = totalPagado;
+datos.saldoPendiente = saldoPendiente;
       // Saldo pendiente
-      if (datos.status !== 'pagado') {
-        currentY += 20;
-        doc.font('Helvetica-Bold')
-           .fillColor('#e63946')
-           .text('SALDO PENDIENTE:', infoX, currentY)
-           .text(`$${datos.precioTotal.toFixed(2)}`, 400, currentY);
-        doc.fillColor('#000000');
-      }
+    if (saldoPendiente > 0) {
+  currentY += 20;
+  doc.font('Helvetica-Bold')
+     .fillColor('#e63946')
+     .text('SALDO PENDIENTE:', infoX, currentY)
+     .text(`$${saldoPendiente.toFixed(2)}`, 400, currentY);
+  doc.fillColor('#000000');
+}
+
 
       // Notas para cocina
       if (datos.notasCocina && datos.notasCocina !== 'Ninguna') {

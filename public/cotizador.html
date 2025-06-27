@@ -1512,7 +1512,23 @@ datos.tax = tax;
 datos.gratuity = gratuity;
 datos.precioTotal = total;
 
-    
+    // Obtener pagos desde el DOM
+const pagos = Array.from(document.querySelectorAll('.pago-item')).map(item => ({
+  fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],
+  monto: parseFloat(item.querySelector('.pago-monto')?.value) || 0,
+  metodo: item.querySelector('.pago-metodo')?.value || 'cash',
+  notas: item.querySelector('.pago-notas')?.value || ''
+}));
+
+// Calcular total pagado y saldo
+const totalPagado = pagos.reduce((sum, pago) => sum + (pago.monto || 0), 0);
+const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
+
+// Agregar al objeto de datos para el PDF
+datos.pagos = pagos;
+datos.totalPagado = totalPagado;
+datos.saldoPendiente = saldoPendiente;
+
     mostrarLoading(`Generando PDF para ${tipo === 'cliente' ? 'cliente' : 'cocina'}...`);
     
     try {

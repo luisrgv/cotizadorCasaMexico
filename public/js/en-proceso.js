@@ -11,7 +11,7 @@ let encabezadoInsertado = false;
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', async () => {
   await verificarSesion();
-  await cargarPlatos();
+  
   await cargarCotizacionesEnProceso();
   configurarEventos();
   configurarNotasEdicion();
@@ -39,101 +39,6 @@ async function verificarSesion() {
   }
 }
 
-// Función para cargar platos disponibles
-async function cargarPlatos() {
-  try {
-    const response = await fetch('/api/platos');
-    const data = await response.json();
-    platosDisponibles = data.platos || [];
-    
-    // Si no hay platos desde la API, usamos los estáticos
-    if (platosDisponibles.length === 0) {
-      platosDisponibles = [
-        // Appetizers
-        { _id: '1', nombre: "Guacamole con Chips", precio_por_persona: 75, categoria: "Appetizers" },
-        { _id: '2', nombre: "Esquites", precio_por_persona: 60, categoria: "Appetizers" },
-        { _id: '3', nombre: "Esquites con chorizo", precio_por_persona: 85, categoria: "Appetizers" },
-        { _id: '4', nombre: "Tacos Dorados", precio_por_persona: 90, categoria: "Appetizers" },
-        { _id: '5', nombre: "Ceviche", precio_por_persona: 120, categoria: "Appetizers" },
-        { _id: '6', nombre: "Arroz", precio_por_persona: 35, categoria: "Appetizers" },
-        { _id: '7', nombre: "Frijoles", precio_por_persona: 35, categoria: "Appetizers" },
-        { _id: '8', nombre: "Sopa Azteca", precio_por_persona: 90, categoria: "Appetizers" },
-        
-        // Tacos
-        { _id: '9', nombre: "Grilled Steak", precio_por_persona: 165, categoria: "Tacos" },
-        { _id: '10', nombre: "Grilled Chicken (Tinga)", precio_por_persona: 165, categoria: "Tacos" },
-        { _id: '11', nombre: "Chorizo", precio_por_persona: 130, categoria: "Tacos" },
-        { _id: '12', nombre: "Pork Carnitas", precio_por_persona: 150, categoria: "Tacos" },
-        { _id: '13', nombre: "Pork Cochinita Pibil", precio_por_persona: 150, categoria: "Tacos" },
-        { _id: '14', nombre: "Salt Cured Steak", precio_por_persona: 160, categoria: "Tacos" },
-        { _id: '15', nombre: "Crispy Fish", precio_por_persona: 170, categoria: "Tacos" },
-        { _id: '16', nombre: "Crispy Shrimp", precio_por_persona: 170, categoria: "Tacos" },
-        { _id: '17', nombre: "Root Vegetables", precio_por_persona: 70, categoria: "Tacos" },
-        { _id: '18', nombre: "BARBACOA (5 KILOS)", precio_por_persona: 250, categoria: "Tacos" },
-        
-        // Specialty
-        { _id: '19', nombre: "Chile Relleno", precio_por_persona: 160, categoria: "Specialty" },
-        { _id: '20', nombre: "Mole Verde / Rojo", precio_por_persona: 180, categoria: "Specialty" },
-        { _id: '21', nombre: "Encacahuatado", precio_por_persona: 180, categoria: "Specialty" },
-        
-        // Desserts
-        { _id: '22', nombre: "Tres leches", precio_por_persona: 75, categoria: "Desserts" },
-        { _id: '23', nombre: "Flan", precio_por_persona: 75, categoria: "Desserts" },
-        { _id: '24', nombre: "Agua Fresca (1 Gallon)", precio_por_persona: 20, categoria: "Desserts" }
-      ];
-    }
-    
-    // Llenar la lista de platos en el modal de edición
-    const platosList = document.getElementById('editPlatosList');
-    platosList.innerHTML = '';
-    
-    // Agrupar platos por categoría
-    const platosPorCategoria = {
-      Appetizers: [],
-      Tacos: [],
-      Specialty: [],
-      Desserts: []
-    };
-    
-    platosDisponibles.forEach(plato => {
-      if (plato.categoria && platosPorCategoria[plato.categoria]) {
-        platosPorCategoria[plato.categoria].push(plato);
-      }
-    });
-    
-    // Agregar platos al modal de edición
-    for (const categoria in platosPorCategoria) {
-      platosPorCategoria[categoria].forEach(plato => {
-        const platoItem = document.createElement('div');
-        platoItem.className = 'plato-item';
-        platoItem.dataset.categoria = categoria;
-        platoItem.style.display = 'none'; // Ocultar inicialmente
-        
-        platoItem.innerHTML = `
-          <div class="plato-header">
-            <input type="checkbox" id="edit-plato-${plato._id}" 
-                   data-id="${plato._id}" 
-                   data-nombre="${plato.nombre}" 
-                   data-precio="${plato.precio_por_persona}">
-            <label for="edit-plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
-          </div>
-          <div class="plato-precio">$${plato.precio_por_persona.toFixed(2)}</div>
-          <div class="plato-cantidad">
-            <label>Cantidad:</label>
-            <input type="number" min="1" value="1" class="cantidad-plato">
-          </div>
-        `;
-        
-        platosList.appendChild(platoItem);
-      });
-    }
-    
-    // Mostrar solo la categoría activa inicialmente
-    filtrarPlatosPorCategoria('Appetizers');
-  } catch (error) {
-    console.error('Error al cargar platos:', error);
-  }
-}
 
 // Función para filtar cotizaciones en proceso
 async function cargarCotizacionesEnProceso() {
@@ -221,14 +126,21 @@ function actualizarListaCotizaciones(cotizaciones) {
           <strong>Observaciones:</strong> ${cotizacion.notas || 'Ninguna'}
         </div>
       </div>
-      <div class="cotizacion-actions">
-        <button class="btn btn-info btn-sm ver-detalle" data-id="${cotizacion._id}">
-          <i class="fas fa-eye"></i> Ver
-        </button>
-        <button class="btn btn-primary btn-sm cargar-cotizacion" data-id="${cotizacion._id}">
-          <i class="fas fa-edit"></i> Editar
-        </button>
-      </div>
+       <div class="cotizacion-actions">
+  <button class="btn btn-info btn-sm ver-detalle" data-id="${cotizacion._id}">
+    <i class="fas fa-eye"></i> Ver
+  </button>
+  <button class="btn btn-primary btn-sm cargar-cotizacion" data-id="${cotizacion._id}">
+    <i class="fas fa-edit"></i> Editar
+  </button>
+  ${
+    currentUser?.role === 'admin' 
+      ? `<button class="btn btn-danger btn-sm eliminar-cotizacion" data-id="${cotizacion._id}">
+           <i class="fas fa-trash"></i> Eliminar
+         </button>` 
+      : ''
+  }
+</div>
     `;
     
     container.appendChild(card);
@@ -344,29 +256,7 @@ function configurarNotasEdicion() {
   });
 }
 
-// Función para filtrar platos por categoría
-function filtrarPlatosPorCategoria(categoria) {
-  cambiandoCategoria = true;
-  
-  document.querySelectorAll('#editCategoriasMenu .categoria-btn').forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.dataset.categoria === categoria) {
-      btn.classList.add('active');
-    }
-  });
-  
-  document.querySelectorAll('#editPlatosList .plato-item').forEach(plato => {
-    if (plato.dataset.categoria === categoria) {
-      plato.style.display = 'block';
-    } else {
-      plato.style.display = 'none';
-    }
-  });
-  
-  setTimeout(() => {
-    cambiandoCategoria = false;
-  }, 100);
-}
+
 
 // Función para agregar fila manualmente
 function agregarFilaManual(plato = null) {
@@ -666,7 +556,11 @@ function mostrarDetalleCotizacion(cotizacion) {
   } else {
     pagosHTML = '<tr><td colspan="4">No hay pagos registrados</td></tr>';
   }
-  
+  const totalPagado = Array.isArray(cotizacion.pagos)
+  ? cotizacion.pagos.reduce((suma, pago) => suma + (parseFloat(pago.monto) || 0), 0)
+  : 0;
+const saldoPendiente = Math.max(0, (cotizacion.precioTotal || 0) - totalPagado);
+
   // HTML principal
   modalContent.innerHTML = `
     <div style="font-family: 'Poppins', sans-serif; max-width: 800px; margin: auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); padding: 2rem; position: relative;">
@@ -757,6 +651,12 @@ function mostrarDetalleCotizacion(cotizacion) {
             <td style="padding: 10px; font-size: 1.1rem;">Total a Pagar:</td>
             <td style="text-align: right; padding: 10px; font-size: 1.1rem;">$${cotizacion.precioTotal?.toFixed(2) || '0.00'}</td>
           </tr>
+  ${saldoPendiente > 0 ? `
+<tr style="background-color: #ffe5e5; color: #c1121f; font-weight: bold;">
+  <td style="padding: 10px; font-size: 1.1rem;">Saldo Pendiente:</td>
+  <td style="text-align: right; padding: 10px; font-size: 1.1rem;">$${saldoPendiente.toFixed(2)}</td>
+</tr>` : ''}
+
         </table>
       </div>
 
@@ -931,6 +831,31 @@ document.addEventListener('click', e => {
     window.location.href = `/cotizador.html?edit=${id}`;
   }
 });
+
+
+//funncion para eliminar cotizacion
+document.addEventListener('click', async (e) => {
+  if (e.target.closest('.eliminar-cotizacion')) {
+    const id = e.target.closest('.eliminar-cotizacion').dataset.id;
+    
+    if (confirm('¿Estás seguro que deseas eliminar esta cotización? Esta acción no se puede deshacer.')) {
+      try {
+        const res = await fetch(`/api/cotizaciones/${id}`, {
+          method: 'DELETE'
+        });
+        
+        if (!res.ok) throw new Error('No se pudo eliminar');
+
+        alert('Cotización eliminada correctamente.');
+        await cargarCotizacionesEnProceso(); // refrescar lista
+      } catch (error) {
+        console.error('Error al eliminar:', error);
+        alert('Ocurrió un error al intentar eliminar.');
+      }
+    }
+  }
+});
+
 
 // Funciones para mostrar/ocultar loading
 function mostrarLoading(mensaje) {

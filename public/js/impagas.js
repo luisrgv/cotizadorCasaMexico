@@ -221,14 +221,21 @@ function actualizarListaCotizaciones(cotizaciones) {
           <strong>Observaciones:</strong> ${cotizacion.notas || 'Ninguna'}
         </div>
       </div>
-      <div class="cotizacion-actions">
-        <button class="btn btn-info btn-sm ver-detalle" data-id="${cotizacion._id}">
-          <i class="fas fa-eye"></i> Ver
-        </button>
-        <button class="btn btn-primary btn-sm cargar-cotizacion" data-id="${cotizacion._id}">
-          <i class="fas fa-edit"></i> Editar
-        </button>
-      </div>
+        <div class="cotizacion-actions">
+  <button class="btn btn-info btn-sm ver-detalle" data-id="${cotizacion._id}">
+    <i class="fas fa-eye"></i> Ver
+  </button>
+  <button class="btn btn-primary btn-sm cargar-cotizacion" data-id="${cotizacion._id}">
+    <i class="fas fa-edit"></i> Editar
+  </button>
+  ${
+    currentUser?.role === 'admin' 
+      ? `<button class="btn btn-danger btn-sm eliminar-cotizacion" data-id="${cotizacion._id}">
+           <i class="fas fa-trash"></i> Eliminar
+         </button>` 
+      : ''
+  }
+</div>
     `;
     
     container.appendChild(card);
@@ -667,6 +674,13 @@ function mostrarDetalleCotizacion(cotizacion) {
     pagosHTML = '<tr><td colspan="4">No hay pagos registrados</td></tr>';
   }
   
+
+//pagos pendientes
+  const totalPagado = Array.isArray(cotizacion.pagos)
+  ? cotizacion.pagos.reduce((suma, pago) => suma + (parseFloat(pago.monto) || 0), 0)
+  : 0;
+const saldoPendiente = Math.max(0, (cotizacion.precioTotal || 0) - totalPagado);
+
   // HTML principal
   modalContent.innerHTML = `
     <div style="font-family: 'Poppins', sans-serif; max-width: 800px; margin: auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); padding: 2rem; position: relative;">
@@ -757,6 +771,13 @@ function mostrarDetalleCotizacion(cotizacion) {
             <td style="padding: 10px; font-size: 1.1rem;">Total a Pagar:</td>
             <td style="text-align: right; padding: 10px; font-size: 1.1rem;">$${cotizacion.precioTotal?.toFixed(2) || '0.00'}</td>
           </tr>
+
+              ${saldoPendiente > 0 ? `
+<tr style="background-color: #ffe5e5; color: #c1121f; font-weight: bold;">
+  <td style="padding: 10px; font-size: 1.1rem;">Saldo Pendiente:</td>
+  <td style="text-align: right; padding: 10px; font-size: 1.1rem;">$${saldoPendiente.toFixed(2)}</td>
+</tr>` : ''}
+
         </table>
       </div>
 
@@ -931,6 +952,30 @@ document.addEventListener('click', e => {
     window.location.href = `/cotizador.html?edit=${id}`;
   }
 });
+
+//funncion para eliminar cotizacion
+document.addEventListener('click', async (e) => {
+  if (e.target.closest('.eliminar-cotizacion')) {
+    const id = e.target.closest('.eliminar-cotizacion').dataset.id;
+    
+    if (confirm('¿Estás seguro que deseas eliminar esta cotización? Esta acción no se puede deshacer.')) {
+      try {
+        const res = await fetch(`/api/cotizaciones/${id}`, {
+          method: 'DELETE'
+        });
+        
+        if (!res.ok) throw new Error('No se pudo eliminar');
+
+        alert('Cotización eliminada correctamente.');
+        await cargarCotizacionesEnProceso(); // refrescar lista
+      } catch (error) {
+        console.error('Error al eliminar:', error);
+        alert('Ocurrió un error al intentar eliminar.');
+      }
+    }
+  }
+});
+
 
 // Funciones para mostrar/ocultar loading
 function mostrarLoading(mensaje) {

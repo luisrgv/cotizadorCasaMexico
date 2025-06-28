@@ -4,269 +4,440 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calendario - Casa México</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    :root {
-      --primary: #3498db;
-      --secondary: #2c3e50;
-      --success: #2ecc71;
-      --danger: #e74c3c;
-      --warning: #f39c12;
-      --light: #ecf0f1;
-      --dark: #34495e;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+<style>
+  :root {
+    --primary: #3a6a8a; /* Azul principal */
+    --primary-dark: #2c4e6a;
+    --secondary: #e63946; /* Rojo acento */
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --light-gray: #e9ecef;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+  }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f7fa;
-      color: #333;
-      line-height: 1.6;
-    }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f7fa;
+    color: var(--dark);
+    line-height: 1.6;
+  }
+
+  /* Header moderno */
   .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: #3a6a8a; /* fondo claro */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-bottom: 4px solid var(--primary);
-}
-.logo-text {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--dark);
-  text-shadow: 1px 1px 0 var(--light-gray);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 2rem;
+    background: white;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo-img {
+    height: 50px;
+  }
+
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+  }
+
+  .logo-text span {
+    color: var(--secondary);
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .back-btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 10px rgba(58, 106, 138, 0.3);
+  }
+
+  .back-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(58, 106, 138, 0.4);
+  }
+
+  /* Contenedor principal */
+  .container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+
+  /* Encabezado del calendario */
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .month-navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .month-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    min-width: 250px;
+    text-align: center;
+    color: var(--primary-dark);
+  }
+
+  .nav-btn {
+    background-color: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+
+  .nav-btn:hover {
+    background-color: var(--primary);
+    color: white;
+  }
+
+  .btn-today {
+    background-color: var(--primary);
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(58, 106, 138, 0.3);
+  }
+
+  .btn-today:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(58, 106, 138, 0.4);
+  }
+
+  /* Grid del calendario */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .day-header {
+    background-color: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    font-weight: 500;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+  }
+
+  .day-cell {
+    background-color: white;
+    border: 1px solid #e9ecef;
+    min-height: 140px;
+    padding: 0.8rem;
+    border-radius: 8px;
+    transition: all 0.3s;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .day-cell:hover {
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+    border-color: var(--primary);
+  }
+
+  .day-number {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-align: right;
+    color: var(--gray);
+    font-size: 0.9rem;
+  }
+
+  .day-cell.today .day-number {
+    background-color: var(--primary);
+    color: white;
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 26px;
+    margin-left: auto;
+  }
+
+  .event-item {
+    padding: 0.4rem 0.6rem;
+    margin-bottom: 0.4rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background-color: white;
+    border-left: 3px solid var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+  }
+
+  .event-item:hover {
+    transform: translateX(3px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+.event-item.pagada {
+  background-color: #e8f5e9;
+  border-left-color: var(--success);
+  color: #1b5e20;
 }
 
-.logo-text span {
-  color: var(--primary); /* rojo mexicano */
+.event-item.impaga {
+  background-color: #ffebee;
+  border-left-color: var(--danger);
+  color: #c62828;
 }
-    .logo { font-size: 1.5rem; font-weight: bold; }
-    .logo span { color: var(--primary); }
-    .user-info { display: flex; align-items: center; gap: 10px; }
-    .back-btn {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    .back-btn:hover { background-color: #2980b9; }
 
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    .month-navigation {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .month-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      min-width: 200px;
-      text-align: center;
-    }
-    .nav-btn {
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .btn-today {
-      background-color: var(--primary);
-      color: white;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    .btn-today:hover { background-color: #2980b9; }
+.event-item.en_proceso {
+  background-color: #fff8e1;
+  border-left-color: var(--warning);
+  color: #e65100;
+}
 
+/* Badge de estatus en el modal */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.pagada {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #1b5e20;
+}
+
+.status-badge.impaga {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #c62828;
+}
+
+.status-badge.en_proceso {
+  background-color: #fff8e1;
+  color: #e65100;
+  border: 1px solid #e65100;
+}
+  .more-events {
+    font-size: 0.7rem;
+    color: var(--gray);
+    text-align: center;
+    margin-top: 0.3rem;
+    font-style: italic;
+  }
+
+  /* Modal modernizado */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+
+  .modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 95%;
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: modalFadeIn 0.3s ease-out;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--gray);
+    background: rgba(0,0,0,0.05);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 10;
+  }
+
+  .close-modal:hover {
+    color: var(--danger);
+    background: rgba(220, 53, 69, 0.1);
+    transform: rotate(90deg);
+  }
+
+  /* Loading overlay moderno */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.9);
+    z-index: 1001;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    backdrop-filter: blur(5px);
+  }
+
+  .spinner {
+    border: 4px solid rgba(58, 106, 138, 0.1);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+  }
+
+  .loading-text {
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+    font-weight: 500;
+  }
+
+  /* Responsive */
+  @media (max-width: 992px) {
     .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(4, 1fr);
     }
-    .day-header {
-      background-color: var(--secondary);
-      color: white;
-      padding: 0.8rem;
-      text-align: center;
-      font-weight: 600;
-      border-radius: 5px;
-    }
-    .day-cell {
-      background-color: white;
-      border: 1px solid #ddd;
-      min-height: 120px;
-      padding: 0.5rem;
-      border-radius: 5px;
-      transition: all 0.3s;
-      position: relative;
-    }
-    .day-cell:hover {
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transform: translateY(-3px);
-    }
-    .day-number {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      text-align: right;
-    }
-    .event-item {
-      padding: 0.3rem 0.5rem;
-      margin-bottom: 0.3rem;
-      border-radius: 3px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      background-color: var(--light);
-      border-left: 3px solid var(--primary);
-    }
-    .event-item.pagada {
-      background-color: #d4edda;
-      border-left-color: var(--success);
-    }
-    .event-item.impaga {
-      background-color: #f8d7da;
-      border-left-color: var(--danger);
-    }
-    .event-item.proceso {
-      background-color: #fff3cd;
-      border-left-color: var(--warning);
-    }
-    .event-item:hover {
-      filter: brightness(95%);
-    }
+  }
 
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
+  @media (max-width: 768px) {
+    .calendar-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
-    .modal-content {
-      background-color: white;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 600px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 2rem;
-      position: relative;
-    }
-    .close-modal {
-      position: absolute;
-      top: 1rem; right: 1rem;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #7f8c8d;
-    }
-    .event-details {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin: 1rem 0;
-    }
-    .event-detail {
-      padding: 0.5rem;
-    }
-    .event-detail.full-width {
-      grid-column: 1 / -1;
-    }
-    .event-detail strong {
-      display: block;
-      color: #7f8c8d;
-      font-size: 0.9rem;
-      margin-bottom: 0.2rem;
-    }
-    .event-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: flex-end;
-      margin-top: 1rem;
-    }
-    .event-btn {
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-    .btn-edit {
-      background-color: var(--primary);
-      color: white;
-    }
-    .btn-pdf {
-      background-color: var(--secondary);
-      color: white;
-    }
-
-    .loading-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(255,255,255,0.8);
-      z-index: 1001;
-      align-items: center;
-      justify-content: center;
+    
+    .header {
       flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
     }
-    .spinner {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid var(--primary);
-      border-radius: 50%;
-      width: 50px; height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 1rem;
+    
+    .calendar-header {
+      flex-direction: column;
+      gap: 1rem;
     }
-    @keyframes spin {
-      0% { transform: rotate(0); }
-      100% { transform: rotate(360deg); }
+    
+    .month-navigation {
+      order: 2;
     }
+  }
 
-    @media (max-width: 768px) {
-      .calendar-grid { grid-template-columns: 1fr; }
-      .day-cell { min-height: auto; }
-      .event-details { grid-template-columns: 1fr; }
+  @media (max-width: 576px) {
+    .calendar-grid {
+      grid-template-columns: 1fr;
     }
-  </style>
+    
+    .month-title {
+      font-size: 1.4rem;
+    }
+  }
+</style>
 </head>
 <body>
-  <div class="header">
-    <div class="logo">Calendario <span>Casa México</span></div>
-    <div class="user-info">
-      <button class="back-btn" id="backBtn">
-        <i class="fas fa-arrow-left"></i> Volver al Cotizador
-      </button>
-    </div>
+ <div class="header">
+  <div class="logo-container">
+    <img src="/img/logo-casa-mexico.png" alt="Casa México" class="logo-img">
+    <div class="logo-text">Calendario <span>Casa México</span></div>
   </div>
+  <div class="user-info">
+    <button class="back-btn" id="backBtn">
+      <i class="fas fa-arrow-left"></i> Volver
+    </button>
+  </div>
+</div>
 
   <div class="container">
     <div class="calendar-header">
@@ -292,17 +463,13 @@
   </div>
 
   <!-- Modal de evento -->
-  <div class="modal" id="eventModal">
-    <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2 id="eventTitle">Detalles del Evento</h2>
-      <div class="event-details" id="eventDetails"></div>
-      
-      
-       
-      
-    </div>
+<div class="modal" id="eventModal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h2 id="eventTitle" style="display: none;"></h2> <!-- Ocultamos el título ya que lo mostramos en el diseño interno -->
+    <div class="event-details" id="eventDetails"></div>
   </div>
+</div>
 
   <!-- Loading overlay -->
   <div class="loading-overlay" id="loadingOverlay">
@@ -433,89 +600,193 @@
       }
     }
 
-    function mostrarDetalleEvento(evento) {
-      currentEvent = evento;
-      document.getElementById('eventTitle').textContent = `Evento: ${evento.cliente}`;
+
+// Dentro del bucle donde creas los eventos:
+eventosDelDia.forEach(evento => {
+  const eventElement = document.createElement('div');
+  eventElement.className = `event-item ${evento.status || 'en_proceso'}`;
+  eventElement.textContent = `${evento.hora_evento} - ${evento.cliente}`;
+  eventElement.addEventListener('click', () => mostrarDetalleEvento(evento));
+  dayCell.appendChild(eventElement);
+});
+
+   function mostrarDetalleEvento(evento) {
+  currentEvent = evento;
+  
+  const statusMap = {
+  'pagada': 'Pagada',
+  'impaga': 'Impaga',
+  'en_proceso': 'En Proceso'
+};
+
+const statusText = statusMap[evento.status] || evento.status;
+
+  // Formatear fechas
+  const fecha = evento.fecha ? new Date(evento.fecha).toLocaleDateString('es-ES') : 'No especificada';
+  const createdAt = evento.createdAt ? new Date(evento.createdAt).toLocaleDateString('es-ES') : 'No especificada';
+  
+  // Generar HTML de platos
+  let platosHTML = '';
+  if (evento.platos && evento.platos.length > 0) {
+    platosHTML = evento.platos.map(plato => `
+      <tr>
+        <td style="text-align: center; padding: 8px; border-bottom: 1px solid #eee;">${plato.cantidadTexto || plato.cantidad || '-'}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${plato.nombre}</td>
+        <td style="text-align: right; padding: 8px; border-bottom: 1px solid #eee;">$${plato.precio_total?.toFixed(2) || '0.00'}</td>
+      </tr>
+    `).join('');
+  } else {
+    platosHTML = '<tr><td colspan="3" style="padding: 8px; text-align: center;">No hay platos registrados</td></tr>';
+  }
+  
+  // Generar HTML de pagos
+  let pagosHTML = '';
+  if (evento.pagos && evento.pagos.length > 0) {
+    pagosHTML = evento.pagos.map(pago => `
+      <tr>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${new Date(pago.fecha).toLocaleDateString('es-ES')}</td>
+        <td style="text-align: right; padding: 8px; border-bottom: 1px solid #eee;">$${pago.monto?.toFixed(2) || '0.00'}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${pago.metodo}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${pago.notas || ''}</td>
+      </tr>
+    `).join('');
+  } else {
+    pagosHTML = '<tr><td colspan="4" style="padding: 8px; text-align: center;">No hay pagos registrados</td></tr>';
+  }
+
+  const totalPagado = Array.isArray(evento.pagos) 
+    ? evento.pagos.reduce((suma, pago) => suma + (parseFloat(pago.monto)) || 0, 0)
+    : 0;
+  const saldoPendiente = Math.max(0, (evento.precioTotal || 0) - totalPagado);
+
+  // HTML principal
+  const detallesHTML = `
+    <div style="font-family: 'Poppins', sans-serif; width: 100%; background: #fff; border-radius: 8px; overflow: hidden;">
+      <!-- Encabezado con logo -->
+
       
-      // Formatear fecha en español
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const fechaFormateada = evento.fecha.toLocaleDateString('es-MX', options);
+      <div style="background: #3a6a8a; padding: 1.5rem; text-align: center; border-bottom: 4px solid #e63946;">
+        <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" style="max-height: 80px; margin-bottom: 0.5rem;">
+        <h2 style="margin: 0; color: white; font-weight: 600;">CASA MÉXICO CATERING</h2>
+        <h3 style="margin: 0.5rem 0 0; color: white; font-weight: 400;">Detalle del Evento</h3>
+
+        
+      </div>
+<div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+  <strong style="display: inline-block; width: 150px; color: #555;">Estado:</strong>
+  <span class="status-badge ${evento.status}">${statusText}</span>
+</div>
       
-      // Formatear estado
-      const formatStatus = (status) => {
-        const statusMap = {
-          'en_proceso': 'En proceso',
-          'pagado': 'Pagada',
-          'impago': 'Impaga'
-        };
-        return statusMap[status] || status;
-      };
+<div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; position: relative;">
+  <!-- Información de creación (esquina superior derecha) -->
+  <div style="position: absolute; top: 1rem; right: 1rem; text-align: right; font-size: 0.9rem; color: #555;">
+    <p style="margin: 0;"><strong>Creado el:</strong> ${createdAt}</p>
+    <p style="margin: 0;"><strong>Por:</strong> ${evento.creadoPor || 'Desconocido'}</p>
+  </div>
+      <!-- Contenido principal -->
+      <div style="padding: 1.5rem;">
+        <!-- Información básica -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+            <h4 style="margin-top: 0; color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">Información del Cliente</h4>
+            <p><strong>Nombre:</strong> ${evento.cliente || 'No especificado'}</p>
+            <p><strong>Teléfono:</strong> ${evento.numero || 'No especificado'}</p>
+            <p><strong>Contacto:</strong> ${evento.contacto || 'No especificado'}</p>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+            <h4 style="margin-top: 0; color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">.</h4>
+            <p><strong>Fecha:</strong> ${fecha} (${evento.dia || 'No especificado'})</p>
+            <p><strong>Servicio:</strong> ${evento.servicio || 'No especificado'}</p>
+            <p><strong>Ubicación:</strong> ${evento.ubicacion || 'No especificado'}</p>
+            <p><strong>Hora Evento:</strong> ${evento.hora_evento || 'No especificado'}</p>
+          </div>
+        </div>
 
-      // Crear HTML de detalles
-      const detallesHTML = `
-        <div class="event-detail">
-          <strong>Fecha</strong>
-          ${fechaFormateada}
+        <!-- Platos -->
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">Menú Seleccionado</h4>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+              <tr style="background: #3a6a8a; color: white;">
+                <th style="padding: 10px; text-align: center;">Cantidad</th>
+                <th style="padding: 10px; text-align: left;">Plato</th>
+                <th style="padding: 10px; text-align: right;">Precio</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${platosHTML}
+            </tbody>
+          </table>
         </div>
-        <div class="event-detail">
-          <strong>Estado</strong>
-          <span class="status-badge ${evento.status}">${formatStatus(evento.status)}</span>
-        </div>
-        <div class="event-detail">
-          <strong>Servicio</strong>
-          ${evento.servicio}
-        </div>
-        <div class="event-detail">
-          <strong>Hora del Evento</strong>
-          ${evento.hora_evento}
-        </div>
-        <div class="event-detail">
-          <strong>Hora de Servir</strong>
-          ${evento.hora_servir || '--:--'}
-        </div>
-        <div class="event-detail">
-          <strong>Ubicación</strong>
-          ${evento.ubicacion || 'No especificada'}
-        </div>
-        <div class="event-detail">
-          <strong>Número de Personas</strong>
-          ${evento.numeroPersonas}
-        </div>
-        <div class="event-detail">
-          <strong>Contacto</strong>
-          ${evento.contacto || 'No especificado'}
-        </div>
-        <div class="event-detail">
-          <strong>Teléfono</strong>
-          ${evento.numero || 'No especificado'}
-        </div>
-        <div class="event-detail full-width">
-          <strong>Platos</strong>
-          ${evento.platos?.map(p => `${p.nombre} (${p.cantidad})`).join(', ') || 'No especificados'}
-        </div>
-        <div class="event-detail">
-          <strong>Subtotal</strong>
-          $${evento.subtotal?.toFixed(2) || '0.00'}
-        </div>
-        <div class="event-detail">
-          <strong>Total</strong>
-          $${evento.precioTotal?.toFixed(2) || '0.00'}
-        </div>
-        <div class="event-detail full-width">
-          <strong>Notas</strong>
-          ${evento.notas || 'Ninguna'}
-        </div>
-        <div class="event-detail">
-          <strong>Creado por</strong>
-          ${evento.creadoPor || 'Sistema'}
-        </div>
-      `;
 
-      document.getElementById('eventDetails').innerHTML = detallesHTML;
-      document.getElementById('eventModal').style.display = 'flex';
-    }
+        <!-- Pagos -->
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">Historial de Pagos</h4>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+              <tr style="background: #3a6a8a; color: white;">
+                <th style="padding: 10px; text-align: left;">Fecha</th>
+                <th style="padding: 10px; text-align: right;">Monto</th>
+                <th style="padding: 10px; text-align: left;">Método</th>
+                <th style="padding: 10px; text-align: left;">Notas</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pagosHTML}
+            </tbody>
+          </table>
+        </div>
 
-    function configurarEventos() {
+        <!-- Resumen de pagos -->
+       
+
+
+  <h4 style="margin-top: 0; color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">Total a pagar</h4>
+  
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div>
+      <p><strong>Subtotal:</strong> $${evento.subtotal?.toFixed(2) || '0.00'}</p>
+      <p><strong>Tax (${evento.taxPercentage || 8}%):</strong> $${evento.tax?.toFixed(2) || '0.00'}</p>
+      <p><strong>Propina (${evento.gratuityPercentage || 20}%):</strong> $${evento.gratuity?.toFixed(2) || '0.00'}</p>
+      ${evento.deliveryFee ? `<p><strong>Delivery Fee:</strong> $${evento.deliveryFee.toFixed(2)}</p>` : ''}
+      <p style="font-weight: bold; font-size: 1.1rem;"><strong>Total:</strong> $${evento.precioTotal?.toFixed(2) || '0.00'}</p>
+    </div>
+  </div>
+
+  <!-- Estado de pagos (nuevo item) -->
+  <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #ccc;">
+    <h5 style="margin-top: 0; color: #3a6a8a;">Estado de Pagos</h5>
+    <p><strong>Total Pagado:</strong> $${totalPagado.toFixed(2)}</p>
+    ${saldoPendiente > 0 ? `
+      <p style="color: #c1121f; font-weight: bold;"><strong>Saldo Pendiente:</strong> $${saldoPendiente.toFixed(2)}</p>
+    ` : `
+      <p style="color: #2ecc71; font-weight: bold;"><strong>Pagado completamente</strong></p>
+    `}
+  </div>
+</div>
+
+        <!-- Notas -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; border-left: 4px solid #3a6a8a;">
+            <h5 style="margin-top: 0; color: #3a6a8a;">Notas Generales</h5>
+            <p>${evento.notas || 'Ninguna'}</p>
+          </div>
+          <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; border-left: 4px solid #e63946;">
+            <h5 style="margin-top: 0; color: #3a6a8a;">Notas para Cocina</h5>
+            <p>${evento.notasCocina || 'Ninguna'}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('eventDetails').innerHTML = detallesHTML;
+  document.getElementById('eventModal').style.display = 'flex';
+}
+
+
+function configurarEventos() {
       // Navegación del calendario
       document.getElementById('prevMonth').addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);

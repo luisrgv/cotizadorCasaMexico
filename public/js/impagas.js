@@ -184,8 +184,8 @@ function actualizarListaCotizaciones(cotizaciones) {
           <strong>INVOICE</strong> ${cotizacion.invoiceNumber}
         </div>
         <div class="cotizacion-cliente">${cotizacion.cliente || 'Sin nombre'}</div>
-        <div class="cotizacion-status status-en_proceso">
-          ${cotizacion.status || 'En Proceso'}
+        <div class="cotizacion-status status-impago">
+          ${cotizacion.status || 'Impago'}
         </div>
       </div>
 
@@ -244,10 +244,13 @@ function actualizarListaCotizaciones(cotizaciones) {
 
 // Función para mostrar modal de edición
 function mostrarModalEdicion(cotizacion) {
-  // Redirigir a cotizador.html con el ID de la cotización a editar
+// Redirigir a cotizador.html con el ID de la cotización a editar
   window.location.href = `/cotizador.html?edit=${cotizacion._id}`;
 }
-
+//funcion para ver calendario
+document.getElementById('verCalendarioBtn').addEventListener('click', () => {
+      window.location.href = '/calendario';
+    });
 // Función para configurar notas en el modal de edición
 function configurarNotasEdicion() {
   const notasArea = document.getElementById('editNotas');

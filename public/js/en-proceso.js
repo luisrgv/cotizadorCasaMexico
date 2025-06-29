@@ -745,7 +745,10 @@ function configurarEventos() {
       this.closest('.modal').style.display = 'none';
     });
   });
-  
+  //redireccionar al calendario
+  document.getElementById('verCalendarioBtn').addEventListener('click', () => {
+      window.location.href = '/calendario';
+    });
   // Evento para cambiar categorías de platos
   document.querySelectorAll('#editCategoriasMenu .categoria-btn').forEach(btn => {
     btn.addEventListener('click', function() {

@@ -298,14 +298,15 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
          .text(`$${datos.precioTotal.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
       currentY += 20;
    
-      if (saldoPendiente > 0) {
-    currentY += 10;
-    doc.font('Helvetica-Bold')
-      .fillColor('#e63946')
-      .text('OUTSTANDING BALANCE:', infoX, currentY, { width: 150, align: 'left' })
+      if (totalPagado > 0 && saldoPendiente > 0) {
+  currentY += 10;
+  doc.font('Helvetica-Bold')
+     .fillColor('#e63946')
+     .text('OUTSTANDING BALANCE:', infoX, currentY, { width: 150, align: 'left' })
      .text(`$${saldoPendiente.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
-    doc.fillColor('#000000');
-    }
+  doc.fillColor('#000000');
+}
+
 
     } else {
       // PDF Cocina (español)

@@ -580,7 +580,7 @@
         <i class="fas fa-plus"></i> Nueva Cotización
       </div>
       <a href="en-proceso.html" class="tab" data-tab="en_proceso">
-        <i class="fas fa-spinner"></i> En Proceso <span class="tab-badge" id="badgeEnProceso">0</span>
+        <i class="fas fa-spinner"></i> En Proceso N <span class="tab-badge" id="badgeEnProceso">0</span>
       </a>
       <a href="pagadas.html" class="tab" data-tab="pagada">
         <i class="fas fa-check-circle"></i> Pagadas <span class="tab-badge" id="badgePagadas">0</span>
@@ -1791,6 +1791,31 @@ async function cargarPlatosDesdeBD() {
     console.error('Error al cargar platos:', error);
   }
 } 
+
+
+//numero de cotizaciones 
+
+  async function actualizarBadgeCotizaciones() {
+    try {
+      const res = await fetch('/api/cotizaciones');
+      const data = await res.json();
+      const enProceso = data.cotizaciones.filter(c => c.status === 'en_proceso');
+      const pagadas = data.cotizaciones.filter(c => c.status === 'pagado');
+      const impagas = data.cotizaciones.filter(c => c.status === 'impago');
+
+      document.getElementById('badgeEnProceso').textContent = enProceso.length;
+      document.getElementById('badgePagadas') && (document.getElementById('badgePagadas').textContent = pagadas.length);
+      document.getElementById('badgeImpagas') && (document.getElementById('badgeImpagas').textContent = impagas.length);
+    } catch (err) {
+      console.error('Error cargando cotizaciones:', err);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    actualizarBadgeCotizaciones();
+  });
+
+
 </script>
 
 </body>

@@ -418,8 +418,9 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       precioTotal: datos.precioTotal,
       notas: datos.notas || 'Ninguna',
       notasCocina: datos.notasCocina || 'Ninguna',
-      creadoPor: usuario,
-      pagos: datos.pagos || [],
+      creadoPor: cotizacion?.creadoPor || usuario,
+  createdAt: cotizacion?.createdAt || new Date(),
+       pagos: datos.pagos || [],
       updatedAt: new Date()
     };
 

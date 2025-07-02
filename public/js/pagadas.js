@@ -170,8 +170,12 @@ function actualizarListaCotizaciones(cotizaciones) {
     card.className = 'cotizacion-card';
     
     // Formatear fechas
-    const fecha = cotizacion.fecha ? new Date(cotizacion.fecha).toLocaleDateString('es-ES') : 'No especificada';
-    const createdAt = cotizacion.createdAt ? 
+   const fechaObj = cotizacion.fecha ? new Date(cotizacion.fecha) : null;
+    if (fechaObj) {
+      fechaObj.setMinutes(fechaObj.getMinutes() + fechaObj.getTimezoneOffset());
+    }
+    const fecha = fechaObj ? fechaObj.toLocaleDateString('es-ES') : 'No especificada';
+      const createdAt = cotizacion.createdAt ? 
       new Date(cotizacion.createdAt).toLocaleDateString('es-ES', {
         day: '2-digit',
         month: '2-digit',
@@ -645,8 +649,12 @@ function mostrarDetalleCotizacion(cotizacion) {
   const modalTitle = document.getElementById('modalTitle');
   const modalContent = document.getElementById('modalContent');
   
-  const fecha = cotizacion.fecha ? new Date(cotizacion.fecha).toLocaleDateString('es-ES') : 'No especificada';
-  const createdAt = cotizacion.createdAt ? new Date(cotizacion.createdAt).toLocaleDateString('es-ES') : 'No especificada';
+ const fechaObj = cotizacion.fecha ? new Date(cotizacion.fecha) : null;
+    if (fechaObj) {
+      fechaObj.setMinutes(fechaObj.getMinutes() + fechaObj.getTimezoneOffset());
+    }
+    const fecha = fechaObj ? fechaObj.toLocaleDateString('es-ES') : 'No especificada';
+      const createdAt = cotizacion.createdAt ? new Date(cotizacion.createdAt).toLocaleDateString('es-ES') : 'No especificada';
   
   // Generar HTML de platos
   let platosHTML = '';
@@ -697,7 +705,7 @@ const saldoPendiente = Math.max(0, (cotizacion.precioTotal || 0) - totalPagado);
       <!-- Logo -->
          <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" style="max-height: 100px; margin-bottom: 0.5rem;">
 
-        <h2 style="margin: 0; color: var(--dark);">CASA MÉXICO CATERING</h2>
+        <h2 style="margin: 0; color: var(--dark);">Chef Cristina Martinez Catering</h2>
         <h3 style="margin: 0.5rem 0 1rem; color: var(--primary);">Detalle de Cotización</h3>
         <div style="font-size: 1.1rem; font-weight: 500;">Invoice #${cotizacion.invoiceNumber}</div>
       </div>

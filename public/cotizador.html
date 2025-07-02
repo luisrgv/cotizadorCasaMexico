@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #e63946;
+      --primary: #E4007C;
       --primary-dark: #c1121f;
       --secondary: #457b9d;
       --dark: #1d3557;
@@ -39,7 +39,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: #3a6a8a; /* fondo claro */
+  background: #000000; /* fondo negro */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-bottom: 4px solid var(--primary);
 }
@@ -358,7 +358,7 @@
       display: flex;
       justify-content: space-between;
       padding: 0.5rem 0;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #681a1a;
     }
     
     .resumen-total {
@@ -558,14 +558,14 @@
  <div class="header">
   <div class="branding">
     <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" class="logo-img">
-    <div class="logo-text">Casa <span>México</span></div>
+    <div class="logo-text"> <span>Catering</span></div>
   </div>
 
   <div class="user-info">
     <div class="avatar" id="userAvatar">CM</div>
     <div>
       <div id="userName">Usuario</div>
-      <div id="userRole" style="font-size: 0.9rem; color: #bdc3c7;">Rol</div>
+      <div id="userRole" style="font-size: 0.9rem; color: #1675b5;">Rol</div>
     </div>
     <button class="logout-btn" id="logoutBtn">
       <i class="fas fa-sign-out-alt"></i> Salir
@@ -1334,7 +1334,7 @@ async function cargarCotizacionParaEditar(id) {
     document.getElementById('invoiceNumber').value = cotizacion.invoiceNumber;
     document.getElementById('invoiceNumberDisplay').textContent = cotizacion.invoiceNumber;
 
-    document.getElementById('status').value = cotizacion.status || 'en_proceso';
+    document.getElementById('status').value = cotizacion.status || '';
     document.getElementById('fecha').value = cotizacion.fecha?.split('T')[0] || '';
     document.getElementById('dia').value = cotizacion.dia || '';
     document.getElementById('cliente').value = cotizacion.cliente || '';

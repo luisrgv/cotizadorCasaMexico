@@ -181,14 +181,14 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
     // Logo
     const logoPath = path.join(__dirname, 'public', 'img', 'logo-casa-mexico.png');
     if (fs.existsSync(logoPath)) {
-      doc.image(logoPath, 50, 45, { width: 100 });
+      doc.image(logoPath, 30, 30, { width: 100 });
     }
 
     // Encabezado
     doc.fillColor('#1d3557')
        .fontSize(20)
        .font('Helvetica-Bold')
-       .text('CASA MÉXICO CATERING', {
+       .text('Chef Cristina Martinez Catering', {
          align: 'center',
          paragraphGap: 5
        });
@@ -203,15 +203,17 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
     doc.moveTo(50, 120)
        .lineTo(550, 120)
        .lineWidth(2)
-       .stroke('#e63946');
+       .stroke('#E4007C');
 
     // Información principal
     const infoX = 50;
     let currentY = 140;
 
     // Formato de fecha
-    const fechaFormateada = new Date(datos.fecha).toLocaleDateString('es-ES', {
-
+    const fechaObj = new Date(datos.fecha);
+    fechaObj.setMinutes(fechaObj.getMinutes() + fechaObj.getTimezoneOffset());
+    const fechaFormateada = fechaObj.toLocaleDateString('es-ES', {
+      
     });
 
     // Agrega fila de texto

@@ -497,8 +497,24 @@
         
         // Procesar eventos para asegurar formato consistente
         events = data.eventos.map(evento => {
-          // Convertir fecha string a objeto Date si es necesario
-          const fechaEvento = evento.fecha instanceof Date ? evento.fecha : new Date(evento.fecha);
+          // Ajustar la fecha para evitar problemas de zona horaria
+          let fechaEvento;
+          if (evento.fecha instanceof Date) {
+            fechaEvento = new Date(evento.fecha);
+          } else if (typeof evento.fecha === 'string') {
+            // Si es string, asumimos formato YYYY-MM-DD y creamos fecha sin zona horaria
+            const dateParts = evento.fecha.split('T')[0].split('-');
+            const year = parseInt(dateParts[0]);
+            const month = parseInt(dateParts[1]) - 1; // Los meses en JS son 0-11
+            const day = parseInt(dateParts[2]);
+            fechaEvento = new Date(year, month, day);
+          } else {
+            // Si no es Date ni string, usamos la fecha actual como fallback
+            fechaEvento = new Date();
+          }
+          
+          // Ajustar la fecha para que no cambie por la zona horaria
+          fechaEvento = new Date(fechaEvento.getFullYear(), fechaEvento.getMonth(), fechaEvento.getDate());
           
           return {
             ...evento,

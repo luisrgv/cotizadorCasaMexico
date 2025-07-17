@@ -24,9 +24,9 @@ async function createUsers() {
 
     // 5. Crear nuevos usuarios
     const users = await User.insertMany([
-      { usuario: 'missael', password: '1234', rol: 'admin' },
-      { usuario: 'chef', password: 'chef123', rol: 'chef' },
-      { usuario: 'user', password: 'user123', rol: 'ventas' }
+      { usuario: '1', password: '', rol: 'admin' },
+      { usuario: '2', password: '', rol: 'chef' },
+      { usuario: '3', password: '', rol: 'ventas' }
     ]);
 
     console.log('🆕 Usuarios creados exitosamente:');

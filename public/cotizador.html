@@ -1098,10 +1098,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       subtotal += precio;
     });
     
-    const taxPercentage = parseFloat(document.getElementById('taxPercentage').value) || 8;
+    const taxPercentage = parseFloat(document.getElementById('taxPercentage').value);
     const tax = subtotal * (taxPercentage / 100);
     
-    const gratuityPercentage = parseFloat(document.getElementById('gratuityPercentage').value) || 20;
+    const gratuityPercentage = parseFloat(document.getElementById('gratuityPercentage').value);
     const gratuity = subtotal * (gratuityPercentage / 100);
     
     const servicio = document.getElementById('servicio').value;

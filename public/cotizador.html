@@ -602,7 +602,7 @@
         <h2 class="card-title">
   <div style="display: flex; justify-content: space-between; width: 100%;">
     <div>
-     
+    
       <div style="font-size: 0.9em; color: var(--gray); margin-top: 0.5rem;">INVOICE#<span id="invoiceNumberDisplay">-</span></div>
     </div>
     <div class="form-group" style="width: 200px;">
@@ -615,7 +615,7 @@
     </div>
   </div>
 </h2>
-        
+      
         <form id="cotizacionForm">
           <div class="form-grid">
             <!-- Información básica -->
@@ -857,7 +857,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Generar nuevo número de invoice si no estamos editando
     await cargarUltimoInvoice();
   }
-    
+   
     // Autocompletar día al seleccionar fecha
     document.getElementById('fecha').addEventListener('change', function() {
       if (this.value) {
@@ -1815,7 +1815,7 @@ async function cargarPlatosDesdeBD() {
     actualizarBadgeCotizaciones();
   });
 
-
+ 
 </script>
 
 </body>

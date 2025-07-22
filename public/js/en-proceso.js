@@ -60,95 +60,72 @@ async function cargarCotizacionesEnProceso() {
   }
 }
 
-// Función para actualizar la lista de cotizaciones
 function actualizarListaCotizaciones(cotizaciones) {
   const container = document.getElementById('cotizacionesEnProceso');
   container.innerHTML = '';
-  
+
   if (cotizaciones.length === 0) {
-    container.innerHTML = '<p>No hay cotizaciones en proceso.</p>';
+    container.innerHTML = '<p class="texto-vacio">No hay cotizaciones en proceso.</p>';
     return;
   }
-  
+
   cotizaciones.forEach(cotizacion => {
     const card = document.createElement('div');
-    card.className = 'cotizacion-card';
-    
-    // Formatear fechas
-   const fechaObj = cotizacion.fecha ? new Date(cotizacion.fecha) : null;
-    if (fechaObj) {
-      fechaObj.setMinutes(fechaObj.getMinutes() + fechaObj.getTimezoneOffset());
-    }
-    const fecha = fechaObj ? fechaObj.toLocaleDateString('es-ES') : 'No especificada';   const createdAt = cotizacion.createdAt ? 
-      new Date(cotizacion.createdAt).toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      }) : 'No especificada';
-    
+    card.className = 'cotizacion-card nueva-card-moderna';
+
+    const fecha = cotizacion.fecha ? new Date(cotizacion.fecha).toLocaleDateString('es-ES') : 'No especificada';
+    const createdAt = cotizacion.createdAt
+      ? new Date(cotizacion.createdAt).toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        })
+      : 'No especificada';
+
+    const status = cotizacion.status || 'en_proceso';
+
     card.innerHTML = `
-      <div class="cotizacion-header">
-        <div class="cotizacion-title">
-          <strong>INVOICE</strong> ${cotizacion.invoiceNumber}
+      <div class="nueva-cabecera">
+        <div class="nueva-invoice">
+          <strong>INVOICE #${cotizacion.invoiceNumber}</strong>
         </div>
-        <div class="cotizacion-cliente">${cotizacion.cliente || 'Sin nombre'}</div>
-        <div class="cotizacion-status status-en_proceso">
-          ${cotizacion.status || 'En Proceso'}
-        </div>
-      </div>
-
-      <div class="cotizacion-details">
-        <div class="cotizacion-detail-group">
-          <div class="cotizacion-detail">
-            <strong>Creado el:</strong> ${createdAt}
-          </div>
-          <div class="cotizacion-detail">
-            <strong>Por:</strong> ${cotizacion.creadoPor || 'Desconocido'}
-          </div>
-        </div>
-
-        <div class="cotizacion-detail-group">
-          <div class="cotizacion-detail">
-            <strong>Fecha:</strong> ${fecha}
-          </div>
-          <div class="cotizacion-detail">
-            <strong>Hora del evento:</strong> ${cotizacion.hora_evento}
-          </div>
-        </div>
-
-        <div class="cotizacion-detail-group">
-          <div class="cotizacion-detail">
-            <strong>Servicio:</strong> ${cotizacion.servicio || 'No especificado'}
-          </div>
-          <div class="cotizacion-detail">
-            <strong>Lugar:</strong> ${cotizacion.ubicacion}
-          </div>
-        </div>
-
-        <div class="cotizacion-detail-notes">
-          <strong>Observaciones:</strong> ${cotizacion.notas || 'Ninguna'}
+        <div class="nueva-creado">
+          <div><small><strong>Creado el:</strong> ${createdAt}</small></div>
+          <div><small><strong>Por:</strong> ${cotizacion.creadoPor || 'Desconocido'}</small></div>
         </div>
       </div>
-       <div class="cotizacion-actions">
-  <button class="btn btn-info btn-sm ver-detalle" data-id="${cotizacion._id}">
-    <i class="fas fa-eye"></i> Ver
-  </button>
-  <button class="btn btn-primary btn-sm cargar-cotizacion" data-id="${cotizacion._id}">
-    <i class="fas fa-edit"></i> Editar
-  </button>
-  ${
-    currentUser?.role === 'admin' 
-      ? `<button class="btn btn-danger btn-sm eliminar-cotizacion" data-id="${cotizacion._id}">
-           <i class="fas fa-trash"></i> Eliminar
-         </button>` 
-      : ''
-  }
-</div>
+
+      <div class="nueva-status ${status}">${status.replace('_', ' ').toUpperCase()}</div>
+
+      <div class="nueva-cuerpo">
+        <div class="campo"><i class="fas fa-user"></i> <strong>Cliente:</strong> ${cotizacion.cliente || 'Sin nombre'}</div>
+        <div class="campo"><i class="fas fa-calendar-alt"></i> <strong>Fecha:</strong> ${fecha}</div>
+        <div class="campo"><i class="fas fa-clock"></i> <strong>Hora:</strong> ${cotizacion.hora_evento || '-'}</div>
+        <div class="campo"><i class="fas fa-map-marker-alt"></i> <strong>Lugar:</strong> ${cotizacion.ubicacion || '-'}</div>
+        <div class="campo"><i class="fas fa-utensils"></i> <strong>Servicio:</strong> ${cotizacion.servicio || '-'}</div>
+        <div class="campo campo-notas"><strong>Observaciones:</strong> ${cotizacion.notas || 'Ninguna'}</div>
+      </div>
+
+      <div class="nueva-acciones">
+        <button class="btn btn-info btn-sm ver-detalle" data-id="${cotizacion._id}">
+          <i class="fas fa-eye"></i> Ver
+        </button>
+        <button class="btn btn-primary btn-sm cargar-cotizacion" data-id="${cotizacion._id}">
+          <i class="fas fa-edit"></i> Editar
+        </button>
+        ${
+          currentUser?.role === 'admin'
+            ? `<button class="btn btn-danger btn-sm eliminar-cotizacion" data-id="${cotizacion._id}">
+                <i class="fas fa-trash"></i> Eliminar
+              </button>`
+            : ''
+        }
+      </div>
     `;
-    
     container.appendChild(card);
   });
 }
+
 
 // Función para mostrar modal de edición
 function mostrarModalEdicion(cotizacion) {

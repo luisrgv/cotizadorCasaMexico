@@ -7,9 +7,6 @@ const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
-const multer = require("multer");
-const xlsx = require("xlsx");
-
 // Configuración de la aplicación
 const app = express();
 const PORT = process.env.PORT || 3000;

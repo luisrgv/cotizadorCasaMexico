@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const CotizacionSchema = new mongoose.Schema({
-  invoiceNumber: { type: Number, unique: true, required: true },
+  invoiceNumber: { type: Number, unique: true, required: false }, // 🔄 ya se generará en el pre('save')
+
   fecha: { type: Date, required: true },
   dia: { type: String }, // Se calculará automáticamente
   cliente: { type: String, required: true },
@@ -14,8 +15,9 @@ const CotizacionSchema = new mongoose.Schema({
   contacto: String,
   status: { 
     type: String, 
-    enum: ['pagado', 'pre-pagado', 'impago', 'en_proceso'], 
-    default: 'impago' 
+    enum: ['pagado', 'impago', 'en_proceso'], 
+    default: 'impago',
+    required: true 
   },
   pagos: [{
     fecha: Date,
@@ -41,7 +43,7 @@ const CotizacionSchema = new mongoose.Schema({
   taxPercentage: { type: Number, default: 8 }, // Porcentaje editable
   gratuity: { type: Number, required: true },
   gratuityPercentage: { type: Number, default: 20 }, // Porcentaje editable
-  deliveryFee: { type: Number, default: 0 },
+  deliveryFee: { type: Number, default: 0, required: true  },
   precioTotal: { type: Number, required: true },
   notas: String,
   notasCocina: String, // Nuevo campo para notas de cocina

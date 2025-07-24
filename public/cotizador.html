@@ -602,7 +602,7 @@
         <h2 class="card-title">
   <div style="display: flex; justify-content: space-between; width: 100%;">
     <div>
-    
+     
       <div style="font-size: 0.9em; color: var(--gray); margin-top: 0.5rem;">INVOICE#<span id="invoiceNumberDisplay">-</span></div>
     </div>
     <div class="form-group" style="width: 200px;">
@@ -610,12 +610,11 @@
    <select id="status" class="form-control" required>
   <option value="en_proceso">En Proceso</option> <!-- Si decides agregarlo -->
   <option value="pagado">Pagado</option>
-    <option value="impago">Impago</option>
+  <option value="impago">Impago</option>
 </select>
     </div>
   </div>
 </h2>
-      
         <form id="cotizacionForm">
           <div class="form-grid">
             <!-- Información básica -->
@@ -655,7 +654,13 @@
                 <option value="Donación">
               </datalist>
             </div>
-            
+            <div class="form-check">
+  <input class="form-check-input" type="checkbox" id="chkDeliveryManual">
+  <label class="form-check-label" for="chkDeliveryManual">
+    Delivery Fee
+  </label>
+</div>
+
             <div class="form-group">
               <label for="ubicacion">📍 Ubicación del Evento</label>
               <input type="text" id="ubicacion" class="form-control" required>
@@ -858,6 +863,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await cargarUltimoInvoice();
   }
    
+
     // Autocompletar día al seleccionar fecha
     document.getElementById('fecha').addEventListener('change', function() {
       if (this.value) {
@@ -868,16 +874,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
     
-    // Actualizar servicio cuando cambia
-    document.getElementById('servicio').addEventListener('change', function() {
-      const deliveryContainer = document.getElementById('deliveryContainer');
-      if (this.value === 'Delivery Catering') {
-        deliveryContainer.style.display = 'flex';
-      } else {
-        deliveryContainer.style.display = 'none';
-      }
-      actualizarResumenPlatos();
-    });
+    
     
     // Configurar filtrado por categorías
     document.querySelectorAll('.categoria-btn').forEach(btn => {
@@ -1052,39 +1049,42 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   
   // Función para agregar fila manualmente
-  function agregarFilaManual() {
-    const tbody = document.getElementById('listaResumen');
-    const tr = document.createElement('tr');
-    tr.className = 'fila-manual';
-    
-    tr.innerHTML = `
-      <td style="padding: 5px;"><input type="text" class="form-control" style="width: 60px;" placeholder="1T" value="1T"></td>
-      <td style="padding: 5px;"><input type="text" class="form-control" placeholder="Nombre del producto"></td>
-      <td style="padding: 5px; text-align: right;">
-        <input type="number" class="form-control" style="width: 100px; text-align: right;" placeholder="0.00" step="0.01" min="0" value="0">
-      </td>
-      <td style="text-align: center;">
-        <button type="button" class="btn-eliminar-fila">
-          <i class="fas fa-times"></i>
-        </button>
-      </td>
-    `;
-    
-    tbody.appendChild(tr);
-    filasManuales.push(tr);
-    
-    tr.querySelectorAll('input').forEach(input => {
-      input.addEventListener('change', actualizarTotalesDesdeTabla);
-    });
-    
-    tr.querySelector('.btn-eliminar-fila').addEventListener('click', () => {
-      tr.remove();
-      filasManuales = filasManuales.filter(fila => fila !== tr);
-      actualizarTotalesDesdeTabla();
-    });
-    
+ function agregarFilaManual(plato = {}) {
+  const tbody = document.getElementById('listaResumen');
+  const tr = document.createElement('tr');
+  tr.className = 'fila-manual';
+  
+  tr.innerHTML = `
+    <td style="padding: 5px;"><input type="text" class="form-control" style="width: 60px;" 
+       placeholder="1T" value="${plato.cantidadTexto || '1T'}"></td>
+    <td style="padding: 5px;"><input type="text" class="form-control" 
+       placeholder="Nombre del producto" value="${plato.nombre || ''}"></td>
+    <td style="padding: 5px; text-align: right;">
+      <input type="number" class="form-control" style="width: 100px; text-align: right;" 
+             placeholder="0.00" step="0.01" min="0" value="${plato.precio_total || '0'}">
+    </td>
+    <td style="text-align: center;">
+      <button type="button" class="btn-eliminar-fila">
+        <i class="fas fa-times"></i>
+      </button>
+    </td>
+  `;
+  
+  tbody.appendChild(tr);
+  filasManuales.push(tr);
+  
+  tr.querySelectorAll('input').forEach(input => {
+    input.addEventListener('change', actualizarTotalesDesdeTabla);
+  });
+  
+  tr.querySelector('.btn-eliminar-fila').addEventListener('click', () => {
+    tr.remove();
+    filasManuales = filasManuales.filter(fila => fila !== tr);
     actualizarTotalesDesdeTabla();
-  }
+  });
+  
+  actualizarTotalesDesdeTabla();
+}
   
   // Función para actualizar totales desde la tabla
   function actualizarTotalesDesdeTabla() {
@@ -1104,18 +1104,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const gratuityPercentage = parseFloat(document.getElementById('gratuityPercentage').value);
     const gratuity = subtotal * (gratuityPercentage / 100);
     
-    const servicio = document.getElementById('servicio').value;
-    const deliveryFee = servicio === 'Delivery Catering' ? 
-      (parseFloat(document.getElementById('deliveryFee').value) || 0) : 0;
-    
-    const total = subtotal + tax + gratuity + deliveryFee;
-    
-    document.getElementById('subtotalResumen').textContent = subtotal.toFixed(2);
-    document.getElementById('taxResumen').textContent = tax.toFixed(2);
-    document.getElementById('gratuityResumen').textContent = gratuity.toFixed(2);
-    document.getElementById('deliveryResumen').textContent = deliveryFee.toFixed(2);
-    document.getElementById('totalResumen').textContent = total.toFixed(2);
-  }
+   const deliveryFee = document.getElementById('chkDeliveryManual').checked ? 
+    (parseFloat(document.getElementById('deliveryFee').value)) || 0 : 0;
+  
+  const total = subtotal + tax + gratuity + deliveryFee;
+  
+  document.getElementById('subtotalResumen').textContent = subtotal.toFixed(2);
+  document.getElementById('taxResumen').textContent = tax.toFixed(2);
+  document.getElementById('gratuityResumen').textContent = gratuity.toFixed(2);
+  document.getElementById('deliveryResumen').textContent = deliveryFee.toFixed(2);
+  document.getElementById('totalResumen').textContent = total.toFixed(2);
+}
   
   // Función para actualizar el resumen de platos seleccionados
   function actualizarResumenPlatos() {
@@ -1324,7 +1323,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     div.querySelector('.pago-monto').addEventListener('change', actualizarTotalesDesdeTabla);
   }
-  // editar
+
+  // funcion para editar
 async function cargarCotizacionParaEditar(id) {
   try {
     const response = await fetch(`/api/cotizaciones/${id}`);
@@ -1334,7 +1334,7 @@ async function cargarCotizacionParaEditar(id) {
     document.getElementById('invoiceNumber').value = cotizacion.invoiceNumber;
     document.getElementById('invoiceNumberDisplay').textContent = cotizacion.invoiceNumber;
 
-    document.getElementById('status').value = cotizacion.status || '';
+    document.getElementById('status').value = cotizacion.status || 'impago';
     document.getElementById('fecha').value = cotizacion.fecha?.split('T')[0] || '';
     document.getElementById('dia').value = cotizacion.dia || '';
     document.getElementById('cliente').value = cotizacion.cliente || '';
@@ -1350,29 +1350,58 @@ async function cargarCotizacionParaEditar(id) {
     document.getElementById('deliveryFee').value = cotizacion.deliveryFee || 0;
     document.getElementById('notasCocina').value = cotizacion.notasCocina || '';
 
+    if (cotizacion.deliveryFee > 0) {
+  document.getElementById('chkDeliveryManual').checked = true;
+  document.getElementById('deliveryContainer').style.display = 'flex';
+  document.getElementById('deliveryFee').value = cotizacion.deliveryFee;
+} 
+ // Modifica el evento del checkbox de delivery:
+document.getElementById('chkDeliveryManual').addEventListener('change', function() {
+  document.getElementById('deliveryContainer').style.display = this.checked ? 'flex' : 'none';
+  actualizarResumenPlatos();
+});
+    // Cargar notas
     const notasArea = document.getElementById('notasArea');
     if (notasArea && cotizacion.notas) {
       notasArea.innerText = cotizacion.notas;
     }
 
-    // Cargar platos
+   // Cargar platos
     if (Array.isArray(cotizacion.platos)) {
       cotizacion.platos.forEach(plato => {
         const checkbox = document.querySelector(`input[type="checkbox"][data-nombre="${plato.nombre}"]`);
         if (checkbox) {
           checkbox.checked = true;
-          const cantidadInput = checkbox.closest('.plato-item').querySelector('.cantidad-plato');
-          if (cantidadInput) cantidadInput.value = plato.cantidad_personas;
-          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+          const platoItem = checkbox.closest('.plato-item');
+          const cantidadInput = platoItem.querySelector('.cantidad-plato');
+          const selectInput = platoItem.querySelector('select');
+          
+          if (cantidadInput) cantidadInput.value = plato.cantidad || 1;
+          
+          // Establecer el valor correcto en el select
+          if (selectInput) {
+            // Determinar el valor basado en cantidadTexto o precio_por_persona
+            if (plato.cantidadTexto && plato.cantidadTexto.includes('Full') || 
+                (plato.precio_por_persona && plato.precio_por_persona > parseFloat(checkbox.dataset.precio))) {
+              selectInput.value = 'full';
+            } else if (plato.cantidadTexto && plato.cantidadTexto.includes('30')) {
+              selectInput.value = '30';
+            } else if (plato.cantidadTexto && plato.cantidadTexto.includes('20')) {
+              selectInput.value = '20';
+            } else {
+              selectInput.value = 'half'; // Valor por defecto
+            }
+          }
         } else {
+          // Si no es un plato del menú, agregarlo como fila manual
           agregarFilaManual({
             nombre: plato.nombre,
-            cantidadTexto: `${plato.cantidad_personas || 1}`,
+            cantidadTexto: plato.cantidadTexto || `${plato.cantidad || 1}`,
             precio_total: plato.precio_total
           });
         }
       });
-      if (typeof actualizarResumenPlatos === 'function') actualizarResumenPlatos();
+      actualizarResumenPlatos();
     }
 
     // Cargar pagos
@@ -1583,8 +1612,8 @@ datos.saldoPendiente = saldoPendiente;
       platos: platosSeleccionados,
       taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
       gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
-      deliveryFee: document.getElementById('servicio').value === 'Delivery Catering' ? 
-        parseFloat(document.getElementById('deliveryFee').value) || 0 : 0,
+      deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
+               (parseFloat(document.getElementById('deliveryFee').value) || 0) : 0,
       notas: document.getElementById('notasArea').innerText,
       notasCocina: document.getElementById('notasCocina').value
     };
@@ -1814,8 +1843,17 @@ async function cargarPlatosDesdeBD() {
   document.addEventListener('DOMContentLoaded', () => {
     actualizarBadgeCotizaciones();
   });
+// En el DOMContentLoaded, agrega este evento:
+document.getElementById('chkDeliveryManual').addEventListener('change', function() {
+  document.getElementById('deliveryContainer').style.display = this.checked ? 'flex' : 'none';
+  actualizarResumenPlatos();
+});
 
- 
+
+ // Actualizar servicio cuando cambia
+   document.getElementById('servicio').addEventListener('change', function() {
+  actualizarResumenPlatos();
+});
 </script>
 
 </body>

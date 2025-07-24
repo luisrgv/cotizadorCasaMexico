@@ -7,14 +7,21 @@ const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
+const multer = require("multer");
+const xlsx = require("xlsx");
+
+// Configuración de la aplicación
+const app = express();
+const PORT = process.env.PORT || 3000;
+app.use(express.json());
+app.use(express.static("public")); // si tienes tu HTML allí
+
 // Modelos
 const User = require('./models/User');
 const Plato = require('./models/Plato');
 const Cotizacion = require('./models/Cotizacion');
 
-// Configuración de la aplicación
-const app = express();
-const PORT = process.env.PORT || 3000;
+
 
 // Conexión a MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
@@ -639,6 +646,7 @@ app.delete('/api/platos/:id', requireLogin, async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar plato' });
   }
 });
+
 // Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor en http://localhost:${PORT}`);

@@ -751,7 +751,7 @@
               <div class="resumen-linea" id="deliveryContainer" style="display: none;">
                 <span class="resumen-label">
                   Delivery Fee:
-                  <input type="number" id="deliveryFee" value="0" min="0" step="5" 
+                  <input type="number" id="deliveryFee" value="0" min="0" step="1" 
                          class="resumen-input">
                 </span>
                 <span class="resumen-valor">$<span id="deliveryResumen">0.00</span></span>
@@ -1117,147 +1117,167 @@ document.addEventListener('DOMContentLoaded', async () => {
 }
   
   // Función para actualizar el resumen de platos seleccionados
-  function actualizarResumenPlatos() {
-    if (cambiandoCategoria) return;
-    
-    const tbody = document.getElementById('listaResumen');
-    const filasAutomaticas = Array.from(tbody.querySelectorAll('tr')).filter(tr => 
-      !tr.classList.contains('fila-manual') && !tr.classList.contains('categoria-row')
-    );
-    filasAutomaticas.forEach(tr => tr.remove());
-    
-    platosSeleccionados = [];
-    const platosPorCategoria = {};
-    
-    document.querySelectorAll('#platosList input[type="checkbox"]:checked').forEach(checkbox => {
-      const platoItem = checkbox.closest('.plato-item');
-      const nombre = checkbox.getAttribute('data-nombre');
-      const precioBase = parseFloat(checkbox.getAttribute('data-precio'));
-      const cantidadInput = platoItem.querySelector('.cantidad-plato');
-      const cantidad = parseInt(cantidadInput.value) || 1;
-      const tipoSelect = platoItem.querySelector('select');
-      const categoria = platoItem.getAttribute('data-categoria');
-      
-      let precioPorPersona = precioBase;
-      let cantidadTexto = cantidad.toString();
-      
-      if (tipoSelect) {
-        const tipo = tipoSelect.value;
-        if (tipo === 'full') {
-          precioPorPersona = precioBase * 2;
-          cantidadTexto = `${cantidad}T`;
-        } else if (tipo === 'half') {
-          precioPorPersona = precioBase;
-          cantidadTexto = `${cantidad}/2 T`;
-        } else if (tipo === '30' || tipo === '20' || tipo === '2') {
-          precioPorPersona = precioBase * 2;
-          cantidadTexto = `${cantidad}T`;
-        }
-      }
-      
-      const precioTotal = precioPorPersona * cantidad;
-      
+ function actualizarResumenPlatos() {
+  if (cambiandoCategoria) return;
+
+  const tbody = document.getElementById('listaResumen');
+  const filasAutomaticas = Array.from(tbody.querySelectorAll('tr')).filter(tr =>
+    !tr.classList.contains('fila-manual') && !tr.classList.contains('categoria-row')
+  );
+  filasAutomaticas.forEach(tr => tr.remove());
+
+  platosSeleccionados = [];
+  const platosPorCategoria = {};
+
+  document.querySelectorAll('#platosList input[type="checkbox"]:checked').forEach(checkbox => {
+    const platoItem = checkbox.closest('.plato-item');
+    const nombre = checkbox.getAttribute('data-nombre');
+    const precioBase = parseFloat(checkbox.getAttribute('data-precio'));
+    const cantidadInput = platoItem.querySelector('.cantidad-plato');
+    const tipoSelect = platoItem.querySelector('select');
+    const categoria = platoItem.getAttribute('data-categoria');
+
+    let cantidad = parseInt(cantidadInput?.value) || 1;
+    let cantidadTexto = `${cantidad}`;
+    let precioPorPersona = precioBase;
+
+    if (tipoSelect) {
+  const tipo = tipoSelect.value;
+
+  if ((categoria === 'Tacos' || categoria === 'Specialty') && (tipo === '15' || tipo === '30' || tipo === '10' || tipo === '20')) {
+    // Tacos y Specialty: lógica similar
+    if (tipo === '30' || tipo === '20') {
+      precioPorPersona = precioBase * 2;
+      cantidad = 1;
+      cantidadTexto = '1T';
+    } else {
+      precioPorPersona = precioBase;
+      cantidad = 1;
+      cantidadTexto = '1';
+    }
+  }
+
+  // Otras categorías
+  else if (tipo === 'full') {
+    precioPorPersona = precioBase * 2;
+    cantidadTexto = `${cantidad}T`;
+  } else if (tipo === 'half') {
+    precioPorPersona = precioBase;
+    cantidadTexto = `${cantidad}/2 T`;
+  } else if (tipo === '20') {
+    precioPorPersona = precioBase * 2;
+    cantidad = 20;
+    cantidadTexto = `20`;
+  } else if (tipo === '10') {
+    precioPorPersona = precioBase;
+    cantidad = 10;
+    cantidadTexto = `10`;
+  }
+}
+
+
+    const precioTotal = parseFloat((precioPorPersona * cantidad).toFixed(2));
+
+    if (!isNaN(precioTotal) && nombre && categoria) {
       platosSeleccionados.push({
-       nombre,
+        nombre,
         precio_por_persona: precioPorPersona,
-        cantidad_personas: cantidad,
-        cantidad: cantidad, // Añadir esto
-        cantidadTexto: cantidadTexto, // Añadir esto
+        cantidad,
+        cantidadTexto,
         precio_total: precioTotal,
         categoria
       });
-      
+
       if (!platosPorCategoria[categoria]) {
         platosPorCategoria[categoria] = [];
       }
+
       platosPorCategoria[categoria].push({
         nombre,
         cantidadTexto,
         precioTotal
       });
-    });
-    
-    for (const categoria in platosPorCategoria) {
-      let categoriaRow = Array.from(tbody.querySelectorAll('.categoria-row')).find(row => 
-        row.textContent.includes(categoria)
-      );
-      
-      if (!categoriaRow) {
-        categoriaRow = document.createElement('tr');
-        categoriaRow.className = 'categoria-row';
-        categoriaRow.innerHTML = `
-          <td colspan="4" style="padding: 5px; font-weight: bold; background-color: #f1f1f1;">${categoria}</td>
-        `;
-        
-        if (filasManuales.length > 0) {
-          tbody.insertBefore(categoriaRow, filasManuales[0]);
-        } else {
-          tbody.appendChild(categoriaRow);
-        }
+    }
+  });
+
+  for (const categoria in platosPorCategoria) {
+    let categoriaRow = Array.from(tbody.querySelectorAll('.categoria-row')).find(row =>
+      row.textContent.includes(categoria)
+    );
+
+    if (!categoriaRow) {
+      categoriaRow = document.createElement('tr');
+      categoriaRow.className = 'categoria-row';
+      categoriaRow.innerHTML = `
+        <td colspan="4" style="padding: 5px; font-weight: bold; background-color: #f1f1f1;">${categoria}</td>
+      `;
+
+      const primeraManual = tbody.querySelector('.fila-manual');
+      if (primeraManual) {
+        tbody.insertBefore(categoriaRow, primeraManual);
+      } else {
+        tbody.appendChild(categoriaRow);
       }
-      
-      platosPorCategoria[categoria].forEach(plato => {
-        const tr = document.createElement('tr');
-        tr.className = 'fila-automatica';
-        tr.innerHTML = `
-          <td style="padding: 5px;">
-            <input type="text" class="form-control" style="width: 60px;" value="${plato.cantidadTexto}">
-          </td>
-          <td style="padding: 5px;">
-            <input type="text" class="form-control" value="${plato.nombre}">
-          </td>
-          <td style="padding: 5px; text-align: right;">
-            <input type="number" class="form-control" style="width: 100px; text-align: right;" 
-                   value="${plato.precioTotal.toFixed(2)}" step="0.01" min="0">
-          </td>
-          <td style="text-align: center;">
-            <button type="button" class="btn-eliminar-fila">
-              <i class="fas fa-times"></i>
-            </button>
-          </td>
-        `;
-        
-        tbody.insertBefore(tr, categoriaRow.nextSibling);
-        
-        tr.querySelectorAll('input').forEach(input => {
-          input.addEventListener('change', function() {
-            const index = platosSeleccionados.findIndex(p => p.nombre === plato.nombre);
-            if (index !== -1) {
-              if (this.type === 'number') {
-                platosSeleccionados[index].precio_total = parseFloat(this.value) || 0;
-              } else if (this.type === 'text') {
-                if (this.value.includes('/2 T')) {
-                  platosSeleccionados[index].cantidadTexto = this.value;
-                  platosSeleccionados[index].precio_por_persona = platosSeleccionados[index].precio_total / parseInt(this.value);
-                } else if (this.value.includes('T') && !this.value.includes('/')) {
-                  platosSeleccionados[index].cantidadTexto = this.value;
-                  platosSeleccionados[index].precio_por_persona = platosSeleccionados[index].precio_total / parseInt(this.value);
-                } else {
-                  platosSeleccionados[index].nombre = this.value;
-                }
+    }
+
+    platosPorCategoria[categoria].forEach(plato => {
+      const tr = document.createElement('tr');
+      tr.className = 'fila-automatica';
+      tr.innerHTML = `
+        <td style="padding: 5px;">
+          <input type="text" class="form-control" style="width: 60px;" value="${plato.cantidadTexto}">
+        </td>
+        <td style="padding: 5px;">
+          <input type="text" class="form-control" value="${plato.nombre}">
+        </td>
+        <td style="padding: 5px; text-align: right;">
+          <input type="number" class="form-control" style="width: 100px; text-align: right;" 
+                 value="${plato.precioTotal.toFixed(2)}" step="0.01" min="0">
+        </td>
+        <td style="text-align: center;">
+          <button type="button" class="btn-eliminar-fila">
+            <i class="fas fa-times"></i>
+          </button>
+        </td>
+      `;
+
+      tbody.insertBefore(tr, categoriaRow.nextSibling);
+
+      tr.querySelectorAll('input').forEach(input => {
+        input.addEventListener('change', function () {
+          const index = platosSeleccionados.findIndex(p => p.nombre === plato.nombre);
+          if (index !== -1) {
+            if (this.type === 'number') {
+              platosSeleccionados[index].precio_total = parseFloat(this.value) || 0;
+            } else if (this.type === 'text') {
+              if (this.value.includes('T')) {
+                platosSeleccionados[index].cantidadTexto = this.value;
+              } else {
+                platosSeleccionados[index].nombre = this.value;
               }
             }
-            actualizarTotalesDesdeTabla();
-          });
-        });
-        
-        tr.querySelector('.btn-eliminar-fila').addEventListener('click', () => {
-          const checkbox = document.querySelector(`input[data-nombre="${plato.nombre}"]`);
-          if (checkbox) {
-            checkbox.checked = false;
           }
-          
-          platosSeleccionados = platosSeleccionados.filter(p => p.nombre !== plato.nombre);
-          tr.remove();
           actualizarTotalesDesdeTabla();
         });
       });
-    }
-    
-    actualizarTotalesDesdeTabla();
-    document.getElementById('resumenPlatos').style.display = 
-      (platosSeleccionados.length > 0 || filasManuales.length > 0) ? 'block' : 'none';
+
+      tr.querySelector('.btn-eliminar-fila').addEventListener('click', () => {
+        const checkbox = document.querySelector(`input[data-nombre="${plato.nombre}"]`);
+        if (checkbox) checkbox.checked = false;
+
+        platosSeleccionados = platosSeleccionados.filter(p => p.nombre !== plato.nombre);
+        tr.remove();
+        actualizarTotalesDesdeTabla();
+      });
+    });
   }
+
+  actualizarTotalesDesdeTabla();
+
+  document.getElementById('resumenPlatos').style.display =
+    (platosSeleccionados.length > 0 || filasManuales.length > 0) ? 'block' : 'none';
+}
+
   
   // Función para agregar inputs de pago
   function agregarPagoInput(pago = {}) {
@@ -1324,7 +1344,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     div.querySelector('.pago-monto').addEventListener('change', actualizarTotalesDesdeTabla);
   }
 
-  // funcion para editar
+  // función para editar
 async function cargarCotizacionParaEditar(id) {
   try {
     const response = await fetch(`/api/cotizaciones/${id}`);
@@ -1351,22 +1371,23 @@ async function cargarCotizacionParaEditar(id) {
     document.getElementById('notasCocina').value = cotizacion.notasCocina || '';
 
     if (cotizacion.deliveryFee > 0) {
-  document.getElementById('chkDeliveryManual').checked = true;
-  document.getElementById('deliveryContainer').style.display = 'flex';
-  document.getElementById('deliveryFee').value = cotizacion.deliveryFee;
-} 
- // Modifica el evento del checkbox de delivery:
-document.getElementById('chkDeliveryManual').addEventListener('change', function() {
-  document.getElementById('deliveryContainer').style.display = this.checked ? 'flex' : 'none';
-  actualizarResumenPlatos();
-});
+      document.getElementById('chkDeliveryManual').checked = true;
+      document.getElementById('deliveryContainer').style.display = 'flex';
+      document.getElementById('deliveryFee').value = cotizacion.deliveryFee;
+    }
+
+    document.getElementById('chkDeliveryManual').addEventListener('change', function () {
+      document.getElementById('deliveryContainer').style.display = this.checked ? 'flex' : 'none';
+      actualizarResumenPlatos();
+    });
+
     // Cargar notas
     const notasArea = document.getElementById('notasArea');
     if (notasArea && cotizacion.notas) {
       notasArea.innerText = cotizacion.notas;
     }
 
-   // Cargar platos
+    // Cargar platos
     if (Array.isArray(cotizacion.platos)) {
       cotizacion.platos.forEach(plato => {
         const checkbox = document.querySelector(`input[type="checkbox"][data-nombre="${plato.nombre}"]`);
@@ -1375,25 +1396,51 @@ document.getElementById('chkDeliveryManual').addEventListener('change', function
           const platoItem = checkbox.closest('.plato-item');
           const cantidadInput = platoItem.querySelector('.cantidad-plato');
           const selectInput = platoItem.querySelector('select');
-          
-          if (cantidadInput) cantidadInput.value = plato.cantidad || 1;
-          
-          // Establecer el valor correcto en el select
-          if (selectInput) {
-            // Determinar el valor basado en cantidadTexto o precio_por_persona
-            if (plato.cantidadTexto && plato.cantidadTexto.includes('Full') || 
-                (plato.precio_por_persona && plato.precio_por_persona > parseFloat(checkbox.dataset.precio))) {
-              selectInput.value = 'full';
-            } else if (plato.cantidadTexto && plato.cantidadTexto.includes('30')) {
-              selectInput.value = '30';
-            } else if (plato.cantidadTexto && plato.cantidadTexto.includes('20')) {
-              selectInput.value = '20';
+          const categoria = platoItem.dataset.categoria;
+
+          // Establecer cantidad para categorías especiales
+          if (cantidadInput) {
+            if (categoria === 'Tacos' || categoria === 'Specialty') {
+              cantidadInput.value = '1';
             } else {
-              selectInput.value = 'half'; // Valor por defecto
+              cantidadInput.value = plato.cantidad || 1;
+            }
+          }
+
+          // Establecer valor en el selectInput
+          if (selectInput) {
+            switch (categoria) {
+              case 'Appetizers':
+                if (plato.cantidadTexto?.includes('Full') ||
+                    (plato.precio_por_persona && plato.precio_por_persona > parseFloat(checkbox.dataset.precio))) {
+                  selectInput.value = 'full';
+                } else {
+                  selectInput.value = 'half';
+                }
+                break;
+
+              case 'Tacos':
+                if (plato.cantidadTexto === '1T') {
+                  selectInput.value = '30';
+                } else {
+                  selectInput.value = '15';
+                }
+                break;
+
+              case 'Specialty':
+                if (plato.cantidadTexto === '1T') {
+                  selectInput.value = '20';
+                } else {
+                  selectInput.value = '10';
+                }
+                break;
+
+              default:
+                selectInput.value = 'half';
             }
           }
         } else {
-          // Si no es un plato del menú, agregarlo como fila manual
+          // Fila manual si no es del menú
           agregarFilaManual({
             nombre: plato.nombre,
             cantidadTexto: plato.cantidadTexto || `${plato.cantidad || 1}`,
@@ -1401,6 +1448,7 @@ document.getElementById('chkDeliveryManual').addEventListener('change', function
           });
         }
       });
+
       actualizarResumenPlatos();
     }
 

@@ -697,6 +697,7 @@
               <button class="categoria-btn" data-categoria="Tacos">Tacos Chef Cristina M.</button>
               <button class="categoria-btn" data-categoria="Specialty">Specialty</button>
               <button class="categoria-btn" data-categoria="Desserts">Dessert & Aguas</button>
+               <button class="categoria-btn" data-categoria="Chef Cristina Experience">Chef Cristina Experience</button>
             </div>
             
            <div class="platos-list" id="platosList">
@@ -1117,7 +1118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 }
   
   // Función para actualizar el resumen de platos seleccionados
- function actualizarResumenPlatos() {
+function actualizarResumenPlatos() {
   if (cambiandoCategoria) return;
 
   const tbody = document.getElementById('listaResumen');
@@ -1133,48 +1134,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     const platoItem = checkbox.closest('.plato-item');
     const nombre = checkbox.getAttribute('data-nombre');
     const precioBase = parseFloat(checkbox.getAttribute('data-precio'));
+    const precioFull = parseFloat(checkbox.getAttribute('data-precio-full') || precioBase * 2);
+    const precio30 = parseFloat(checkbox.getAttribute('data-precio-30') || precioBase * 2);
     const cantidadInput = platoItem.querySelector('.cantidad-plato');
     const tipoSelect = platoItem.querySelector('select');
     const categoria = platoItem.getAttribute('data-categoria');
-
+    
     let cantidad = parseInt(cantidadInput?.value) || 1;
     let cantidadTexto = `${cantidad}`;
     let precioPorPersona = precioBase;
 
     if (tipoSelect) {
-  const tipo = tipoSelect.value;
+      const tipo = tipoSelect.value;
 
-  if ((categoria === 'Tacos' || categoria === 'Specialty') && (tipo === '15' || tipo === '30' || tipo === '10' || tipo === '20')) {
-    // Tacos y Specialty: lógica similar
-    if (tipo === '30' || tipo === '20') {
-      precioPorPersona = precioBase * 2;
-      cantidad = 1;
-      cantidadTexto = '1T';
-    } else {
-      precioPorPersona = precioBase;
-      cantidad = 1;
-      cantidadTexto = '1';
+      if (categoria === 'Appetizers') {
+        if (tipo === 'full') {
+          precioPorPersona = precioFull;
+          cantidadTexto = `${cantidad}T`;
+        } else {
+          precioPorPersona = precioBase;
+          cantidadTexto = `${cantidad}/2 T`;
+        }
+      } else if (categoria === 'Tacos') {
+        if (tipo === '30') {
+          precioPorPersona = precio30;
+          cantidadTexto = `${cantidad}T`;
+        } else {
+          precioPorPersona = precioBase;
+          cantidadTexto = `${cantidad}`;
+        }
+      } else if (categoria === 'Specialty') {
+        if (tipo === '20') {
+          precioPorPersona = precio30;
+          cantidadTexto = `${cantidad}T`;
+        } else {
+          precioPorPersona = precioBase;
+          cantidadTexto = `${cantidad}`;
+        }
+      }
+    } else if (categoria === 'Chef Cristina Experience') {
+      precioPorPersona = 0;
+      cantidadTexto = `${cantidad}`;
     }
-  }
-
-  // Otras categorías
-  else if (tipo === 'full') {
-    precioPorPersona = precioBase * 2;
-    cantidadTexto = `${cantidad}T`;
-  } else if (tipo === 'half') {
-    precioPorPersona = precioBase;
-    cantidadTexto = `${cantidad}/2 T`;
-  } else if (tipo === '20') {
-    precioPorPersona = precioBase * 2;
-    cantidad = 20;
-    cantidadTexto = `20`;
-  } else if (tipo === '10') {
-    precioPorPersona = precioBase;
-    cantidad = 10;
-    cantidadTexto = `10`;
-  }
-}
-
 
     const precioTotal = parseFloat((precioPorPersona * cantidad).toFixed(2));
 
@@ -1185,7 +1186,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         cantidad,
         cantidadTexto,
         precio_total: precioTotal,
-        categoria
+        categoria,
+        modificado: false
       });
 
       if (!platosPorCategoria[categoria]) {
@@ -1208,9 +1210,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!categoriaRow) {
       categoriaRow = document.createElement('tr');
       categoriaRow.className = 'categoria-row';
-      categoriaRow.innerHTML = `
-        <td colspan="4" style="padding: 5px; font-weight: bold; background-color: #f1f1f1;">${categoria}</td>
-      `;
+      categoriaRow.innerHTML = `<td colspan="4" style="padding: 5px; font-weight: bold; background-color: #f1f1f1;">${categoria}</td>`;
 
       const primeraManual = tbody.querySelector('.fila-manual');
       if (primeraManual) {
@@ -1224,21 +1224,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       const tr = document.createElement('tr');
       tr.className = 'fila-automatica';
       tr.innerHTML = `
-        <td style="padding: 5px;">
-          <input type="text" class="form-control" style="width: 60px;" value="${plato.cantidadTexto}">
-        </td>
-        <td style="padding: 5px;">
-          <input type="text" class="form-control" value="${plato.nombre}">
-        </td>
-        <td style="padding: 5px; text-align: right;">
-          <input type="number" class="form-control" style="width: 100px; text-align: right;" 
-                 value="${plato.precioTotal.toFixed(2)}" step="0.01" min="0">
-        </td>
-        <td style="text-align: center;">
-          <button type="button" class="btn-eliminar-fila">
-            <i class="fas fa-times"></i>
-          </button>
-        </td>
+        <td style="padding: 5px;"><input type="text" class="form-control" style="width: 60px;" value="${plato.cantidadTexto}"></td>
+        <td style="padding: 5px;"><input type="text" class="form-control" value="${plato.nombre}"></td>
+        <td style="padding: 5px; text-align: right;"><input type="number" class="form-control" style="width: 100px; text-align: right;" value="${plato.precioTotal.toFixed(2)}" step="0.01" min="0"></td>
+        <td style="text-align: center;"><button type="button" class="btn-eliminar-fila"><i class="fas fa-times"></i></button></td>
       `;
 
       tbody.insertBefore(tr, categoriaRow.nextSibling);
@@ -1249,6 +1238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (index !== -1) {
             if (this.type === 'number') {
               platosSeleccionados[index].precio_total = parseFloat(this.value) || 0;
+              platosSeleccionados[index].modificado = true;
             } else if (this.type === 'text') {
               if (this.value.includes('T')) {
                 platosSeleccionados[index].cantidadTexto = this.value;
@@ -1273,11 +1263,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   actualizarTotalesDesdeTabla();
-
-  document.getElementById('resumenPlatos').style.display =
-    (platosSeleccionados.length > 0 || filasManuales.length > 0) ? 'block' : 'none';
+  document.getElementById('resumenPlatos').style.display = (platosSeleccionados.length > 0 || filasManuales.length > 0) ? 'block' : 'none';
 }
-
   
   // Función para agregar inputs de pago
   function agregarPagoInput(pago = {}) {
@@ -1344,7 +1331,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     div.querySelector('.pago-monto').addEventListener('change', actualizarTotalesDesdeTabla);
   }
 
-  // función para editar
+  // Función para cargar cotización para editar
 async function cargarCotizacionParaEditar(id) {
   try {
     const response = await fetch(`/api/cotizaciones/${id}`);
@@ -1397,16 +1384,18 @@ async function cargarCotizacionParaEditar(id) {
           const cantidadInput = platoItem.querySelector('.cantidad-plato');
           const selectInput = platoItem.querySelector('select');
           const categoria = platoItem.dataset.categoria;
-
-          // Establecer cantidad para categorías especiales
-          if (cantidadInput) {
-            if (categoria === 'Tacos' || categoria === 'Specialty') {
-              cantidadInput.value = '1';
-            } else {
-              cantidadInput.value = plato.cantidad || 1;
+          
+          // Cargar precio modificado si existe
+          if (plato.modificado) {
+            const precioInput = platoItem.querySelector('input[type="number"]');
+            if (precioInput) {
+              precioInput.value = plato.precio_total.toFixed(2);
             }
           }
-
+          
+          // Establecer cantidad para categorías especiales
+          cantidadInput.value = plato.cantidad || 1;
+          
           // Establecer valor en el selectInput
           if (selectInput) {
             switch (categoria) {
@@ -1420,25 +1409,35 @@ async function cargarCotizacionParaEditar(id) {
                 break;
 
               case 'Tacos':
-                if (plato.cantidadTexto === '1T') {
-                  selectInput.value = '30';
-                } else {
-                  selectInput.value = '15';
-                }
+                if (categoria === 'Tacos') {
+  selectInput.value = plato.cantidadTexto?.includes('T') ? '30' : '15';
+}
+
                 break;
 
               case 'Specialty':
-                if (plato.cantidadTexto === '1T') {
-                  selectInput.value = '20';
-                } else {
-                  selectInput.value = '10';
-                }
+                if (categoria === 'Specialty') {
+  selectInput.value = plato.cantidadTexto?.includes('T') ? '20' : '10';
+}
                 break;
 
               default:
                 selectInput.value = 'half';
             }
           }
+          // ⬇️ Esto asegurará que Chef Cristina Experience conserve su costo personalizado
+if (categoria === 'Chef Cristina Experience') {
+  platosSeleccionados.push({
+    nombre: plato.nombre,
+    precio_por_persona: plato.precio_por_persona || 0,
+    cantidad: plato.cantidad || 1,
+    cantidadTexto: plato.cantidadTexto || '1',
+    precio_total: plato.precio_total || 0,
+    categoria: plato.categoria,
+    modificado: true
+  });
+}
+
         } else {
           // Fila manual si no es del menú
           agregarFilaManual({
@@ -1446,9 +1445,10 @@ async function cargarCotizacionParaEditar(id) {
             cantidadTexto: plato.cantidadTexto || `${plato.cantidad || 1}`,
             precio_total: plato.precio_total
           });
+          
         }
       });
-
+      
       actualizarResumenPlatos();
     }
 
@@ -1632,101 +1632,109 @@ datos.saldoPendiente = saldoPendiente;
   }
   
   // Función para guardar cotización
-  async function guardarCotizacion() {
-    const formulario = document.getElementById('cotizacionForm');
-    if (!formulario.checkValidity()) {
-      formulario.reportValidity();
-      return;
-    }
-    
-    if (platosSeleccionados.length === 0 && filasManuales.length === 0) {
-      alert('Por favor seleccione al menos un plato o agregue productos manualmente');
-      return;
-    }
-    
-    const datos = {
-      invoiceNumber: document.getElementById('invoiceNumber').value,
-      fecha: document.getElementById('fecha').value,
-      dia: document.getElementById('dia').value,
-      cliente: document.getElementById('cliente').value,
-      numero: document.getElementById('numero').value,
-      hora_evento: document.getElementById('hora_evento').value,
-      hora_servir: document.getElementById('hora_servir').value,
-      hora_salida: document.getElementById('hora_salida').value,
-      servicio: document.getElementById('servicio').value,
-      ubicacion: document.getElementById('ubicacion').value,
-      contacto: document.getElementById('contacto').value,
-      status: document.getElementById('status').value,
-      platos: platosSeleccionados,
-      taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
-      gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
-      deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
-               (parseFloat(document.getElementById('deliveryFee').value) || 0) : 0,
-      notas: document.getElementById('notasArea').innerText,
-      notasCocina: document.getElementById('notasCocina').value
-    };
-    
-    if (filasManuales.length > 0) {
-     datos.platos = datos.platos.concat(filasManuales.map((tr, index) => {
-  const inputs = tr.querySelectorAll('input');
-  const cantidadTexto = inputs[0]?.value || '-';
-  return {
-    nombre: inputs[1]?.value || `Producto ${index + 1}`,
-    precio_por_persona: parseFloat(inputs[2]?.value) || 0,
-    cantidad: 1,
-    cantidadTexto,
-    precio_total: parseFloat(inputs[2]?.value) || 0
-  };
-}));
-
-    }
-    
-    datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
-    datos.tax = datos.subtotal * (datos.taxPercentage / 100);
-    datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
-    datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee;
-    
-    datos.pagos = Array.from(document.querySelectorAll('.pago-item')).map(item => ({
-      fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],
-      monto: parseFloat(item.querySelector('.pago-monto')?.value) || 0,
-      metodo: item.querySelector('.pago-metodo')?.value || 'cash',
-      notas: item.querySelector('.pago-notas')?.value || ''
-    }));
-    
-    mostrarLoading('Guardando cotización...');
-    
-    try {
-      const response = await fetch('/api/cotizaciones', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos)
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Error al guardar cotización');
-      }
-      
-      const data = await response.json();
-      alert('Cotización guardada exitosamente');
-      
-      if (data.pdfCliente && data.pdfCocina) {
-        window.open(data.pdfCliente, '_blank');
-        window.open(data.pdfCocina, '_blank');
-      }
-      
-      if (data.cotizacion && data.cotizacion.invoiceNumber) {
-        document.getElementById('invoiceNumber').value = data.cotizacion.invoiceNumber;
-        document.getElementById('invoiceNumberDisplay').textContent = data.cotizacion.invoiceNumber;
-      }
-      
-    } catch (error) {
-      console.error('Error al guardar cotización:', error);
-      alert(`Error: ${error.message}`);
-    } finally {
-      ocultarLoading();
-    }
+async function guardarCotizacion() {
+  const formulario = document.getElementById('cotizacionForm');
+  if (!formulario.checkValidity()) {
+    formulario.reportValidity();
+    return;
   }
+  
+  if (platosSeleccionados.length === 0 && filasManuales.length === 0) {
+    alert('Por favor seleccione al menos un plato o agregue productos manualmente');
+    return;
+  }
+  
+  const datos = {
+    invoiceNumber: document.getElementById('invoiceNumber').value,
+    fecha: document.getElementById('fecha').value,
+    dia: document.getElementById('dia').value,
+    cliente: document.getElementById('cliente').value,
+    numero: document.getElementById('numero').value,
+    hora_evento: document.getElementById('hora_evento').value,
+    hora_servir: document.getElementById('hora_servir').value,
+    hora_salida: document.getElementById('hora_salida').value,
+    servicio: document.getElementById('servicio').value,
+    ubicacion: document.getElementById('ubicacion').value,
+    contacto: document.getElementById('contacto').value,
+    status: document.getElementById('status').value,
+    platos: platosSeleccionados.map(p => ({
+      nombre: p.nombre,
+      precio_por_persona: p.precio_por_persona,
+      cantidad: p.cantidad,
+      cantidadTexto: p.cantidadTexto,
+      precio_total: p.precio_total,
+      categoria: p.categoria,
+      modificado: p.modificado || false
+    })),
+    taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
+    gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
+    deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
+             (parseFloat(document.getElementById('deliveryFee').value) || 0) : 0,
+    notas: document.getElementById('notasArea').innerText,
+    notasCocina: document.getElementById('notasCocina').value
+  };
+  
+  if (filasManuales.length > 0) {
+    datos.platos = datos.platos.concat(filasManuales.map((tr, index) => {
+      const inputs = tr.querySelectorAll('input');
+      const cantidadTexto = inputs[0]?.value || '-';
+      return {
+        nombre: inputs[1]?.value || `Producto ${index + 1}`,
+        precio_por_persona: parseFloat(inputs[2]?.value) || 0,
+        cantidad: 1,
+        cantidadTexto,
+        precio_total: parseFloat(inputs[2]?.value) || 0,
+        modificado: true // Las filas manuales siempre se consideran modificadas
+      };
+    }));
+  }
+  
+  datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
+  datos.tax = datos.subtotal * (datos.taxPercentage / 100);
+  datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
+  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee;
+  
+  datos.pagos = Array.from(document.querySelectorAll('.pago-item')).map(item => ({
+    fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],
+    monto: parseFloat(item.querySelector('.pago-monto')?.value) || 0,
+    metodo: item.querySelector('.pago-metodo')?.value || 'cash',
+    notas: item.querySelector('.pago-notas')?.value || ''
+  }));
+  
+  mostrarLoading('Guardando cotización...');
+  
+  try {
+    const response = await fetch('/api/cotizaciones', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos)
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al guardar cotización');
+    }
+    
+    const data = await response.json();
+    alert('Cotización guardada exitosamente');
+    
+    if (data.pdfCliente && data.pdfCocina) {
+      window.open(data.pdfCliente, '_blank');
+      window.open(data.pdfCocina, '_blank');
+    }
+    
+    if (data.cotizacion && data.cotizacion.invoiceNumber) {
+      document.getElementById('invoiceNumber').value = data.cotizacion.invoiceNumber;
+      document.getElementById('invoiceNumberDisplay').textContent = data.cotizacion.invoiceNumber;
+    }
+    
+  } catch (error) {
+    console.error('Error al guardar cotización:', error);
+    alert(`Error: ${error.message}`);
+  } finally {
+    ocultarLoading();
+  }
+}
   
   // Funciones para mostrar/ocultar loading
   function mostrarLoading(mensaje) {
@@ -1751,8 +1759,7 @@ async function cargarPlatosDesdeBD() {
     const platosList = document.getElementById('platosList');
     platosList.innerHTML = '';
     
-    // Ordenar por categoría
-    const categorias = ['Appetizers', 'Tacos', 'Specialty', 'Desserts'];
+    const categorias = ['Appetizers', 'Tacos', 'Specialty', 'Desserts', 'Chef Cristina Experience'];
     
     categorias.forEach(categoria => {
       const platosCategoria = data.platos.filter(p => p.categoria === categoria);
@@ -1763,13 +1770,13 @@ async function cargarPlatosDesdeBD() {
           platoItem.className = 'plato-item';
           platoItem.dataset.categoria = plato.categoria;
           
-          // Construir el HTML del plato según su categoría
           if (categoria === 'Appetizers') {
             platoItem.innerHTML = `
               <div class="plato-header">
                 <input type="checkbox" id="plato-${plato._id}" 
                        data-nombre="${plato.nombre}" 
-                       data-precio="${plato.precio_15}">
+                       data-precio="${plato.precio_15}"
+                       data-precio-full="${plato.precio_30}">
                 <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
               </div>
               <div class="plato-precio">$${plato.precio_15.toFixed(2)} (Half Tray) / $${plato.precio_30.toFixed(2)} (Full Tray)</div>
@@ -1790,7 +1797,8 @@ async function cargarPlatosDesdeBD() {
               <div class="plato-header">
                 <input type="checkbox" id="plato-${plato._id}" 
                        data-nombre="${plato.nombre}" 
-                       data-precio="${plato.precio_15}">
+                       data-precio="${plato.precio_15}"
+                       data-precio-30="${plato.precio_30}">
                 <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
               </div>
               <div class="plato-precio">$${plato.precio_15.toFixed(2)} (15 pers.) / $${plato.precio_30.toFixed(2)} (30 pers.)</div>
@@ -1811,7 +1819,8 @@ async function cargarPlatosDesdeBD() {
               <div class="plato-header">
                 <input type="checkbox" id="plato-${plato._id}" 
                        data-nombre="${plato.nombre}" 
-                       data-precio="${plato.precio_15}">
+                       data-precio="${plato.precio_15}"
+                       data-precio-30="${plato.precio_30}">
                 <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
               </div>
               <div class="plato-precio">$${plato.precio_15.toFixed(2)} (10 pcs) / $${plato.precio_30.toFixed(2)} (20 pcs)</div>
@@ -1844,6 +1853,22 @@ async function cargarPlatosDesdeBD() {
                 ${plato.descripcion}
               </div>` : ''}
             `;
+          } else if (categoria === 'Chef Cristina Experience') {
+            platoItem.innerHTML = `
+              <div class="plato-header">
+                <input type="checkbox" id="plato-${plato._id}" 
+                       data-nombre="${plato.nombre}" 
+                       data-precio="0">
+                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
+              </div>
+              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
+                ${plato.descripcion}
+              </div>` : ''}
+              <div class="plato-cantidad">
+                <label>Cantidad:</label>
+                <input type="number" min="1" value="1" class="cantidad-plato">
+              </div>
+            `;
           }
           
           platosList.appendChild(platoItem);
@@ -1867,7 +1892,8 @@ async function cargarPlatosDesdeBD() {
   } catch (error) {
     console.error('Error al cargar platos:', error);
   }
-} 
+}
+
 
 
 //numero de cotizaciones 

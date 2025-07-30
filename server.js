@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
+
+
 // Configuración de la aplicación
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -266,13 +268,26 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
       currentY += 10;
 
       if (!Array.isArray(datos.platos)) datos.platos = [];
-      datos.platos.forEach(plato => {
-        doc.font('Helvetica')
-           .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
-           .text(plato.nombre, infoX + 90, currentY, { width: 250 })
-           .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
-        currentY += 20;
-      });
+     datos.platos.forEach(plato => {
+  doc.font('Helvetica')
+     .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
+     .text(plato.nombre, infoX + 90, currentY, { width: 250 })
+     .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
+  currentY += 15;
+
+  // Mostrar descripción si es de la categoría Chef Cristina Experience
+  if (plato.categoria === 'Chef Cristina Experience' && plato.descripcion?.trim()) {
+    doc.font('Helvetica-Oblique')
+       .fontSize(9)
+       .fillColor('#555555')
+       .text(plato.descripcion, infoX + 90, currentY, { width: 400 });
+    doc.fillColor('#000000').fontSize(10);
+    currentY += 15;
+  } else {
+    currentY += 5;
+  }
+});
+
 
       currentY += 20;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
@@ -340,12 +355,26 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
       currentY += 10;
 
       if (!Array.isArray(datos.platos)) datos.platos = [];
-      datos.platos.forEach(plato => {
-        doc.font('Helvetica')
-           .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
-           .text(plato.nombre, infoX + 90, currentY, { width: 350 });
-        currentY += 20;
-      });
+     datos.platos.forEach(plato => {
+  doc.font('Helvetica')
+     .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
+     .text(plato.nombre, infoX + 90, currentY, { width: 250 })
+     .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
+  currentY += 15;
+
+  // Mostrar descripción si es de la categoría Chef Cristina Experience
+  if (plato.categoria === 'Chef Cristina Experience' && plato.descripcion) {
+    doc.font('Helvetica-Oblique')
+       .fontSize(9)
+       .fillColor('#555555')
+       .text(`→ ${plato.descripcion}`, infoX + 90, currentY, { width: 400 });
+    doc.fillColor('#000000').fontSize(10); // reset
+    currentY += 15;
+  } else {
+    currentY += 5;
+  }
+});
+
 // agrega estos valores al objeto datos si no están
 datos.totalPagado = totalPagado;
 datos.saldoPendiente = saldoPendiente;
@@ -403,14 +432,16 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       ubicacion: datos.ubicacion,
       contacto: datos.contacto,
       status: datos.status || 'impago',
-     platos: datos.platos.map(p => ({
+      platos: datos.platos.map(p => ({
       nombre: p.nombre,
+      descripcion: p.descripcion || '',
+      categoria: p.categoria || '',
       precio_por_persona: p.precio_por_persona,
       cantidad_personas: p.cantidad || 1,
       cantidad: p.cantidad || 1,
       cantidadTexto: p.cantidadTexto || (p.cantidad === 0.5 ? '½T' : `${p.cantidad}T`),
       precio_total: p.precio_total
-    })) ,
+})) ,
 
       numeroPersonas: datos.numeroPersonas || datos.platos.reduce((total, p) => total + (p.cantidad || 0), 0),
       subtotal: datos.subtotal,

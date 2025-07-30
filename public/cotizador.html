@@ -1172,10 +1172,20 @@ function actualizarResumenPlatos() {
           cantidadTexto = `${cantidad}`;
         }
       }
-    } else if (categoria === 'Chef Cristina Experience') {
-      precioPorPersona = 0;
-      cantidadTexto = `${cantidad}`;
-    }
+   } else if (categoria === 'Chef Cristina Experience') {
+  const precioInput = platoItem.querySelector('.precio-personalizado');
+  const cantidadInput = platoItem.querySelector('.cantidad-plato');
+
+  const precioManual = parseFloat(precioInput?.value) || 0;
+  const cantidadManual = parseInt(cantidadInput?.value) || 1;
+
+  precioPorPersona = precioManual;
+  cantidad = cantidadManual;
+}
+
+
+
+
 
     const precioTotal = parseFloat((precioPorPersona * cantidad).toFixed(2));
 
@@ -1426,17 +1436,30 @@ async function cargarCotizacionParaEditar(id) {
             }
           }
           // ⬇️ Esto asegurará que Chef Cristina Experience conserve su costo personalizado
-if (categoria === 'Chef Cristina Experience') {
-  platosSeleccionados.push({
-    nombre: plato.nombre,
-    precio_por_persona: plato.precio_por_persona || 0,
-    cantidad: plato.cantidad || 1,
-    cantidadTexto: plato.cantidadTexto || '1',
-    precio_total: plato.precio_total || 0,
-    categoria: plato.categoria,
-    modificado: true
+          if (categoria === 'Chef Cristina Experience') {
+            platosSeleccionados.push({
+              nombre: plato.nombre,
+              precio_por_persona: plato.precio_por_persona || 0,
+              cantidad: plato.cantidad || 1,
+              cantidadTexto: plato.cantidadTexto || '1',
+              precio_total: plato.precio_total || 0,
+              categoria: plato.categoria,
+              modificado: true
+            });
+          }
+            if (categoria === 'Chef Cristina Experience') {
+  const platosDOM = document.querySelectorAll(`.plato-item[data-categoria="Chef Cristina Experience"]`);
+  platosDOM.forEach(item => {
+    const nombre = item.querySelector('input[type="checkbox"]')?.dataset?.nombre;
+    if (nombre === plato.nombre) {
+      const inputPrecio = item.querySelector('.precio-personalizado');
+      if (inputPrecio) {
+        inputPrecio.value = plato.precio_por_persona?.toFixed(2) || '0.00';
+      }
+    }
   });
 }
+
 
         } else {
           // Fila manual si no es del menú
@@ -1552,13 +1575,28 @@ if (categoria === 'Chef Cristina Experience') {
       ubicacion: document.getElementById('ubicacion').value,
       contacto: document.getElementById('contacto').value,
       status: document.getElementById('status').value,
-      platos: platosSeleccionados,
+      platos: platosSeleccionados.map(p => ({
+      ...p,
+      // Agregar descripción para Chef Cristina Experience
+      descripcion: p.categoria === 'Chef Cristina Experience' ? 
+        document.querySelector(`.plato-item[data-categoria="Chef Cristina Experience"] .plato.descripcion`)?.textContent || '' : ''
+    })),
       taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
       gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
       deliveryFee: document.getElementById('servicio').value === 'Delivery Catering' ? 
         parseFloat(document.getElementById('deliveryFee').value) || 0 : 0,
       notas: document.getElementById('notasArea').innerText,
-      notasCocina: document.getElementById('notasCocina').value
+      notasCocina: document.getElementById('notasCocina').value,
+    // Agregar filas manuales
+    filasManuales: filasManuales.map((tr, index) => {
+      const inputs = tr.querySelectorAll('input');
+      return {
+        nombre: inputs[1]?.value || `Producto ${index + 1}`,
+        cantidadTexto: inputs[0]?.value || '1',
+        precio_total: parseFloat(inputs[2]?.value) || 0,
+        esManual: true // Marcar como fila manual
+      };
+    })
     };
     
    if (platosSeleccionados.length === 0 && filasManuales.length > 0) {
@@ -1854,22 +1892,42 @@ async function cargarPlatosDesdeBD() {
               </div>` : ''}
             `;
           } else if (categoria === 'Chef Cristina Experience') {
-            platoItem.innerHTML = `
-              <div class="plato-header">
-                <input type="checkbox" id="plato-${plato._id}" 
-                       data-nombre="${plato.nombre}" 
-                       data-precio="0">
-                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
-              </div>
-              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
-                ${plato.descripcion}
-              </div>` : ''}
-              <div class="plato-cantidad">
-                <label>Cantidad:</label>
-                <input type="number" min="1" value="1" class="cantidad-plato">
-              </div>
-            `;
-          }
+  platoItem.innerHTML = `
+    <div class="plato-header">
+      <input type="checkbox" id="plato-${plato._id}" 
+             data-nombre="${plato.nombre}" 
+             data-precio="0">
+      <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
+    </div>
+    ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray); margin-bottom: 0.5rem;">
+      ${plato.descripcion}
+    </div>` : ''}
+    <div class="plato-cantidad" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+      <label style="margin-right: 4px;">Cantidad:</label>
+      <input type="number" min="1" value="1" class="cantidad-plato form-control" style="max-width: 70px;">
+      <label style="margin-left: 10px;">Precio:</label>
+      <input type="number" min="0" value="0" class="precio-personalizado form-control" step="0.01" style="max-width: 100px;">
+    </div>
+  `;
+}
+if (categoria === 'Chef Cristina Experience') {
+  const precioInput = platoItem.querySelector('.precio-personalizado');
+  const cantidadInput = platoItem.querySelector('.cantidad-plato');
+
+  if (precioInput) {
+    precioInput.addEventListener('input', () => {
+      actualizarResumenPlatos();
+    });
+  }
+
+  if (cantidadInput) {
+    cantidadInput.addEventListener('input', () => {
+      actualizarResumenPlatos();
+    });
+  }
+}
+
+
           
           platosList.appendChild(platoItem);
         });
@@ -1894,7 +1952,18 @@ async function cargarPlatosDesdeBD() {
   }
 }
 
+// Detectar cambio inmediato en el cost personalizado y actualizar resumen
+setTimeout(() => {
+  const inputPrecio = platoItem.querySelector('.precio-personalizado');
+  if (inputPrecio) {
+    inputPrecio.addEventListener('input', actualizarResumenPlatos);
+  }
 
+  const inputCantidad = platoItem.querySelector('.cantidad-plato');
+  if (inputCantidad) {
+    inputCantidad.addEventListener('input', actualizarResumenPlatos);
+  }
+}, 0);
 
 //numero de cotizaciones 
 

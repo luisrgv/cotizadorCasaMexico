@@ -1435,8 +1435,13 @@ async function cargarCotizacionParaEditar(id) {
                 selectInput.value = 'half';
             }
           }
-          // ⬇️ Esto asegurará que Chef Cristina Experience conserve su costo personalizado
+          // Manejar Chef Cristina Experience
           if (categoria === 'Chef Cristina Experience') {
+            const inputPrecio = platoItem.querySelector('.precio-personalizado');
+            if (inputPrecio) {
+              inputPrecio.value = plato.precio_por_persona?.toFixed(2) || '0.00';
+            }
+            
             platosSeleccionados.push({
               nombre: plato.nombre,
               precio_por_persona: plato.precio_por_persona || 0,
@@ -1444,23 +1449,10 @@ async function cargarCotizacionParaEditar(id) {
               cantidadTexto: plato.cantidadTexto || '1',
               precio_total: plato.precio_total || 0,
               categoria: plato.categoria,
+              descripcion: plato.descripcion || '',
               modificado: true
             });
           }
-            if (categoria === 'Chef Cristina Experience') {
-  const platosDOM = document.querySelectorAll(`.plato-item[data-categoria="Chef Cristina Experience"]`);
-  platosDOM.forEach(item => {
-    const nombre = item.querySelector('input[type="checkbox"]')?.dataset?.nombre;
-    if (nombre === plato.nombre) {
-      const inputPrecio = item.querySelector('.precio-personalizado');
-      if (inputPrecio) {
-        inputPrecio.value = plato.precio_por_persona?.toFixed(2) || '0.00';
-      }
-    }
-  });
-}
-
-
         } else {
           // Fila manual si no es del menú
           agregarFilaManual({
@@ -1553,121 +1545,119 @@ async function cargarCotizacionParaEditar(id) {
   }
   
   // Función para generar PDFs
-  async function generarPDF(tipo) {
-    const cliente = document.getElementById('cliente').value;
-    const fecha = document.getElementById('fecha').value;
+async function generarPDF(tipo) {
+  // 1. Validar campos obligatorios igual que al guardar
+  const cliente = document.getElementById('cliente').value;
+  const fecha = document.getElementById('fecha').value;
+  
+  if (!cliente || !fecha) {
+    alert('Por favor ingrese al menos el nombre del cliente y la fecha');
+    return;
+  }
+
+  // 2. Preparar los datos EXACTAMENTE como en guardarCotizacion()
+  const datos = {
+    invoiceNumber: document.getElementById('invoiceNumber').value,
+    fecha: document.getElementById('fecha').value,
+    dia: document.getElementById('dia').value,
+    cliente: document.getElementById('cliente').value,
+    numero: document.getElementById('numero').value,
+    hora_evento: document.getElementById('hora_evento').value,
+    hora_servir: document.getElementById('hora_servir').value,
+    hora_salida: document.getElementById('hora_salida').value,
+    servicio: document.getElementById('servicio').value,
+    ubicacion: document.getElementById('ubicacion').value,
+    contacto: document.getElementById('contacto').value,
+    status: document.getElementById('status').value,
+    taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
+    gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
+    deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
+      (parseFloat(document.getElementById('deliveryFee').value)) || 0 : 0,
+    notas: document.getElementById('notasArea').innerText,
+    notasCocina: document.getElementById('notasCocina').value,
+    platos: [],
+    pagos: []
+  };
+
+  // 3. Procesar platos igual que en guardarCotizacion()
+  const platosItems = document.querySelectorAll('.plato-item');
+  
+  // Platos seleccionados del menú
+  platosSeleccionados.forEach(p => {
+    const platoItem = Array.from(platosItems).find(item => 
+      item.querySelector(`input[data-nombre="${p.nombre}"]`)
+    );
+    const descripcion = platoItem?.querySelector('.plato-descripcion')?.textContent.trim() || '';
     
-    if (!cliente || !fecha) {
-      alert('Por favor ingrese al menos el nombre del cliente y la fecha');
-      return;
-    }
-    
-    const datos = {
-      invoiceNumber: document.getElementById('invoiceNumber').value || '1',
-      fecha: document.getElementById('fecha').value,
-      dia: document.getElementById('dia').value,
-      cliente: document.getElementById('cliente').value,
-      numero: document.getElementById('numero').value,
-      hora_evento: document.getElementById('hora_evento').value,
-      hora_servir: document.getElementById('hora_servir').value,
-      hora_salida: document.getElementById('hora_salida').value,
-      servicio: document.getElementById('servicio').value,
-      ubicacion: document.getElementById('ubicacion').value,
-      contacto: document.getElementById('contacto').value,
-      status: document.getElementById('status').value,
-      platos: platosSeleccionados.map(p => ({
-      ...p,
-      // Agregar descripción para Chef Cristina Experience
-      descripcion: p.categoria === 'Chef Cristina Experience' ? 
-        document.querySelector(`.plato-item[data-categoria="Chef Cristina Experience"] .plato.descripcion`)?.textContent || '' : ''
-    })),
-      taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
-      gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
-      deliveryFee: document.getElementById('servicio').value === 'Delivery Catering' ? 
-        parseFloat(document.getElementById('deliveryFee').value) || 0 : 0,
-      notas: document.getElementById('notasArea').innerText,
-      notasCocina: document.getElementById('notasCocina').value,
-    // Agregar filas manuales
-    filasManuales: filasManuales.map((tr, index) => {
-      const inputs = tr.querySelectorAll('input');
-      return {
-        nombre: inputs[1]?.value || `Producto ${index + 1}`,
-        cantidadTexto: inputs[0]?.value || '1',
-        precio_total: parseFloat(inputs[2]?.value) || 0,
-        esManual: true // Marcar como fila manual
-      };
-    })
-    };
-    
-   if (platosSeleccionados.length === 0 && filasManuales.length > 0) {
-  datos.platos = filasManuales.map((tr, index) => {
+    datos.platos.push({
+      nombre: p.nombre,
+      precio_por_persona: p.precio_por_persona,
+      cantidad: p.cantidad,
+      cantidadTexto: p.cantidadTexto,
+      precio_total: p.precio_total,
+      categoria: p.categoria,
+      descripcion: descripcion,
+      modificado: p.modificado || false
+    });
+  });
+
+  // Filas manuales (igual que en guardar)
+  filasManuales.forEach((tr, index) => {
     const inputs = tr.querySelectorAll('input');
-    return {
+    datos.platos.push({
       nombre: inputs[1]?.value || `Producto ${index + 1}`,
       precio_por_persona: parseFloat(inputs[2]?.value) || 0,
       cantidad: 1,
-      cantidadTexto: inputs[0]?.value || '-',
-      precio_total: parseFloat(inputs[2]?.value) || 0
-    };
+      cantidadTexto: inputs[0]?.value || '1',
+      precio_total: parseFloat(inputs[2]?.value) || 0,
+      categoria: 'Manual',
+      descripcion: 'Agregado manualmente',
+      modificado: true,
+      esManual: true
+    });
   });
-}
-// Calcular totales para PDF
-let subtotal = 0;
-(datos.platos || []).forEach(p => {
-  subtotal += parseFloat(p.precio_total) || 0;
-});
 
-const tax = subtotal * (datos.taxPercentage / 100);
-const gratuity = subtotal * (datos.gratuityPercentage / 100);
-const total = subtotal + tax + gratuity + (datos.deliveryFee || 0);
+  // Pagos (igual que en guardar)
+  document.querySelectorAll('.pago-item').forEach(item => {
+    datos.pagos.push({
+      fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],
+      monto: parseFloat(item.querySelector('.pago-monto')?.value) || 0,
+      metodo: item.querySelector('.pago-metodo')?.value || 'cash',
+      notas: item.querySelector('.pago-notas')?.value || ''
+    });
+  });
 
-// Asignar al objeto datos
-datos.subtotal = subtotal;
-datos.tax = tax;
-datos.gratuity = gratuity;
-datos.precioTotal = total;
+  // 4. Calcular totales igual que en guardarCotizacion()
+  datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
+  datos.tax = datos.subtotal * (datos.taxPercentage / 100);
+  datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
+  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee;
 
-    // Obtener pagos desde el DOM
-const pagos = Array.from(document.querySelectorAll('.pago-item')).map(item => ({
-  fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],
-  monto: parseFloat(item.querySelector('.pago-monto')?.value) || 0,
-  metodo: item.querySelector('.pago-metodo')?.value || 'cash',
-  notas: item.querySelector('.pago-notas')?.value || ''
-}));
-
-// Calcular total pagado y saldo
-const totalPagado = pagos.reduce((sum, pago) => sum + (pago.monto || 0), 0);
-const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
-
-// Agregar al objeto de datos para el PDF
-datos.pagos = pagos;
-datos.totalPagado = totalPagado;
-datos.saldoPendiente = saldoPendiente;
-
-    mostrarLoading(`Generando PDF para ${tipo === 'cliente' ? 'cliente' : 'cocina'}...`);
+  // 5. Mostrar loading y enviar al servidor
+  mostrarLoading(`Generando PDF para ${tipo === 'cliente' ? 'cliente' : 'cocina'}...`);
+  
+  try {
+    const response = await fetch('/api/generar-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tipo, datos })
+    });
     
-    try {
-      const response = await fetch('/api/generar-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tipo, datos })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Error al generar PDF');
-      }
-      
-      const data = await response.json();
-      window.open(data.pdfUrl, '_blank');
-      
-    } catch (error) {
-      console.error('Error al generar PDF:', error);
-      alert(`Error: ${error.message}`);
-    } finally {
-      ocultarLoading();
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Error al generar PDF');
     }
+    
+    const data = await response.json();
+    window.open(data.pdfUrl, '_blank');
+    
+  } catch (error) {
+    console.error('Error al generar PDF:', error);
+    alert(`Error: ${error.message}`);
+  } finally {
+    ocultarLoading();
   }
+}
   
   // Función para guardar cotización
 async function guardarCotizacion() {
@@ -1695,15 +1685,21 @@ async function guardarCotizacion() {
     ubicacion: document.getElementById('ubicacion').value,
     contacto: document.getElementById('contacto').value,
     status: document.getElementById('status').value,
-    platos: platosSeleccionados.map(p => ({
-      nombre: p.nombre,
-      precio_por_persona: p.precio_por_persona,
-      cantidad: p.cantidad,
-      cantidadTexto: p.cantidadTexto,
-      precio_total: p.precio_total,
-      categoria: p.categoria,
-      modificado: p.modificado || false
-    })),
+     platos: platosSeleccionados.map(p => {
+      const platoItem = document.querySelector(`.plato-item[data-categoria="${p.categoria}"] input[data-nombre="${p.nombre}"]`)?.closest('.plato-item');
+      const descripcion = platoItem?.querySelector('.plato-descripcion')?.textContent.trim() || '';
+      
+      return {
+        nombre: p.nombre,
+        precio_por_persona: p.precio_por_persona,
+        cantidad: p.cantidad,
+        cantidadTexto: p.cantidadTexto,
+        precio_total: p.precio_total,
+        categoria: p.categoria,
+        descripcion: descripcion,  // Asegúrate de incluir esto
+        modificado: p.modificado || false
+      };
+    }),
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
     deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
@@ -1891,25 +1887,25 @@ async function cargarPlatosDesdeBD() {
                 ${plato.descripcion}
               </div>` : ''}
             `;
-          } else if (categoria === 'Chef Cristina Experience') {
-  platoItem.innerHTML = `
-    <div class="plato-header">
-      <input type="checkbox" id="plato-${plato._id}" 
-             data-nombre="${plato.nombre}" 
-             data-precio="0">
-      <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
-    </div>
-    ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray); margin-bottom: 0.5rem;">
-      ${plato.descripcion}
-    </div>` : ''}
-    <div class="plato-cantidad" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
-      <label style="margin-right: 4px;">Cantidad:</label>
-      <input type="number" min="1" value="1" class="cantidad-plato form-control" style="max-width: 70px;">
-      <label style="margin-left: 10px;">Precio:</label>
-      <input type="number" min="0" value="0" class="precio-personalizado form-control" step="0.01" style="max-width: 100px;">
-    </div>
-  `;
-}
+          } else  if (categoria === 'Chef Cristina Experience') {
+      platoItem.innerHTML = `
+        <div class="plato-header">
+          <input type="checkbox" id="plato-${plato._id}" 
+                 data-nombre="${plato.nombre}" 
+                 data-precio="0">
+          <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
+        </div>
+        <div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray); margin-bottom: 0.5rem;">
+          ${plato.descripcion || ''}
+        </div>
+        <div class="plato-cantidad" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
+          <label style="margin-right: 4px;">Cantidad:</label>
+          <input type="number" min="1" value="1" class="cantidad-plato form-control" style="max-width: 70px;">
+          <label style="margin-left: 10px;">Precio:</label>
+          <input type="number" min="0" value="${plato.precio_full || 0}" class="precio-personalizado form-control" step="0.01" style="max-width: 100px;">
+        </div>
+      `;
+    }
 if (categoria === 'Chef Cristina Experience') {
   const precioInput = platoItem.querySelector('.precio-personalizado');
   const cantidadInput = platoItem.querySelector('.cantidad-plato');

@@ -180,9 +180,9 @@ const generarPDF = (tipo, datos) => {
     const rutaPDF = path.join(__dirname, 'public', 'pdfs', nombreArchivo);
     const stream = fs.createWriteStream(rutaPDF);
     doc.pipe(stream);
-const totalPagado = (datos.pagos || []).reduce((suma, p) => suma + (p.monto || 0), 0);
-const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
 
+    const totalPagado = (datos.pagos || []).reduce((suma, p) => suma + (p.monto || 0), 0);
+    const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
 
     // Logo
     const logoPath = path.join(__dirname, 'public', 'img', 'logo-casa-mexico.png');
@@ -218,9 +218,7 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
     // Formato de fecha
     const fechaObj = new Date(datos.fecha);
     fechaObj.setMinutes(fechaObj.getMinutes() + fechaObj.getTimezoneOffset());
-    const fechaFormateada = fechaObj.toLocaleDateString('es-ES', {
-      
-    });
+    const fechaFormateada = fechaObj.toLocaleDateString('es-ES');
 
     // Agrega fila de texto
     const agregarFila = (label, value, isBold = false) => {
@@ -231,7 +229,6 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
       currentY += 20;
     };
 
-    
     // Color de estado
     let statusColor = '#000000';
     if (datos.status === 'pagado') statusColor = '#2a9d8f';
@@ -246,7 +243,7 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
     agregarFila(tipo === 'cliente' ? 'Event Time:' : 'Hora del evento:', datos.hora_evento);
 
     if (tipo === 'cliente') {
-      // PDF del cliente (inglés)
+      // PDF del cliente (inglés) - Versión detallada
       agregarFila('Service:', datos.servicio);
       agregarFila('Location:', datos.ubicacion);
       agregarFila('Serving Time:', datos.hora_servir);
@@ -254,7 +251,7 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
       doc.fillColor(statusColor).text(datos.status.toUpperCase(), infoX + 160, currentY - 20);
       doc.fillColor('#000000');
 
-       currentY += 30;
+      currentY += 30;
       doc.font('Helvetica-Bold').text('MENU DETAILS', infoX, currentY);
       currentY += 20;
 
@@ -267,27 +264,56 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
 
+      // Procesar todos los platos
       if (!Array.isArray(datos.platos)) datos.platos = [];
-     datos.platos.forEach(plato => {
-  doc.font('Helvetica')
-     .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
-     .text(plato.nombre, infoX + 90, currentY, { width: 250 })
-     .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
-  currentY += 15;
+      
+      // Agregar filas manuales si existen
+      if (datos.filasManuales && Array.isArray(datos.filasManuales)) {
+        datos.filasManuales.forEach(fila => {
+          datos.platos.push({
+            nombre: fila.nombre,
+            cantidadTexto: fila.cantidadTexto,
+            precio_total: fila.precio_total,
+            esManual: true
+          });
+        });
+      }
 
-  // Mostrar descripción si es de la categoría Chef Cristina Experience
-  if (plato.categoria === 'Chef Cristina Experience' && plato.descripcion?.trim()) {
-    doc.font('Helvetica-Oblique')
-       .fontSize(9)
-       .fillColor('#555555')
-       .text(plato.descripcion, infoX + 90, currentY, { width: 400 });
-    doc.fillColor('#000000').fontSize(10);
-    currentY += 15;
-  } else {
-    currentY += 5;
-  }
-});
+      datos.platos.forEach(plato => {
+        // Estilo diferente para filas manuales
+        if (plato.esManual) {
+          doc.font('Helvetica-Oblique')
+             .fillColor('#000000');
+        } else {
+          doc.font('Helvetica')
+             .fillColor('#000000');
+        }
 
+        doc.fontSize(10)
+           .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
+           .text(plato.nombre, infoX + 90, currentY, { width: 250 })
+           .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
+        
+        currentY += 15;
+
+        // Mostrar descripción si es de la categoría Chef Cristina Experience
+        if (plato.categoria === 'Chef Cristina Experience' && plato.descripcion) {
+          doc.font('Helvetica-Oblique')
+             .fontSize(9)
+             .fillColor('#555555')
+             .text(`→ ${plato.descripcion}`, infoX + 90, currentY, { 
+               width: 400,
+               align: 'justify',
+               lineGap: 2
+             });
+          doc.fillColor('#000000').fontSize(10);
+          
+          const descHeight = doc.heightOfString(`→ ${plato.descripcion}`, { width: 400 });
+          currentY += descHeight + 5;
+        } else if (!plato.esManual) {
+          currentY += 10;
+        }
+      });
 
       currentY += 20;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
@@ -301,14 +327,12 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
         currentY += 20;
       };
 
-
       agregarFilaDerecha('Subtotal:', `$${datos.subtotal.toFixed(2)}`);
       agregarFilaDerecha(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
       agregarFilaDerecha(`Gratuity (${datos.gratuityPercentage}%):`, `$${datos.gratuity.toFixed(2)}`);
       if (datos.deliveryFee > 0) {
         agregarFilaDerecha('Delivery Fee:', `$${datos.deliveryFee.toFixed(2)}`);
-}
-
+      }
 
       currentY += 10;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
@@ -320,17 +344,16 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
       currentY += 20;
    
       if (totalPagado > 0 && saldoPendiente > 0) {
-  currentY += 10;
-  doc.font('Helvetica-Bold')
-     .fillColor('#e63946')
-     .text('OUTSTANDING BALANCE:', infoX, currentY, { width: 150, align: 'left' })
-     .text(`$${saldoPendiente.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
-  doc.fillColor('#000000');
-}
-
+        currentY += 10;
+        doc.font('Helvetica-Bold')
+           .fillColor('#e63946')
+           .text('OUTSTANDING BALANCE:', infoX, currentY, { width: 150, align: 'left' })
+           .text(`$${saldoPendiente.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
+        doc.fillColor('#000000');
+      }
 
     } else {
-      // PDF Cocina (español)
+      // PDF Cocina (español) - Versión simplificada
       agregarFila('Servicio:', datos.servicio);
       agregarFila('Ubicación:', datos.ubicacion);
       agregarFila('Contacto en lugar:', datos.contacto);
@@ -341,10 +364,7 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
       doc.fillColor('#000000');
 
       currentY += 30;
-
-      // Tabla de menú
-      doc.font('Helvetica-Bold')
-         .text('DETALLES DEL MENÚ', infoX, currentY);
+      doc.font('Helvetica-Bold').text('DETALLES DEL MENÚ', infoX, currentY);
       currentY += 20;
 
       doc.font('Helvetica-Bold')
@@ -354,40 +374,64 @@ const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
 
+      // Procesar todos los platos
       if (!Array.isArray(datos.platos)) datos.platos = [];
-     datos.platos.forEach(plato => {
-  doc.font('Helvetica')
-     .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
-     .text(plato.nombre, infoX + 90, currentY, { width: 250 })
-     .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
-  currentY += 15;
+      
+      // Agregar filas manuales si existen
+      if (datos.filasManuales && Array.isArray(datos.filasManuales)) {
+        datos.filasManuales.forEach(fila => {
+          datos.platos.push({
+            nombre: fila.nombre,
+            cantidadTexto: fila.cantidadTexto,
+            esManual: true
+          });
+        });
+      }
 
-  // Mostrar descripción si es de la categoría Chef Cristina Experience
-  if (plato.categoria === 'Chef Cristina Experience' && plato.descripcion) {
-    doc.font('Helvetica-Oblique')
-       .fontSize(9)
-       .fillColor('#555555')
-       .text(`→ ${plato.descripcion}`, infoX + 90, currentY, { width: 400 });
-    doc.fillColor('#000000').fontSize(10); // reset
-    currentY += 15;
-  } else {
-    currentY += 5;
-  }
-});
+      datos.platos.forEach(plato => {
+        // Estilo diferente para filas manuales
+        if (plato.esManual) {
+          doc.font('Helvetica-Oblique')
+             .fillColor('#555555');
+        } else {
+          doc.font('Helvetica')
+             .fillColor('#000000');
+        }
 
-// agrega estos valores al objeto datos si no están
-datos.totalPagado = totalPagado;
-datos.saldoPendiente = saldoPendiente;
+        doc.fontSize(10)
+           .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
+           .text(plato.nombre, infoX + 90, currentY, { width: 350 });
+        
+        currentY += 15;
+
+        // Mostrar descripción solo si es Chef Cristina Experience
+        if (plato.categoria === 'Chef Cristina Experience' && plato.descripcion) {
+          doc.font('Helvetica-Oblique')
+             .fontSize(9)
+             .fillColor('#555555')
+             .text(`→ ${plato.descripcion}`, infoX + 90, currentY, { 
+               width: 400,
+               align: 'justify',
+               lineGap: 2
+             });
+          doc.fillColor('#000000').fontSize(10);
+          
+          const descHeight = doc.heightOfString(`→ ${plato.descripcion}`, { width: 400 });
+          currentY += descHeight + 5;
+        } else {
+          currentY += 10;
+        }
+      });
+
       // Saldo pendiente
-    if (saldoPendiente > 0) {
-  currentY += 20;
-  doc.font('Helvetica-Bold')
-     .fillColor('#e63946')
-     .text('SALDO PENDIENTE:', infoX, currentY)
-     .text(`$${saldoPendiente.toFixed(2)}`, 400, currentY);
-  doc.fillColor('#000000');
-}
-
+      if (saldoPendiente > 0) {
+        currentY += 20;
+        doc.font('Helvetica-Bold')
+           .fillColor('#e63946')
+           .text('SALDO PENDIENTE:', infoX, currentY)
+           .text(`$${saldoPendiente.toFixed(2)}`, 400, currentY);
+        doc.fillColor('#000000');
+      }
 
       // Notas para cocina
       if (datos.notasCocina && datos.notasCocina !== 'Ninguna') {

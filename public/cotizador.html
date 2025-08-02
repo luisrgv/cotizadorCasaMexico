@@ -588,6 +588,10 @@
       <a href="impagas.html" class="tab" data-tab="impaga">
         <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
       </a>
+      </a>
+      <a href="cancelado.html" class="tab" data-tab="cancelada">
+        <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
+      </a>
       <button type="button" class="btn btn-info" id="verCalendarioBtn">
         <i class="fas fa-calendar-alt"></i> Ver Calendario
       </button>
@@ -605,16 +609,20 @@
      
       <div style="font-size: 0.9em; color: var(--gray); margin-top: 0.5rem;">INVOICE#<span id="invoiceNumberDisplay">-</span></div>
     </div>
-    <div class="form-group" style="width: 200px;">
-      <label for="status">📊 Estado</label>
-   <select id="status" class="form-control" required>
-  <option value="en_proceso">En Proceso</option> <!-- Si decides agregarlo -->
-  <option value="pagado">Pagado</option>
-  <option value="impago">Impago</option>
-</select>
-    </div>
-  </div>
+      </div>
 </h2>
+        <div class="form-group" style="width: 100%; max-width: 500px;">
+  <label>📊 Estado</label>
+  <div id="estadoGrupo" style="display: flex; gap: 5px; flex-wrap: nowrap;">
+    <button type="button" class="btn btn-outline-secondary estado-btn" data-estado="en_proceso">En Proceso</button>
+    <button type="button" class="btn btn-outline-success estado-btn" data-estado="pagado">Pagado</button>
+    <button type="button" class="btn btn-outline-danger estado-btn" data-estado="impago">Impago</button>
+    <button type="button" class="btn btn-outline-warning estado-btn" data-estado="cancelado">Cancelado</button>
+  </div>
+  <input type="hidden" id="estadoHidden" value="">
+</div>
+
+
         <form id="cotizacionForm">
           <div class="form-grid">
             <!-- Información básica -->
@@ -1347,11 +1355,29 @@ async function cargarCotizacionParaEditar(id) {
     const response = await fetch(`/api/cotizaciones/${id}`);
     const { cotizacion } = await response.json();
     if (!cotizacion) return;
-
+    console.log('Estado recibido:', cotizacion.status);
     document.getElementById('invoiceNumber').value = cotizacion.invoiceNumber;
     document.getElementById('invoiceNumberDisplay').textContent = cotizacion.invoiceNumber;
 
-    document.getElementById('status').value = cotizacion.status || 'impago';
+    const estado = cotizacion.status || '';
+document.getElementById('estadoHidden').value = estado;
+
+// Limpiar botones y estilos
+const botonesEstado = document.querySelectorAll('.estado-btn');
+botonesEstado.forEach(btn => {
+  const tipo = btn.getAttribute('data-estado');
+  btn.className = 'btn estado-btn btn-outline-' + tipo; // restaurar estilo
+  btn.disabled = false;
+});
+
+// Marcar el botón activo
+const activo = document.querySelector(`.estado-btn[data-estado="${estado}"]`);
+if (activo) {
+  activo.className = 'btn estado-btn btn-primary';
+}
+
+inicializarBotonesEstado();
+
     document.getElementById('fecha').value = cotizacion.fecha?.split('T')[0] || '';
     document.getElementById('dia').value = cotizacion.dia || '';
     document.getElementById('cliente').value = cotizacion.cliente || '';
@@ -1542,8 +1568,31 @@ async function cargarCotizacionParaEditar(id) {
     document.getElementById('generarPDFCocina').addEventListener('click', async () => {
       await generarPDF('cocina');
     });
+
+    // Evento para manejar los botones de estado
+document.querySelectorAll('.estado-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const estado = btn.getAttribute('data-estado');
+    document.getElementById('estadoHidden').value = estado;
+
+    // Quitar clases activas de todos
+    document.querySelectorAll('.estado-btn').forEach(b => {
+      b.classList.remove('btn-primary', 'btn-outline-secondary', 'btn-outline-success', 'btn-outline-danger');
+      b.classList.add('btn-outline-' + b.getAttribute('data-estado')); // restaurar estilo original
+    });
+
+    // Activar solo el botón clicado
+    btn.classList.remove('btn-outline-' + estado);
+    btn.classList.add('btn-primary');
+  });
+});
+
+inicializarBotonesEstado();
+
   }
   
+
+
   // Función para generar PDFs
 async function generarPDF(tipo) {
   // 1. Validar campos obligatorios igual que al guardar
@@ -1568,7 +1617,7 @@ async function generarPDF(tipo) {
     servicio: document.getElementById('servicio').value,
     ubicacion: document.getElementById('ubicacion').value,
     contacto: document.getElementById('contacto').value,
-    status: document.getElementById('status').value,
+    status: document.getElementById('estadoHidden').value,
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
     deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
@@ -1684,7 +1733,8 @@ async function guardarCotizacion() {
     servicio: document.getElementById('servicio').value,
     ubicacion: document.getElementById('ubicacion').value,
     contacto: document.getElementById('contacto').value,
-    status: document.getElementById('status').value,
+    status: document.getElementById('estadoHidden').value,
+
      platos: platosSeleccionados.map(p => {
       const platoItem = document.querySelector(`.plato-item[data-categoria="${p.categoria}"] input[data-nombre="${p.nombre}"]`)?.closest('.plato-item');
       const descripcion = platoItem?.querySelector('.plato-descripcion')?.textContent.trim() || '';
@@ -1948,19 +1998,6 @@ if (categoria === 'Chef Cristina Experience') {
   }
 }
 
-// Detectar cambio inmediato en el cost personalizado y actualizar resumen
-setTimeout(() => {
-  const inputPrecio = platoItem.querySelector('.precio-personalizado');
-  if (inputPrecio) {
-    inputPrecio.addEventListener('input', actualizarResumenPlatos);
-  }
-
-  const inputCantidad = platoItem.querySelector('.cantidad-plato');
-  if (inputCantidad) {
-    inputCantidad.addEventListener('input', actualizarResumenPlatos);
-  }
-}, 0);
-
 //numero de cotizaciones 
 
   async function actualizarBadgeCotizaciones() {
@@ -1970,10 +2007,12 @@ setTimeout(() => {
       const enProceso = data.cotizaciones.filter(c => c.status === 'en_proceso');
       const pagadas = data.cotizaciones.filter(c => c.status === 'pagado');
       const impagas = data.cotizaciones.filter(c => c.status === 'impago');
+      const canceladas = data.cotizaciones.filter(c => c.status === 'cancelado');
 
       document.getElementById('badgeEnProceso').textContent = enProceso.length;
       document.getElementById('badgePagadas') && (document.getElementById('badgePagadas').textContent = pagadas.length);
       document.getElementById('badgeImpagas') && (document.getElementById('badgeImpagas').textContent = impagas.length);
+      document.getElementById('badgeCanceladas').textContent = canceladas.length;
     } catch (err) {
       console.error('Error cargando cotizaciones:', err);
     }
@@ -1993,6 +2032,35 @@ document.getElementById('chkDeliveryManual').addEventListener('change', function
    document.getElementById('servicio').addEventListener('change', function() {
   actualizarResumenPlatos();
 });
+
+
+
+
+
+
+
+
+
+function inicializarBotonesEstado() {
+  const botones = document.querySelectorAll('.estado-btn');
+  botones.forEach(btn => {
+    const nuevoBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(nuevoBtn, btn);
+
+    nuevoBtn.addEventListener('click', () => {
+      const estado = nuevoBtn.getAttribute('data-estado');
+      document.getElementById('estadoHidden').value = estado;
+
+      document.querySelectorAll('.estado-btn').forEach(b => {
+        const tipo = b.getAttribute('data-estado');
+        b.className = 'btn estado-btn btn-outline-' + tipo;
+      });
+
+      nuevoBtn.className = 'btn estado-btn btn-primary';
+    });
+  });
+}
+
 </script>
 
 </body>

@@ -900,35 +900,44 @@
 
     
     // Función para abrir modal de plato
- function abrirModalPlato(plato) {
-  currentPlatoId = plato._id;
-  document.getElementById('modalPlatoTitle').textContent = 'Editar Plato';
-  document.getElementById('platoId').value = plato._id;
-  document.getElementById('platoCategoria').value = plato.categoria;
-
-  actualizarCamposPrecio(); // 🔑 Esto es clave para que se generen los campos
-
-  // Rellenar precios dependiendo de la categoría
-  if (plato.categoria !== 'Desserts') {
-    const precio15Input = document.getElementById('platoPrecio15');
-    const precio30Input = document.getElementById('platoPrecio30');
-    if (precio15Input && precio30Input) {
-      precio15Input.value = plato.precio_15 ?? '';
-      precio30Input.value = plato.precio_30 ?? '';
+ function abrirModalPlato(plato = null) {
+  const modal = document.getElementById('platoModal');
+  const form = document.getElementById('platoForm');
+  
+  if (plato) {
+    // Modo edición
+    currentPlatoId = plato._id;
+    document.getElementById('modalPlatoTitle').textContent = 'Editar Plato';
+    document.getElementById('platoId').value = plato._id;
+    document.getElementById('platoCategoria').value = plato.categoria;
+    document.getElementById('platoNombre').value = plato.nombre;
+    document.getElementById('platoDescripcion').value = plato.descripcion ?? '';
+    
+    actualizarCamposPrecio(); // Esto generará los campos de precio
+    
+    // Rellenar precios según la categoría
+    if (plato.categoria === 'Desserts' || plato.categoria === 'Chef Cristina Experience') {
+      const precioFullInput = document.getElementById('platoPrecioFull');
+      if (precioFullInput) precioFullInput.value = plato.precio_full ?? '';
+    } else {
+      const precio15Input = document.getElementById('platoPrecio15');
+      const precio30Input = document.getElementById('platoPrecio30');
+      if (precio15Input && precio30Input) {
+        precio15Input.value = plato.precio_15 ?? '';
+        precio30Input.value = plato.precio_30 ?? '';
+      }
     }
   } else {
-    const precioFullInput = document.getElementById('platoPrecioFull');
-    if (precioFullInput) {
-      precioFullInput.value = plato.precio_full ?? '';
-    }
+    // Modo creación
+    currentPlatoId = null;
+    document.getElementById('modalPlatoTitle').textContent = 'Agregar Plato';
+    form.reset();
+    document.getElementById('platoCategoria').value = 'Appetizers'; // Valor por defecto
+    actualizarCamposPrecio(); // Generar campos de precio iniciales
   }
-
-  document.getElementById('platoNombre').value = plato.nombre;
-  document.getElementById('platoDescripcion').value = plato.descripcion ?? '';
-
-  document.getElementById('platoModal').style.display = 'flex';
+  
+  modal.style.display = 'flex';
 }
-
     
     // Función para guardar plato
     async function guardarPlato(e) {

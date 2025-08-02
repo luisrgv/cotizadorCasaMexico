@@ -11,7 +11,6 @@ let encabezadoInsertado = false;
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', async () => {
   await verificarSesion();
-  
   await cargarCotizacionesEnProceso();
   configurarEventos();
   configurarNotasEdicion();
@@ -842,7 +841,29 @@ document.addEventListener('click', async (e) => {
     }
   }
 });
+//numero de cotizaciones 
 
+  async function actualizarBadgeCotizaciones() {
+    try {
+      const res = await fetch('/api/cotizaciones');
+      const data = await res.json();
+      const enProceso = data.cotizaciones.filter(c => c.status === 'en_proceso');
+      const pagadas = data.cotizaciones.filter(c => c.status === 'pagado');
+      const impagas = data.cotizaciones.filter(c => c.status === 'impago');
+      const canceladas = data.cotizaciones.filter(c => c.status === 'cancelado');
+
+      document.getElementById('badgeEnProceso').textContent = enProceso.length;
+      document.getElementById('badgePagadas') && (document.getElementById('badgePagadas').textContent = pagadas.length);
+      document.getElementById('badgeImpagas') && (document.getElementById('badgeImpagas').textContent = impagas.length);
+      document.getElementById('badgeCanceladas') && (document.getElementById('badgeCanceladas').textContent = canceladas.length);
+    } catch (err) {
+      console.error('Error cargando cotizaciones:', err);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    actualizarBadgeCotizaciones();
+  });
 
 // Funciones para mostrar/ocultar loading
 function mostrarLoading(mensaje) {

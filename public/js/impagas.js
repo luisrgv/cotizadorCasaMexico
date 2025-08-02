@@ -11,7 +11,6 @@ let encabezadoInsertado = false;
 // DOM Content Loaded
 document.addEventListener('DOMContentLoaded', async () => {
   await verificarSesion();
-  await cargarPlatos();
   await cargarcotizacionesImpagas();
   configurarEventos();
   configurarNotasEdicion();
@@ -36,102 +35,6 @@ async function verificarSesion() {
   } catch (error) {
     console.error('Error al verificar sesión:', error);
     window.location.href = '/';
-  }
-}
-
-// Función para cargar platos disponibles
-async function cargarPlatos() {
-  try {
-    const response = await fetch('/api/platos');
-    const data = await response.json();
-    platosDisponibles = data.platos || [];
-    
-    // Si no hay platos desde la API, usamos los estáticos
-    if (platosDisponibles.length === 0) {
-      platosDisponibles = [
-        // Appetizers
-        { _id: '1', nombre: "Guacamole con Chips", precio_por_persona: 75, categoria: "Appetizers" },
-        { _id: '2', nombre: "Esquites", precio_por_persona: 60, categoria: "Appetizers" },
-        { _id: '3', nombre: "Esquites con chorizo", precio_por_persona: 85, categoria: "Appetizers" },
-        { _id: '4', nombre: "Tacos Dorados", precio_por_persona: 90, categoria: "Appetizers" },
-        { _id: '5', nombre: "Ceviche", precio_por_persona: 120, categoria: "Appetizers" },
-        { _id: '6', nombre: "Arroz", precio_por_persona: 35, categoria: "Appetizers" },
-        { _id: '7', nombre: "Frijoles", precio_por_persona: 35, categoria: "Appetizers" },
-        { _id: '8', nombre: "Sopa Azteca", precio_por_persona: 90, categoria: "Appetizers" },
-        
-        // Tacos
-        { _id: '9', nombre: "Grilled Steak", precio_por_persona: 165, categoria: "Tacos" },
-        { _id: '10', nombre: "Grilled Chicken (Tinga)", precio_por_persona: 165, categoria: "Tacos" },
-        { _id: '11', nombre: "Chorizo", precio_por_persona: 130, categoria: "Tacos" },
-        { _id: '12', nombre: "Pork Carnitas", precio_por_persona: 150, categoria: "Tacos" },
-        { _id: '13', nombre: "Pork Cochinita Pibil", precio_por_persona: 150, categoria: "Tacos" },
-        { _id: '14', nombre: "Salt Cured Steak", precio_por_persona: 160, categoria: "Tacos" },
-        { _id: '15', nombre: "Crispy Fish", precio_por_persona: 170, categoria: "Tacos" },
-        { _id: '16', nombre: "Crispy Shrimp", precio_por_persona: 170, categoria: "Tacos" },
-        { _id: '17', nombre: "Root Vegetables", precio_por_persona: 70, categoria: "Tacos" },
-        { _id: '18', nombre: "BARBACOA (5 KILOS)", precio_por_persona: 250, categoria: "Tacos" },
-        
-        // Specialty
-        { _id: '19', nombre: "Chile Relleno", precio_por_persona: 160, categoria: "Specialty" },
-        { _id: '20', nombre: "Mole Verde / Rojo", precio_por_persona: 180, categoria: "Specialty" },
-        { _id: '21', nombre: "Encacahuatado", precio_por_persona: 180, categoria: "Specialty" },
-        
-        // Desserts
-        { _id: '22', nombre: "Tres leches", precio_por_persona: 75, categoria: "Desserts" },
-        { _id: '23', nombre: "Flan", precio_por_persona: 75, categoria: "Desserts" },
-        { _id: '24', nombre: "Agua Fresca (1 Gallon)", precio_por_persona: 20, categoria: "Desserts" }
-      ];
-    }
-    
-    // Llenar la lista de platos en el modal de edición
-    const platosList = document.getElementById('editPlatosList');
-    platosList.innerHTML = '';
-    
-    // Agrupar platos por categoría
-    const platosPorCategoria = {
-      Appetizers: [],
-      Tacos: [],
-      Specialty: [],
-      Desserts: []
-    };
-    
-    platosDisponibles.forEach(plato => {
-      if (plato.categoria && platosPorCategoria[plato.categoria]) {
-        platosPorCategoria[plato.categoria].push(plato);
-      }
-    });
-    
-    // Agregar platos al modal de edición
-    for (const categoria in platosPorCategoria) {
-      platosPorCategoria[categoria].forEach(plato => {
-        const platoItem = document.createElement('div');
-        platoItem.className = 'plato-item';
-        platoItem.dataset.categoria = categoria;
-        platoItem.style.display = 'none'; // Ocultar inicialmente
-        
-        platoItem.innerHTML = `
-          <div class="plato-header">
-            <input type="checkbox" id="edit-plato-${plato._id}" 
-                   data-id="${plato._id}" 
-                   data-nombre="${plato.nombre}" 
-                   data-precio="${plato.precio_por_persona}">
-            <label for="edit-plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
-          </div>
-          <div class="plato-precio">$${plato.precio_por_persona.toFixed(2)}</div>
-          <div class="plato-cantidad">
-            <label>Cantidad:</label>
-            <input type="number" min="1" value="1" class="cantidad-plato">
-          </div>
-        `;
-        
-        platosList.appendChild(platoItem);
-      });
-    }
-    
-    // Mostrar solo la categoría activa inicialmente
-    filtrarPlatosPorCategoria('Appetizers');
-  } catch (error) {
-    console.error('Error al cargar platos:', error);
   }
 }
 
@@ -967,7 +870,29 @@ document.addEventListener('click', async (e) => {
     }
   }
 });
+//numero de cotizaciones 
 
+async function actualizarBadgeCotizaciones() {
+    try {
+      const res = await fetch('/api/cotizaciones');
+      const data = await res.json();
+      const enProceso = data.cotizaciones.filter(c => c.status === 'en_proceso');
+      const pagadas = data.cotizaciones.filter(c => c.status === 'pagado');
+      const impagas = data.cotizaciones.filter(c => c.status === 'impago');
+      const canceladas = data.cotizaciones.filter(c => c.status === 'cancelado');
+
+      document.getElementById('badgeEnProceso').textContent = enProceso.length;
+      document.getElementById('badgePagadas') && (document.getElementById('badgePagadas').textContent = pagadas.length);
+      document.getElementById('badgeImpagas') && (document.getElementById('badgeImpagas').textContent = impagas.length);
+        document.getElementById('badgeCanceladas') && (document.getElementById('badgeCanceladas').textContent = canceladas.length);
+    } catch (err) {
+      console.error('Error cargando cotizaciones:', err);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    actualizarBadgeCotizaciones();
+  });
 
 // Funciones para mostrar/ocultar loading
 function mostrarLoading(mensaje) {

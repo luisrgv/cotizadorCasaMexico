@@ -234,7 +234,7 @@ const generarPDF = (tipo, datos) => {
     if (datos.status === 'pagado') statusColor = '#2a9d8f';
     if (datos.status === 'impago') statusColor = '#e63946';
     if (datos.status === 'en_proceso') statusColor = '#e9c46a';
-
+    if (datos.status === 'cancelado') statusColor = '#f4a261';
     // Información básica común
     agregarFila(tipo === 'cliente' ? 'Date:' : 'Fecha:', fechaFormateada, true);
     agregarFila(tipo === 'cliente' ? 'Day:' : 'Día:', datos.dia);

@@ -263,7 +263,7 @@ const generarPDF = (tipo, datos) => {
       currentY += 15;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
-
+      
       // Procesar todos los platos
       if (!Array.isArray(datos.platos)) datos.platos = [];
       
@@ -280,40 +280,52 @@ const generarPDF = (tipo, datos) => {
       }
 
       datos.platos.forEach(plato => {
-        // Estilo diferente para filas manuales
-        if (plato.esManual) {
-          doc.font('Helvetica-Oblique')
-             .fillColor('#000000');
-        } else {
-          doc.font('Helvetica')
-             .fillColor('#000000');
-        }
+  doc.font(plato.esManual ? 'Helvetica-Oblique' : 'Helvetica').fillColor('#000000');
 
-        doc.fontSize(10)
-           .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
-           .text(plato.nombre, infoX + 90, currentY, { width: 250 })
-           .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
-        
-        currentY += 15;
+  // Mostrar fila de producto
+  doc.fontSize(10)
+     .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
+     .text(plato.nombre, infoX + 90, currentY, { width: 250 })
+     .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
 
-        // Mostrar descripción si es de la categoría Chef Cristina Experience
-        if (plato.categoria === 'Chef Cristina Experience' && plato.descripcion) {
-          doc.font('Helvetica-Oblique')
-             .fontSize(9)
-             .fillColor('#555555')
-             .text(`→ ${plato.descripcion}`, infoX + 90, currentY, { 
-               width: 400,
-               align: 'justify',
-               lineGap: 2
-             });
-          doc.fillColor('#000000').fontSize(10);
-          
-          const descHeight = doc.heightOfString(`→ ${plato.descripcion}`, { width: 400 });
-          currentY += descHeight + 5;
-        } else if (!plato.esManual) {
-          currentY += 10;
-        }
-      });
+  currentY += 15;
+
+  // Mostrar descripción si no es manual
+  if (plato.descripcion && !plato.esManual) {
+const descripcionLimpia = (plato.descripcion || '')
+  .replace(/^[^a-zA-Z0-9áéíóúÁÉÍÓÚ]+/, '') // elimina símbolos o saltos al inicio
+  .replace(/[‘’‚‛‟“”"ʼʽ]/g, "'") // reemplaza comillas raras
+  .replace(/[!¡]/g, '') // elimina signos de exclamación
+  .replace(/[\r\n\t]+/g, ' ') // elimina saltos de línea y tabulaciones
+  .trim();
+
+    const alturaDescripcion = doc.heightOfString(`→ ${descripcionLimpia}`, {
+      width: 400,
+      align: 'justify',
+      lineGap: 2
+    });
+
+    // Verificar espacio antes de imprimir
+    if (currentY + alturaDescripcion > doc.page.height - 50) {
+      doc.addPage();
+      currentY = 50;
+    }
+
+    doc.font('Helvetica-Oblique')
+       .fontSize(9)
+       .fillColor('#555555')
+       .text(`→ ${descripcionLimpia}`, infoX + 90, currentY, {
+         width: 400,
+         align: 'justify',
+         lineGap: 2
+       });
+
+    currentY += alturaDescripcion + 5;
+    doc.fillColor('#000000').fontSize(10);
+  } else if (!plato.esManual) {
+    currentY += 10;
+  }
+});
 
       currentY += 20;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
@@ -327,8 +339,19 @@ const generarPDF = (tipo, datos) => {
         currentY += 20;
       };
 
+      // Asegurar que haya espacio antes de bloques finales
+const asegurarEspacio = (minY = 100) => {
+  if (currentY + minY > doc.page.height - 50) {
+    doc.addPage();
+    currentY = 50;
+  }
+};
+
+      asegurarEspacio(80);
       agregarFilaDerecha('Subtotal:', `$${datos.subtotal.toFixed(2)}`);
+      asegurarEspacio(60);
       agregarFilaDerecha(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
+      asegurarEspacio(60);
       agregarFilaDerecha(`Gratuity (${datos.gratuityPercentage}%):`, `$${datos.gratuity.toFixed(2)}`);
       if (datos.deliveryFee > 0) {
         agregarFilaDerecha('Delivery Fee:', `$${datos.deliveryFee.toFixed(2)}`);
@@ -337,14 +360,14 @@ const generarPDF = (tipo, datos) => {
       currentY += 10;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
-
+      asegurarEspacio(100);
       doc.font('Helvetica-Bold')
          .text('TOTAL:', infoX, currentY, { width: 150, align: 'left' })
          .text(`$${datos.precioTotal.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
       currentY += 20;
    
       if (totalPagado > 0 && saldoPendiente > 0) {
-        currentY += 10;
+         asegurarEspacio(60);
         doc.font('Helvetica-Bold')
            .fillColor('#e63946')
            .text('OUTSTANDING BALANCE:', infoX, currentY, { width: 150, align: 'left' })
@@ -388,41 +411,82 @@ const generarPDF = (tipo, datos) => {
         });
       }
 
-      datos.platos.forEach(plato => {
-        // Estilo diferente para filas manuales
-        if (plato.esManual) {
-          doc.font('Helvetica-Oblique')
-             .fillColor('#555555');
-        } else {
-          doc.font('Helvetica')
-             .fillColor('#000000');
-        }
+datos.platos.forEach(plato => {
+  // Estilo diferente para filas manuales
+  if (plato.esManual) {
+    doc.font('Helvetica-Oblique')
+       .fillColor('#555555');
+  } else {
+    doc.font('Helvetica')
+       .fillColor('#000000');
+  }
 
-        doc.fontSize(10)
-           .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
-           .text(plato.nombre, infoX + 90, currentY, { width: 350 });
-        
-        currentY += 15;
+  // Verificar espacio antes de agregar cada plato
+  if (currentY + 60 > doc.page.height - 50) {
+    doc.addPage();
+    currentY = 50;
+    
+    // Volver a dibujar encabezados si es nueva página
+    doc.font('Helvetica-Bold')
+       .fillColor('#000000')
+       .text('Cantidad', infoX, currentY, { width: 80 })
+       .text('Producto', infoX + 90, currentY, { width: 350 });
+    currentY += 20;
+    doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
+    currentY += 10;
+  }
 
-        // Mostrar descripción solo si es Chef Cristina Experience
-        if (plato.categoria === 'Chef Cristina Experience' && plato.descripcion) {
-          doc.font('Helvetica-Oblique')
-             .fontSize(9)
-             .fillColor('#555555')
-             .text(`→ ${plato.descripcion}`, infoX + 90, currentY, { 
-               width: 400,
-               align: 'justify',
-               lineGap: 2
-             });
-          doc.fillColor('#000000').fontSize(10);
-          
-          const descHeight = doc.heightOfString(`→ ${plato.descripcion}`, { width: 400 });
-          currentY += descHeight + 5;
-        } else {
-          currentY += 10;
-        }
-      });
+  doc.fontSize(10)
+     .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
+     .text(plato.nombre, infoX + 90, currentY, { width: 350 });
+  
+  currentY += 15;
 
+  // Mostrar descripción 
+  if (plato.descripcion && !plato.esManual) {
+   const descripcionLimpia = (plato.descripcion || '')
+  .replace(/^[^a-zA-Z0-9áéíóúÁÉÍÓÚ]+/, '') // elimina símbolos o saltos al inicio
+  .replace(/[‘’‚‛‟“”"ʼʽ]/g, "'") // reemplaza comillas raras
+  .replace(/[!¡]/g, '') // elimina signos de exclamación
+  .replace(/[\r\n\t]+/g, ' ') // elimina saltos de línea y tabulaciones
+  .trim();
+   
+    // Calcular altura de la descripción
+    const descHeight = doc.heightOfString(`→ ${descripcionLimpia}`, {
+      width: 400,
+      align: 'justify'
+    });
+    
+    // Verificar espacio para la descripción
+    if (currentY + descHeight > doc.page.height - 50) {
+      doc.addPage();
+      currentY = 50;
+    }
+    
+    doc.font('Helvetica-Oblique')
+       .fontSize(9)
+       .fillColor('#555555')
+       .text(`→ ${descripcionLimpia}`, infoX + 90, currentY, {
+         width: 400,
+         align: 'justify',
+         lineGap: 2
+       });
+    
+    currentY += descHeight + 5;
+    doc.fillColor('#000000').fontSize(10);
+  } else {
+    currentY += 10;
+  }
+});
+// Asegurar que haya espacio antes de bloques finales
+const asegurarEspacio = (minY = 100) => {
+  if (currentY + minY > doc.page.height - 50) {
+    doc.addPage();
+    currentY = 50;
+  }
+};
+
+      asegurarEspacio(80);
       // Saldo pendiente
       if (saldoPendiente > 0) {
         currentY += 20;
@@ -434,6 +498,7 @@ const generarPDF = (tipo, datos) => {
       }
 
       // Notas para cocina
+       
       if (datos.notasCocina && datos.notasCocina !== 'Ninguna') {
         currentY += 40;
         doc.font('Helvetica-Bold')

@@ -183,6 +183,7 @@ const generarPDF = (tipo, datos) => {
 
     const totalPagado = (datos.pagos || []).reduce((suma, p) => suma + (p.monto || 0), 0);
     const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
+    const taxExempt = datos.taxExempt || false;
 
     // Logo
     const logoPath = path.join(__dirname, 'public', 'img', 'logo-casa-mexico.png');
@@ -229,12 +230,55 @@ const generarPDF = (tipo, datos) => {
       currentY += 20;
     };
 
+    // Función para manejar texto largo en filas manuales
+    const agregarTextoConSalto = (texto, x, y, maxWidth, maxHeight, lineHeight = 15) => {
+      const palabras = texto.split(' ');
+      let linea = '';
+      let lineas = [];
+      
+      for (let i = 0; i < palabras.length; i++) {
+        const palabra = palabras[i];
+        const testLinea = linea + (linea ? ' ' : '') + palabra;
+        const testWidth = doc.widthOfString(testLinea);
+        
+        if (testWidth > maxWidth && i > 0) {
+          lineas.push(linea);
+          linea = palabra;
+        } else {
+          linea = testLinea;
+        }
+      }
+      lineas.push(linea);
+      
+      // Asegurar que no exceda el máximo de líneas permitidas
+      if (lineas.length * lineHeight > maxHeight) {
+        lineas = lineas.slice(0, Math.floor(maxHeight / lineHeight));
+        lineas[lineas.length - 1] += '...';
+      }
+      
+      // Dibujar las líneas
+      lineas.forEach((linea, i) => {
+        doc.text(linea, x, y + (i * lineHeight), { width: maxWidth });
+      });
+      
+      return lineas.length * lineHeight;
+    };
+
+    // Función para asegurar espacio en la página
+    const asegurarEspacio = (alturaNecesaria = 100) => {
+      if (currentY + alturaNecesaria > doc.page.height - 50) {
+        doc.addPage();
+        currentY = 50;
+      }
+    };
+
     // Color de estado
     let statusColor = '#000000';
     if (datos.status === 'pagado') statusColor = '#2a9d8f';
     if (datos.status === 'impago') statusColor = '#e63946';
     if (datos.status === 'en_proceso') statusColor = '#e9c46a';
     if (datos.status === 'cancelado') statusColor = '#f4a261';
+
     // Información básica común
     agregarFila(tipo === 'cliente' ? 'Date:' : 'Fecha:', fechaFormateada, true);
     agregarFila(tipo === 'cliente' ? 'Day:' : 'Día:', datos.dia);
@@ -255,11 +299,12 @@ const generarPDF = (tipo, datos) => {
       doc.font('Helvetica-Bold').text('MENU DETAILS', infoX, currentY);
       currentY += 20;
 
+      // Encabezados de tabla
       doc.font('Helvetica-Bold')
          .text('Quantity', infoX, currentY, { width: 80 })
          .text('Product', infoX + 90, currentY, { width: 250 })
-         .text('Cost', 450, currentY, { align: 'right' });
-
+         .text('Cost', 450, currentY, { width: 100, align: 'right' });
+      
       currentY += 15;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
@@ -274,85 +319,125 @@ const generarPDF = (tipo, datos) => {
             nombre: fila.nombre,
             cantidadTexto: fila.cantidadTexto,
             precio_total: fila.precio_total,
-            esManual: true
+            esManual: true,
+            categoria: ''
           });
         });
       }
 
+      // Agrupar por categoría
+      const platosPorCategoria = {};
       datos.platos.forEach(plato => {
-  doc.font(plato.esManual ? 'Helvetica-Oblique' : 'Helvetica').fillColor('#000000');
+        if (!platosPorCategoria[plato.categoria]) {
+          platosPorCategoria[plato.categoria] = [];
+        }
+        platosPorCategoria[plato.categoria].push(plato);
+      });
 
-  // Mostrar fila de producto
-  doc.fontSize(10)
-     .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
-     .text(plato.nombre, infoX + 90, currentY, { width: 250 })
-     .text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { align: 'right' });
+      // Procesar cada categoría
+      for (const categoria in platosPorCategoria) {
+        asegurarEspacio(30);
+        
+        // Agregar fila de categoría
+        doc.font('Helvetica-Bold')
+           .text(categoria.toUpperCase(), infoX, currentY);
+        currentY += 20;
+        
+        // Procesar platos de esta categoría
+        platosPorCategoria[categoria].forEach(plato => {
+          asegurarEspacio(50);
+          
+          // Estilo diferente para filas manuales
+          if (plato.esManual) {
+            doc.font('Helvetica-Oblique')
+               .fillColor('#555555');
+          } else {
+            doc.font('Helvetica')
+               .fillColor('#000000');
+          }
 
-  currentY += 15;
+          // Mostrar cantidad
+          doc.fontSize(10)
+             .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 });
+          
+          // Mostrar nombre del producto con manejo de texto largo
+          const alturaTexto = agregarTextoConSalto(
+            plato.nombre, 
+            infoX + 90, 
+            currentY, 
+            250, 
+            50, 
+            15
+          );
+          
+          // Mostrar precio alineado a la derecha
+          doc.text(`$${plato.precio_total.toFixed(2)}`, 450, currentY, { width: 100, align: 'right' });
+          
+          currentY += Math.max(15, alturaTexto);
 
-  // Mostrar descripción si no es manual
-  if (plato.descripcion && !plato.esManual) {
-const descripcionLimpia = (plato.descripcion || '')
-  .replace(/^[^a-zA-Z0-9áéíóúÁÉÍÓÚ]+/, '') // elimina símbolos o saltos al inicio
-  .replace(/[‘’‚‛‟“”"ʼʽ]/g, "'") // reemplaza comillas raras
-  .replace(/[!¡]/g, '') // elimina signos de exclamación
-  .replace(/[\r\n\t]+/g, ' ') // elimina saltos de línea y tabulaciones
-  .trim();
+          // Mostrar descripción si no es manual
+          if (plato.descripcion && !plato.esManual) {
+            const descripcionLimpia = (plato.descripcion || '')
+              .replace(/^[^a-zA-Z0-9áéíóúÁÉÍÓÚ]+/, '')
+              .replace(/[‘’‚‛‟"ʼʽ]/g, "'")
+              .replace(/[!¡]/g, '')
+              .replace(/[\r\n\t]+/g, ' ')
+              .trim();
 
-    const alturaDescripcion = doc.heightOfString(`→ ${descripcionLimpia}`, {
-      width: 400,
-      align: 'justify',
-      lineGap: 2
-    });
+            const alturaDescripcion = doc.heightOfString(`→ ${descripcionLimpia}`, {
+              width: 400,
+              align: 'justify',
+              lineGap: 2
+            });
 
-    // Verificar espacio antes de imprimir
-    if (currentY + alturaDescripcion > doc.page.height - 50) {
-      doc.addPage();
-      currentY = 50;
-    }
+            asegurarEspacio(alturaDescripcion + 20);
+            
+            doc.font('Helvetica-Oblique')
+               .fontSize(9)
+               .fillColor('#555555')
+               .text(`→ ${descripcionLimpia}`, infoX + 90, currentY, {
+                 width: 400,
+                 align: 'justify',
+                 lineGap: 2
+               });
 
-    doc.font('Helvetica-Oblique')
-       .fontSize(9)
-       .fillColor('#555555')
-       .text(`→ ${descripcionLimpia}`, infoX + 90, currentY, {
-         width: 400,
-         align: 'justify',
-         lineGap: 2
-       });
-
-    currentY += alturaDescripcion + 5;
-    doc.fillColor('#000000').fontSize(10);
-  } else if (!plato.esManual) {
-    currentY += 10;
-  }
-});
+            currentY += alturaDescripcion + 5;
+            doc.fillColor('#000000').fontSize(10);
+          } else {
+            currentY += 10;
+          }
+        });
+      }
 
       currentY += 20;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
       
-      const agregarFilaDerecha = (label, value, isBold = false) => {
+      const agregarFilaDerecha = (label, value, isBold = false, color = '#000000') => {
+        asegurarEspacio(20);
         doc.font(isBold ? 'Helvetica-Bold' : 'Helvetica')
+          .fillColor(color)
           .fontSize(10)
           .text(label, infoX, currentY, { width: 150, align: 'left' })
           .text(value, infoX + 160, currentY, { width: 340, align: 'right' });
         currentY += 20;
+        doc.fillColor('#000000');
       };
-
-      // Asegurar que haya espacio antes de bloques finales
-const asegurarEspacio = (minY = 100) => {
-  if (currentY + minY > doc.page.height - 50) {
-    doc.addPage();
-    currentY = 50;
-  }
-};
 
       asegurarEspacio(80);
       agregarFilaDerecha('Subtotal:', `$${datos.subtotal.toFixed(2)}`);
       asegurarEspacio(60);
-      agregarFilaDerecha(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
+      
+      // Mostrar Tax Exempt si corresponde
+      if (taxExempt) {
+        agregarFilaDerecha('TAX EXEMPT:', '$0.00', true, '#e63946');
+      } else {
+        agregarFilaDerecha(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
+      }
+      
       asegurarEspacio(60);
       agregarFilaDerecha(`Gratuity (${datos.gratuityPercentage}%):`, `$${datos.gratuity.toFixed(2)}`);
+      
       if (datos.deliveryFee > 0) {
         agregarFilaDerecha('Delivery Fee:', `$${datos.deliveryFee.toFixed(2)}`);
       }
@@ -361,19 +446,36 @@ const asegurarEspacio = (minY = 100) => {
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
       asegurarEspacio(100);
+      
       doc.font('Helvetica-Bold')
          .text('TOTAL:', infoX, currentY, { width: 150, align: 'left' })
          .text(`$${datos.precioTotal.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
       currentY += 20;
    
       if (totalPagado > 0 && saldoPendiente > 0) {
-         asegurarEspacio(60);
+        asegurarEspacio(60);
         doc.font('Helvetica-Bold')
            .fillColor('#e63946')
            .text('OUTSTANDING BALANCE:', infoX, currentY, { width: 150, align: 'left' })
            .text(`$${saldoPendiente.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
         doc.fillColor('#000000');
       }
+
+      // Agregar política de precios
+      asegurarEspacio(100);
+      currentY += 20;
+      doc.font('Helvetica-Bold')
+         .text('PRICE POLICY:', infoX, currentY);
+      currentY += 20;
+      doc.font('Helvetica')
+         .fontSize(9)
+         .fillColor('#555555')
+         .text('The prices listed in this invoice are valid only during the calendar month in which the menu is consulted or issued. In the case of deposits, reservations, or advance payments, any price changes that occur afterward (due to monthly adjustments, inflation, or other factors) will apply to the outstanding balance or any services not yet rendered, regardless of the date of the initial payment. By proceeding, the customer acknowledges that the prices in effect at the time of service will apply.', 
+         infoX, currentY, {
+           width: 500,
+           align: 'justify',
+           lineGap: 3
+         });
 
     } else {
       // PDF Cocina (español) - Versión simplificada
@@ -400,91 +502,85 @@ const asegurarEspacio = (minY = 100) => {
       // Procesar todos los platos
       if (!Array.isArray(datos.platos)) datos.platos = [];
       
-      // Agregar filas manuales si existen
-      if (datos.filasManuales && Array.isArray(datos.filasManuales)) {
-        datos.filasManuales.forEach(fila => {
-          datos.platos.push({
-            nombre: fila.nombre,
-            cantidadTexto: fila.cantidadTexto,
-            esManual: true
-          });
+      // Agrupar por categoría
+      const platosPorCategoria = {};
+      datos.platos.forEach(plato => {
+        if (!platosPorCategoria[plato.categoria]) {
+          platosPorCategoria[plato.categoria] = [];
+        }
+        platosPorCategoria[plato.categoria].push(plato);
+      });
+
+      // Procesar cada categoría
+      for (const categoria in platosPorCategoria) {
+        asegurarEspacio(30);
+        
+        // Agregar fila de categoría
+        doc.font('Helvetica-Bold')
+           .text(categoria.toUpperCase(), infoX, currentY);
+        currentY += 20;
+        
+        // Procesar platos de esta categoría
+        platosPorCategoria[categoria].forEach(plato => {
+          asegurarEspacio(50);
+          
+          // Estilo diferente para filas manuales
+          if (plato.esManual) {
+            doc.font('Helvetica-Oblique')
+               .fillColor('#555555');
+          } else {
+            doc.font('Helvetica')
+               .fillColor('#000000');
+          }
+
+          // Mostrar cantidad
+          doc.fontSize(10)
+             .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 });
+          
+          // Mostrar nombre del producto con manejo de texto largo
+          const alturaTexto = agregarTextoConSalto(
+            plato.nombre, 
+            infoX + 90, 
+            currentY, 
+            350, 
+            50, 
+            15
+          );
+          
+          currentY += Math.max(15, alturaTexto);
+
+          // Mostrar descripción 
+          if (plato.descripcion && !plato.esManual) {
+            const descripcionLimpia = (plato.descripcion || '')
+              .replace(/^[^a-zA-Z0-9áéíóúÁÉÍÓÚ]+/, '')
+              .replace(/[‘’‚‛‟"ʼʽ]/g, "'")
+              .replace(/[!¡]/g, '')
+              .replace(/[\r\n\t]+/g, ' ')
+              .trim();
+            
+            const alturaDescripcion = doc.heightOfString(`→ ${descripcionLimpia}`, {
+              width: 400,
+              align: 'justify'
+            });
+            
+            asegurarEspacio(alturaDescripcion + 20);
+            
+            doc.font('Helvetica-Oblique')
+               .fontSize(9)
+               .fillColor('#555555')
+               .text(`→ ${descripcionLimpia}`, infoX + 90, currentY, {
+                 width: 400,
+                 align: 'justify',
+                 lineGap: 2
+               });
+            
+            currentY += alturaDescripcion + 5;
+            doc.fillColor('#000000').fontSize(10);
+          } else {
+            currentY += 10;
+          }
         });
       }
-
-datos.platos.forEach(plato => {
-  // Estilo diferente para filas manuales
-  if (plato.esManual) {
-    doc.font('Helvetica-Oblique')
-       .fillColor('#555555');
-  } else {
-    doc.font('Helvetica')
-       .fillColor('#000000');
-  }
-
-  // Verificar espacio antes de agregar cada plato
-  if (currentY + 60 > doc.page.height - 50) {
-    doc.addPage();
-    currentY = 50;
-    
-    // Volver a dibujar encabezados si es nueva página
-    doc.font('Helvetica-Bold')
-       .fillColor('#000000')
-       .text('Cantidad', infoX, currentY, { width: 80 })
-       .text('Producto', infoX + 90, currentY, { width: 350 });
-    currentY += 20;
-    doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
-    currentY += 10;
-  }
-
-  doc.fontSize(10)
-     .text(plato.cantidadTexto || plato.cantidad || '-', infoX, currentY, { width: 80 })
-     .text(plato.nombre, infoX + 90, currentY, { width: 350 });
-  
-  currentY += 15;
-
-  // Mostrar descripción 
-  if (plato.descripcion && !plato.esManual) {
-   const descripcionLimpia = (plato.descripcion || '')
-  .replace(/^[^a-zA-Z0-9áéíóúÁÉÍÓÚ]+/, '') // elimina símbolos o saltos al inicio
-  .replace(/[‘’‚‛‟“”"ʼʽ]/g, "'") // reemplaza comillas raras
-  .replace(/[!¡]/g, '') // elimina signos de exclamación
-  .replace(/[\r\n\t]+/g, ' ') // elimina saltos de línea y tabulaciones
-  .trim();
-   
-    // Calcular altura de la descripción
-    const descHeight = doc.heightOfString(`→ ${descripcionLimpia}`, {
-      width: 400,
-      align: 'justify'
-    });
-    
-    // Verificar espacio para la descripción
-    if (currentY + descHeight > doc.page.height - 50) {
-      doc.addPage();
-      currentY = 50;
-    }
-    
-    doc.font('Helvetica-Oblique')
-       .fontSize(9)
-       .fillColor('#555555')
-       .text(`→ ${descripcionLimpia}`, infoX + 90, currentY, {
-         width: 400,
-         align: 'justify',
-         lineGap: 2
-       });
-    
-    currentY += descHeight + 5;
-    doc.fillColor('#000000').fontSize(10);
-  } else {
-    currentY += 10;
-  }
-});
-// Asegurar que haya espacio antes de bloques finales
-const asegurarEspacio = (minY = 100) => {
-  if (currentY + minY > doc.page.height - 50) {
-    doc.addPage();
-    currentY = 50;
-  }
-};
 
       asegurarEspacio(80);
       // Saldo pendiente
@@ -498,9 +594,9 @@ const asegurarEspacio = (minY = 100) => {
       }
 
       // Notas para cocina
-       
       if (datos.notasCocina && datos.notasCocina !== 'Ninguna') {
-        currentY += 40;
+        asegurarEspacio(60);
+        currentY += 20;
         doc.font('Helvetica-Bold')
            .text('Notas para cocina:', infoX, currentY);
         currentY += 20;

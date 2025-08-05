@@ -15,7 +15,7 @@ const CotizacionSchema = new mongoose.Schema({
   contacto: String,
   status: { 
     type: String, 
-    enum: ['pagado', 'impago', 'en_proceso'], 
+    enum: ['pagado', 'impago', 'en_proceso', 'cancelado'], // Agregado 'cancelado'
     default: 'impago',
     required: true 
   },
@@ -36,12 +36,14 @@ const CotizacionSchema = new mongoose.Schema({
   cantidad: Number,
   cantidadTexto: String,
   precio_total: Number,
+  descripcion: String,
   tipoSeleccionado: String // Nuevo campo para guardar la selección (half/full, 15/30, 10/20)
 }],
 
   numeroPersonas: { type: Number, required: true },
   subtotal: { type: Number, required: true },
   tax: { type: Number, required: true },
+  taxExempt: { type: Boolean, default: false },
   taxPercentage: { type: Number, default: 8 }, // Porcentaje editable
   gratuity: { type: Number, required: true },
   gratuityPercentage: { type: Number, default: 20 }, // Porcentaje editable

@@ -1600,10 +1600,7 @@ inicializarBotonesEstado();
 
     // Establecer los valores guardados de TAX y Gratuity
 document.getElementById('taxPercentage').value = cotizacion.taxPercentage || 0;
-document.getElementById('gratuityPercentage').value = cotizacion.gratuityPercentage || 0;
-
-
-    document.getElementById('gratuityPercentage').value = cotizacion.gratuityPercentage || 0; // Permitir 0
+   document.getElementById('gratuityPercentage').value = cotizacion.gratuityPercentage || 0; // Permitir 0
     document.getElementById('taxExempt').checked = cotizacion.taxExempt || false;
 
     // Actualizar la visibilidad del tax percentage
@@ -2300,3 +2297,4 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
+

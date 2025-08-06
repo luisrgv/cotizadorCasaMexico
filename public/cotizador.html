@@ -1030,6 +1030,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Detectar si hay ID de edición
   const params = new URLSearchParams(window.location.search);
   const idCotizacion = params.get('edit');
+// tax
+
+
+  // Inicializar Tax Exempt (nueva cotización)
+  document.getElementById('taxExempt').checked = false;
+  document.getElementById('taxPercentage').value = 8; // Valor por defecto
+  document.getElementById('taxPercentage').disabled = false;
+
+  // Configurar evento para Tax Exempt
+  document.getElementById('taxExempt').addEventListener('change', function() {
+    document.getElementById('taxPercentage').disabled = this.checked;
+    if (this.checked) {
+      document.getElementById('taxPercentage').value = 0;
+    } else {
+      document.getElementById('taxPercentage').value = 8; // Restaurar valor por defecto
+    }
+    actualizarTotalesDesdeTabla();
+  });
+
+ 
 
   // Verificar sesión
   await verificarSesion();
@@ -1282,9 +1302,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       subtotal += precio;
     });
     
-    const taxPercentage = parseFloat(document.getElementById('taxPercentage').value);
-    const tax = subtotal * (taxPercentage / 100);
-    
+
+   // Calcular tax (0% si está marcado Tax Exempt)
+  const taxExempt = document.getElementById('taxExempt').checked;
+  const taxPercentage = taxExempt ? 0 : parseFloat(document.getElementById('taxPercentage').value);
+  const tax = subtotal * (taxPercentage / 100);
+
+
     const gratuityPercentage = parseFloat(document.getElementById('gratuityPercentage').value);
     const gratuity = subtotal * (gratuityPercentage / 100);
     
@@ -1530,6 +1554,16 @@ async function cargarCotizacionParaEditar(id) {
     const response = await fetch(`/api/cotizaciones/${id}`);
     const { cotizacion } = await response.json();
     if (!cotizacion) return;
+    
+    // Configurar tax exempt
+    const taxExempt = cotizacion.taxExempt || false;
+    document.getElementById('taxExempt').checked = taxExempt;
+    document.getElementById('taxPercentage').disabled = taxExempt;
+    if (taxExempt) {
+      document.getElementById('taxPercentage').value = 0;
+    } else {
+      document.getElementById('taxPercentage').value = cotizacion.taxPercentage || 8;
+    }
     console.log('Estado recibido:', cotizacion.status);
     document.getElementById('invoiceNumber').value = cotizacion.invoiceNumber;
     document.getElementById('invoiceNumberDisplay').textContent = cotizacion.invoiceNumber;
@@ -1760,6 +1794,9 @@ document.getElementById('taxExempt').addEventListener('change', function() {
       await generarPDF('cocina');
     });
 
+
+   
+
     // Evento para manejar los botones de estado
 document.querySelectorAll('.estado-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1777,6 +1814,7 @@ document.querySelectorAll('.estado-btn').forEach(btn => {
     btn.classList.add('btn-primary');
   });
 });
+
 
 inicializarBotonesEstado();
 
@@ -1943,8 +1981,9 @@ async function guardarCotizacion() {
     }),
 
     taxExempt: document.getElementById('taxExempt').checked,
-  taxPercentage: document.getElementById('taxExempt').checked ? 0 : parseFloat(document.getElementById('taxPercentage').value) || 8,
-  gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 0, // Cambiado para permitir 0
+    taxPercentage: document.getElementById('taxExempt').checked ? 0 : (parseFloat(document.getElementById('taxPercentage').value) || 8),
+
+     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 0, // Cambiado para permitir 0
 
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
    

@@ -428,12 +428,13 @@ const generarPDF = (tipo, datos) => {
       agregarFilaDerecha('Subtotal:', `$${datos.subtotal.toFixed(2)}`);
       asegurarEspacio(60);
       
-      // Mostrar Tax Exempt si corresponde
-      if (taxExempt) {
-        agregarFilaDerecha('TAX EXEMPT:', '$0.00', true, '#e63946');
-      } else {
-        agregarFilaDerecha(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
-      }
+           // Mostrar Tax Exempt si corresponde
+  if (datos.taxExempt) {
+    agregarFilaDerecha('TAX EXEMPT:', '$0.00', true, '#e63946');
+  } else {
+    agregarFilaDerecha(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
+  }
+  
       
       asegurarEspacio(60);
       agregarFilaDerecha(`Gratuity (${datos.gratuityPercentage}%):`, `$${datos.gratuity.toFixed(2)}`);
@@ -646,10 +647,13 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       cantidad: p.cantidad || 1,
       cantidadTexto: p.cantidadTexto || (p.cantidad === 0.5 ? '½T' : `${p.cantidad}T`),
       precio_total: p.precio_total
+     
 })) ,
 
       numeroPersonas: datos.numeroPersonas || datos.platos.reduce((total, p) => total + (p.cantidad || 0), 0),
       subtotal: datos.subtotal,
+        taxExempt: datos.taxExempt || false,
+    taxPercentage: datos.taxExempt ? 0 : (datos.taxPercentage || 8),
       tax: datos.tax,
       taxPercentage: datos.taxPercentage || 8,
       gratuity: datos.gratuity,

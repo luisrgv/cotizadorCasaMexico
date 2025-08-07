@@ -1600,7 +1600,10 @@ inicializarBotonesEstado();
 
     // Establecer los valores guardados de TAX y Gratuity
 document.getElementById('taxPercentage').value = cotizacion.taxPercentage || 0;
-   document.getElementById('gratuityPercentage').value = cotizacion.gratuityPercentage || 0; // Permitir 0
+
+
+    
+    document.getElementById('gratuityPercentage').value = cotizacion.gratuityPercentage || 0; // Permitir 0
     document.getElementById('taxExempt').checked = cotizacion.taxExempt || false;
 
     // Actualizar la visibilidad del tax percentage
@@ -1845,7 +1848,7 @@ async function generarPDF(tipo) {
     contacto: document.getElementById('contacto').value,
     status: document.getElementById('estadoHidden').value,
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
-    gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 20,
+    gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) ,
     deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
       (parseFloat(document.getElementById('deliveryFee').value)) || 0 : 0,
     notas: document.getElementById('notasArea').innerText,
@@ -1980,7 +1983,7 @@ async function guardarCotizacion() {
     taxExempt: document.getElementById('taxExempt').checked,
     taxPercentage: document.getElementById('taxExempt').checked ? 0 : (parseFloat(document.getElementById('taxPercentage').value) || 8),
 
-     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) || 0, // Cambiado para permitir 0
+     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) , // Cambiado para permitir 0
 
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
    
@@ -2297,4 +2300,3 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
-

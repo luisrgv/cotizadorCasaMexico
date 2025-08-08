@@ -376,33 +376,28 @@ const generarPDF = (tipo, datos) => {
           currentY += Math.max(15, alturaTexto);
 
           // Mostrar descripción si no es manual
-          if (plato.descripcion && !plato.esManual) {
-            const descripcionLimpia = (plato.descripcion || '')
-              .replace(/^[^a-zA-Z0-9áéíóúÁÉÍÓÚ]+/, '')
-              .replace(/[‘’‚‛‟"ʼʽ]/g, "'")
-              .replace(/[!¡]/g, '')
-              .replace(/[\r\n\t]+/g, ' ')
-              .trim();
+          // Mostrar descripción si no es manual
+if (plato.descripcion && !plato.esManual) {
+    const descripcionLimpia = (plato.descripcion || '')
+        .normalize('NFKC')
+        .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
+        .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
+        .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
+        .replace(/[!¡]/g, '')                             // signos de admiración
+        .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
+        .trim();
 
-            const alturaDescripcion = doc.heightOfString(`→ ${descripcionLimpia}`, {
-              width: 400,
-              align: 'justify',
-              lineGap: 2
-            });
-
-            asegurarEspacio(alturaDescripcion + 20);
-            
-            doc.font('Helvetica-Oblique')
-               .fontSize(9)
-               .fillColor('#555555')
-               .text(`→ ${descripcionLimpia}`, infoX + 90, currentY, {
-                 width: 400,
-                 align: 'justify',
-                 lineGap: 2
-               });
-
-            currentY += alturaDescripcion + 5;
-            doc.fillColor('#000000').fontSize(10);
+             asegurarEspacio(20);
+    doc.font('Helvetica-Oblique')
+       .fontSize(9)
+       .fillColor('#555555')
+       .text(`${descripcionLimpia}`, infoX + 90, currentY, {
+         width: 400,
+         align: 'justify',
+         lineGap: 2
+       });
+    doc.fillColor('#000000').fontSize(10);
+    currentY += doc.heightOfString(descripcionLimpia, { width: 400 }) + 5;
           } else {
             currentY += 10;
           }
@@ -551,32 +546,28 @@ const generarPDF = (tipo, datos) => {
           currentY += Math.max(15, alturaTexto);
 
           // Mostrar descripción 
-          if (plato.descripcion && !plato.esManual) {
-            const descripcionLimpia = (plato.descripcion || '')
-              .replace(/^[^a-zA-Z0-9áéíóúÁÉÍÓÚ]+/, '')
-              .replace(/[‘’‚‛‟"ʼʽ]/g, "'")
-              .replace(/[!¡]/g, '')
-              .replace(/[\r\n\t]+/g, ' ')
-              .trim();
+        // Mostrar descripción si no es manual
+if (plato.descripcion && !plato.esManual) {
+    const descripcionLimpia = (plato.descripcion || '')
+        .normalize('NFKC')
+        .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
+        .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
+        .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
+        .replace(/[!¡]/g, '')                             // signos de admiración
+        .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
+        .trim();
             
-            const alturaDescripcion = doc.heightOfString(`→ ${descripcionLimpia}`, {
-              width: 400,
-              align: 'justify'
-            });
-            
-            asegurarEspacio(alturaDescripcion + 20);
-            
-            doc.font('Helvetica-Oblique')
-               .fontSize(9)
-               .fillColor('#555555')
-               .text(`→ ${descripcionLimpia}`, infoX + 90, currentY, {
-                 width: 400,
-                 align: 'justify',
-                 lineGap: 2
-               });
-            
-            currentY += alturaDescripcion + 5;
-            doc.fillColor('#000000').fontSize(10);
+           asegurarEspacio(20);
+    doc.font('Helvetica-Oblique')
+       .fontSize(9)
+       .fillColor('#555555')
+       .text(` ${descripcionLimpia}`, infoX + 90, currentY, {
+         width: 400,
+         align: 'justify',
+         lineGap: 2
+       });
+    doc.fillColor('#000000').fontSize(10);
+    currentY += doc.heightOfString(descripcionLimpia, { width: 400 }) + 5;
           } else {
             currentY += 10;
           }

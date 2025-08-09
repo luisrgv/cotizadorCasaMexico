@@ -38,7 +38,23 @@ async function verificarSesion() {
   }
 }
 
-
+function filtrarCotizaciones(termino) {
+  // Primero filtramos solo las cotizaciones en proceso
+  let cotizacionesFiltradas = cotizacionesGuardadas.filter(c => c.status === 'cancelado');
+  
+  // Si hay término de búsqueda, aplicamos el filtro adicional
+  if (termino) {
+    cotizacionesFiltradas = cotizacionesFiltradas.filter(cotizacion => {
+      const cliente = cotizacion.cliente?.toLowerCase() || '';
+      const invoice = cotizacion.invoiceNumber?.toString().toLowerCase() || '';
+      const busqueda = termino.toLowerCase();
+      
+      return cliente.includes(busqueda) || invoice.includes(busqueda);
+    });
+  }
+  
+  actualizarListaCotizaciones(cotizacionesFiltradas);
+}
 // Función para filtar cotizaciones canceladas
 async function cargarcotizacionesCancelado () {
   mostrarLoading('Cargando cotizaciones...');
@@ -88,44 +104,53 @@ function actualizarListaCotizaciones(cotizaciones) {
       }) : 'No especificada';
       const status = cotizacion.status || 'cancelado';
    
-    card.innerHTML = `
-      <div class="nueva-cabecera">
-        <div class="nueva-invoice">
+      card.innerHTML = `
+      <div class="nueva-cabecera" style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; margin-bottom:4px; line-height:1.3;">
+        <div class="nueva-invoice" style="font-size:0.95rem;">
           <strong>INVOICE #${cotizacion.invoiceNumber}</strong>
         </div>
-        <div class="nueva-creado">
-          <div><small><strong>Creado el:</strong> ${createdAt}</small></div>
-          <div><small><strong>Por:</strong> ${cotizacion.creadoPor || 'Desconocido'}</small></div>
+        <div class="nueva-status ${status}" style="justify-self:center; padding:3px 8px; font-size:0.85rem;">
+          ${status.replace('_', ' ').toUpperCase()}
+        </div>
+        <div class="nueva-creado" style="font-size:0.95rem; text-align:right; color:#555;">
+          <span><strong>Creado:</strong> ${createdAt}</span> | 
+          <span><strong>Por:</strong> ${cotizacion.creadoPor || 'Desconocido'}</span>
         </div>
       </div>
-
-      <div class="nueva-status ${status}">${status.replace('_', ' ').toUpperCase()}</div>
-
-      <div class="nueva-cuerpo">
-        <div class="campo"><i class="fas fa-user"></i> <strong>Cliente:</strong> ${cotizacion.cliente || 'Sin nombre'}</div>
-        <div class="campo"><i class="fas fa-calendar-alt"></i> <strong>Fecha:</strong> ${fecha}</div>
-        <div class="campo"><i class="fas fa-clock"></i> <strong>Hora:</strong> ${cotizacion.hora_evento || '-'}</div>
-        <div class="campo"><i class="fas fa-map-marker-alt"></i> <strong>Lugar:</strong> ${cotizacion.ubicacion || '-'}</div>
-        <div class="campo"><i class="fas fa-utensils"></i> <strong>Servicio:</strong> ${cotizacion.servicio || '-'}</div>
-        <div class="campo campo-notas"><strong>Observaciones:</strong> ${cotizacion.notas || 'Ninguna'}</div>
+    
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px 12px; font-size:0.95rem; line-height:1.3; padding:3px 6px; background:#fafafa; border-radius:6px;">
+        <div>
+          <div><i class="fas fa-user" style="color:#007bff;"></i> <strong>Cliente:</strong> ${cotizacion.cliente || 'Sin nombre'}</div>
+          <div><i class="fas fa-calendar-alt" style="color:#28a745;"></i> <strong>Fecha:</strong> ${fecha}</div>
+          <div><i class="fas fa-clock" style="color:#ffc107;"></i> <strong>Hora:</strong> ${cotizacion.hora_evento || '-'}</div>
+        </div>
+        <div>
+          <div><i class="fas fa-map-marker-alt" style="color:#dc3545;"></i> <strong>Lugar:</strong> ${cotizacion.ubicacion || '-'}</div>
+          <div><i class="fas fa-utensils" style="color:#17a2b8;"></i> <strong>Servicio:</strong> ${cotizacion.servicio || '-'}</div>
+        </div>
       </div>
-
-      <div class="nueva-acciones">
-        <button class="btn btn-info btn-sm ver-detalle" data-id="${cotizacion._id}">
-          <i class="fas fa-eye"></i> Ver
-        </button>
-        <button class="btn btn-primary btn-sm cargar-cotizacion" data-id="${cotizacion._id}">
-          <i class="fas fa-edit"></i> Editar
-        </button>
-        ${
-          currentUser?.role === 'admin'
-            ? `<button class="btn btn-danger btn-sm eliminar-cotizacion" data-id="${cotizacion._id}">
-                <i class="fas fa-trash"></i> Eliminar
-              </button>`
+    
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+        <div style="font-size:0.95rem; background:#f8f9fa; padding:2px 6px; border-left:3px solid var(--primary); border-radius:3px; font-style:italic;">
+          <i class="fas fa-sticky-note" style="color:#6c757d;"></i> <strong>Observaciones:</strong> ${cotizacion.notas || 'Ninguna'}
+        </div>
+        <div class="nueva-acciones" style="display:flex; gap:6px;">
+          <button class="btn btn-info btn-sm ver-detalle" data-id="${cotizacion._id}" style="font-size:0.95rem; padding:4px 8px;">
+            <i class="fas fa-eye"></i> Ver
+          </button>
+          <button class="btn btn-primary btn-sm cargar-cotizacion" data-id="${cotizacion._id}" style="font-size:0.95rem; padding:4px 8px;">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+          ${currentUser?.role === 'admin'
+            ? `<button class="btn btn-danger btn-sm eliminar-cotizacion" data-id="${cotizacion._id}" style="font-size:0.95rem; padding:4px 8px;">
+                 <i class="fas fa-trash"></i> Eliminar
+               </button>`
             : ''
-        }
+          }
+        </div>
       </div>
     `;
+    
     container.appendChild(card);
   });
 }
@@ -746,6 +771,15 @@ async function generarPDF(cotizacion, tipo) {
 
 // Función para configurar eventos
 function configurarEventos() {
+  // Eventos para el buscador
+  document.getElementById('buscadorCotizaciones').addEventListener('input', (e) => {
+    filtrarCotizaciones(e.target.value);
+  });
+  
+  document.getElementById('limpiarBusqueda').addEventListener('click', () => {
+    document.getElementById('buscadorCotizaciones').value = '';
+    filtrarCotizaciones('');
+  });
   // Botón de logout
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     try {

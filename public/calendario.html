@@ -183,15 +183,18 @@
   }
 
   .day-cell {
-    background-color: white;
-    border: 1px solid #e9ecef;
-    min-height: 140px;
-    padding: 0.8rem;
-    border-radius: 8px;
-    transition: all 0.3s;
-    position: relative;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
+  background-color: white;
+  border: 1px solid #e9ecef;
+  min-height: 140px;
+  height: 140px; /* Altura fija */
+  width: 100%; /* Ancho completo de la celda de la grid */
+  padding: 0.8rem;
+  border-radius: 8px;
+  transition: all 0.3s;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* Evita que el contenido desborde */
+}
 
   .day-cell:hover {
     box-shadow: 0 5px 20px rgba(0,0,0,0.1);
@@ -220,19 +223,20 @@
   }
 
   .event-item {
-    padding: 0.4rem 0.6rem;
-    margin-bottom: 0.4rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    background-color: white;
-    border-left: 3px solid var(--primary);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: all 0.2s;
-  }
+  padding: 0.4rem 0.6rem;
+  margin-bottom: 0.4rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Evita que el texto se divida en múltiples líneas */
+  background-color: white;
+  border-left: 3px solid var(--primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+  max-width: 100%; /* Asegura que no exceda el ancho de la celda */
+}
 
   .event-item:hover {
     transform: translateX(3px);

@@ -19,6 +19,27 @@
       --warning: #e9c46a;
       --danger: #e76f51;
     }
+    /* Agrega esto a tu sección de estilos */
+#buscadorCotizaciones {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+}
+
+#buscadorCotizaciones:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(228, 0, 124, 0.2);
+}
+
+.texto-vacio {
+  text-align: center;
+  color: var(--gray);
+  padding: 2rem;
+  font-style: italic;
+}
     /* ==== NUEVO ESTILO MODERNO ==== */
 .nueva-card-moderna {
   border-left: 5px solid var(--primary);
@@ -764,7 +785,17 @@
         <h2 class="card-title">
           <i class="fas fa-spinner"></i> Cotizaciones en Proceso
         </h2>
-        
+        <!-- Agregar este campo de búsqueda -->
+  <div class="form-group" style="margin-bottom: 1.5rem;">
+    <div style="display: flex; gap: 0.5rem;">
+      <input type="text" id="buscadorCotizaciones" class="form-control" 
+             placeholder="Buscar por cliente o invoice #" style="flex: 1;">
+      <button id="limpiarBusqueda" class="btn btn-secondary" style="padding: 0.5rem 1rem;">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+  
         <div class="cotizaciones-list" id="cotizacionesEnProceso">
           <!-- Se llenará dinámicamente -->
         </div>

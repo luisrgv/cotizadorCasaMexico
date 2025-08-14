@@ -1228,6 +1228,65 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
   
+
+  function reconstruirNotasDesdeTexto(textoPlano) {
+    const notasArea = document.getElementById('notasArea');
+    notasArea.innerHTML = '';
+    encabezadoInsertado = false;
+
+    if (!textoPlano || !textoPlano.trim()) return;
+
+    const lineas = textoPlano.split(/\r?\n/);
+
+    // Coincide con "usuario - 13/8/2025, 15:20" (con o sin hora/segundos/AM-PM)
+    const esEncabezado = (s) =>
+      /^.+\s-\s\d{1,2}\/\d{1,2}\/\d{4}(?:,?\s*\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?)?$/.test(s.trim());
+
+    let headerActual = null;
+    let cuerpo = [];
+    let esPrimero = true;
+
+    const volcar = () => {
+      // Crear encabezado
+      const enc = document.createElement('div');
+      enc.textContent = headerActual;
+      enc.style.fontWeight = 'bold';
+      enc.contentEditable = 'false';
+      if (esPrimero) enc.id = 'encabezado'; else enc.className = 'encabezado';
+
+      // Crear cuerpo
+      const body = document.createElement('div');
+      body.contentEditable = 'true';
+      body.innerText = cuerpo.join('\n').trim();
+      if (esPrimero) body.id = 'cuerpoNota'; else body.className = 'cuerpoNota';
+
+      notasArea.appendChild(enc);
+      notasArea.appendChild(body);
+
+      esPrimero = false;
+    };
+
+    for (const l of lineas) {
+      if (esEncabezado(l)) {
+        if (headerActual !== null) volcar();
+        headerActual = l.trim();
+        cuerpo = [];
+      } else {
+        cuerpo.push(l);
+      }
+    }
+    if (headerActual !== null) {
+      volcar();
+      encabezadoInsertado = true; // ya hay encabezado, no crear otro al teclear
+    } else {
+      // No había encabezados guardados: dejar texto tal cual
+      notasArea.innerText = textoPlano;
+      encabezadoInsertado = false;
+    }
+  }
+
+
+
   // Función para filtrar platos por categoría
   function filtrarPlatosPorCategoria(categoria) {
     cambiandoCategoria = true;
@@ -1632,7 +1691,8 @@ document.getElementById('taxExempt').addEventListener('change', function() {
     // Cargar notas
     const notasArea = document.getElementById('notasArea');
     if (notasArea && cotizacion.notas) {
-      notasArea.innerText = cotizacion.notas;
+      reconstruirNotasDesdeTexto(cotizacion.notas);
+
     }
 
     // Cargar platos
@@ -2300,4 +2360,3 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
-

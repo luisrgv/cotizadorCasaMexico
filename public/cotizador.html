@@ -1907,7 +1907,7 @@ async function generarPDF(tipo) {
     ubicacion: document.getElementById('ubicacion').value,
     contacto: document.getElementById('contacto').value,
     status: document.getElementById('estadoHidden').value,
-    taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 8,
+    taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) ,
     deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
       (parseFloat(document.getElementById('deliveryFee').value)) || 0 : 0,

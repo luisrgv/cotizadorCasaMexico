@@ -122,28 +122,146 @@
       max-width: 1400px;
       margin: 0 auto;
     }
-    
-    .tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    
-    .tab {
-      padding: 0.75rem 1.5rem;
-      background-color: white;
-      border-radius: var(--border-radius);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 500;
-      box-shadow: var(--box-shadow);
-      transition: var(--transition);
-      border: 1px solid #e0e0e0;
-    }
-    
+ 
+
+/* EN PROCESO */
+.tab.en-proceso {
+  background-color: #7f8c8d;
+  color: white;
+}
+.tab.en-proceso:hover {
+  background-color: #636e72;
+}
+.tab.en-proceso .tab-badge {
+  background-color: #636e72;
+}
+
+/* PAGADAS */
+.tab.pagadas {
+  background-color: #2ecc71;
+  color: white;
+}
+.tab.pagadas:hover {
+  background-color: #27ae60;
+}
+.tab.pagadas .tab-badge {
+  background-color: #27ae60;
+}
+
+/* IMPAGAS */
+.tab.impagas {
+  background-color: #e74c3c;
+  color: white;
+}
+.tab.impagas:hover {
+  background-color: #c0392b;
+}
+.tab.impagas .tab-badge {
+  background-color: #c0392b;
+}
+
+/* CANCELADAS */
+.tab.canceladas {
+  background-color: #e0b758;
+  color: white;
+}
+.tab.canceladas:hover {
+  background-color: #e9c46a ;
+}
+.tab.canceladas .tab-badge {
+  background-color: #e76f51;
+}
+
+
+
+/* MENÚ */
+.tab.menu {
+  background-color: #9b59b6;
+  color: white;
+}
+.tab.menu:hover {
+  background-color: #8e44ad;
+}
+.tab.menu .tab-badge {
+  background-color: #8e44ad;
+}
+
+   .tabs {
+  display: flex;
+  margin-bottom: 1rem;
+  border-bottom: 3px solid #ddd;
+  overflow-x: auto;
+}
+a.tab {
+  text-decoration: none !important;
+}
+
+.tabs .tab,
+.tabs .btn-calendario {
+  flex: 1;
+  min-width: 150px;
+  text-align: center;
+  padding: 0.8rem 1rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border: none;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background: #f5f5f5;
+  color: #555;
+  box-shadow: inset 0 -2px 0 transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  position: relative;
+}
+
+/* Estado activo tipo pestaña de navegador */
+.tabs .tab.active,
+.tabs .btn-calendario.active {
+  background: white;
+  color: #000;
+  box-shadow: inset 0 -3px 0 currentColor;
+  font-weight: 600;
+}
+
+/* Hover elegante */
+.tabs .tab:hover,
+.tabs .btn-calendario:hover {
+  background: #fafafa;
+  color: #111;
+}
+
+/* Badges modernos */
+.tab .tab-badge {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Colores personalizados */
+.tab.nueva.active { color: #e91e63; }
+.tab.en-proceso.active { color: #3498db; }
+.tab.pagadas.active { color: #2ecc71; }
+.tab.impagas.active { color: #e74c3c; }
+.tab.canceladas.active { color: #7f8c8d; }
+.btn-calendario.active { color: #f39c12; }
+.tab.menu.active { color: #9b59b6; }
+
+/* Badge colores */
+.tab.en-proceso .tab-badge { background: #3498db; }
+.tab.pagadas .tab-badge { background: #2ecc71; }
+.tab.impagas .tab-badge { background: #e74c3c; }
+.tab.canceladas .tab-badge { background: #7f8c8d; }
+
     .tab:hover {
       background-color: var(--light-gray);
       transform: translateY(-2px);
@@ -743,31 +861,31 @@
 
   
   <div class="container">
-    <div class="tabs">
-      <div class="tab active" data-tab="nueva">
-        <i class="fas fa-plus"></i> Nueva Cotización
-      </div>
-      <a href="en-proceso.html" class="tab" data-tab="en_proceso">
-        <i class="fas fa-spinner"></i> En Proceso <span class="tab-badge" id="badgeEnProceso">0</span>
-      </a>
-      <a href="pagadas.html" class="tab" data-tab="pagada">
-        <i class="fas fa-check-circle"></i> Pagadas <span class="tab-badge" id="badgePagadas">0</span>
-      </a>
-      <a href="impagas.html" class="tab" data-tab="impaga">
-        <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
-      </a>
-      </a>
-      <a href="cancelado.html" class="tab" data-tab="cancelada">
-        <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
-      </a>
-      <button type="button" class="btn btn-info" id="verCalendarioBtn">
-        <i class="fas fa-calendar-alt"></i> Ver Calendario
+   <div class="tabs">
+  <div class="tab nueva active" data-tab="nueva">
+    <i class="fas fa-plus"></i> Nueva Cotización
+  </div>
+  <a href="en-proceso.html" class="tab en-proceso" data-tab="en_proceso">
+    <i class="fas fa-spinner"></i> En Proceso <span class="tab-badge" id="badgeEnProceso">0</span>
+  </a>
+  <a href="pagadas.html" class="tab pagadas" data-tab="pagada">
+    <i class="fas fa-check-circle"></i> Pagadas <span class="tab-badge" id="badgePagadas">0</span>
+  </a>
+  <a href="impagas.html" class="tab impagas" data-tab="impaga">
+    <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
+  </a>
+  <a href="cancelado.html" class="tab canceladas" data-tab="cancelada">
+    <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
+  </a>
+ <button type="button" class="tab btn-calendario" id="verCalendarioBtn">
+    <i class="fas fa-calendar-alt"></i> Ver Calendario
       </button>
-      <a href="menu.html" class="tab" data-tab="menu">
-  <i class="fas fa-utensils"></i> Menú
-</a>
+  <a href="menu.html" class="tab menu" data-tab="menu">
+    <i class="fas fa-utensils"></i> Menú
+  </a>
+</div>
 
-    </div>
+     
     
    <div class="tab-content active" id="nueva-tab">
       <div class="card">

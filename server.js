@@ -176,7 +176,8 @@ app.delete('/api/cotizaciones/:id', requireLogin, async (req, res) => {
 const generarPDF = (tipo, datos) => {
   return new Promise((resolve) => {
     const doc = new PDFDocument({ margin: 50, size: 'A4' });
-    const nombreArchivo = `${tipo}_${datos.cliente.replace(/\s/g, '_')}_${Date.now()}.pdf`;
+    const nombreArchivo = `${Date.now()}.pdf`;
+
     const rutaPDF = path.join(__dirname, 'public', 'pdfs', nombreArchivo);
     const stream = fs.createWriteStream(rutaPDF);
     doc.pipe(stream);
@@ -879,3 +880,4 @@ app.delete('/api/platos/:id', requireLogin, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor en http://localhost:${PORT}`);
 });
+

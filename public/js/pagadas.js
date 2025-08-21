@@ -66,7 +66,7 @@ async function cargarcotizacionesPagadas() {
     
     const cotizacionesPagadas = cotizacionesGuardadas.filter(c => c.status === 'pagado');
     actualizarListaCotizaciones(cotizacionesPagadas);
-    document.getElementById('badgeEnProceso').textContent = cotizacionesPagadas.length;
+    document.getElementById('badgePagadas').textContent = cotizacionesPagadas.length;
   } catch (error) {
     console.error('Error al cargar cotizaciones:', error);
     alert('Error al cargar las cotizaciones');
@@ -897,7 +897,7 @@ document.addEventListener('click', async (e) => {
         if (!res.ok) throw new Error('No se pudo eliminar');
 
         alert('Cotización eliminada correctamente.');
-        await cargarCotizacionesEnProceso(); // refrescar lista
+        await cargarcotizacionesPagadas(); // refrescar lista
       } catch (error) {
         console.error('Error al eliminar:', error);
         alert('Ocurrió un error al intentar eliminar.');

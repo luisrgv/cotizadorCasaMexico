@@ -8,138 +8,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #E4007C; /* rojo mexicano */
+      --primary: #E4007C;
       --primary-dark: #c1121f;
       --secondary: #457b9d;
-      --dark: #1d3557;
-      --light: #f1faee;
+      --dark: #1a1a1a;
+      --light: #f8f9fa;
       --gray: #6c757d;
-      --light-gray: #f8f9fa;
+      --light-gray: #f1f1f1;
       --success: #2a9d8f;
       --warning: #e9c46a;
       --danger: #e76f51;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-    /* Agrega esto a tu sección de estilos */
-#buscadorCotizaciones {
-  padding: 0.75rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-family: 'Poppins', sans-serif;
-  transition: all 0.3s ease;
-}
-
-#buscadorCotizaciones:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(228, 0, 124, 0.2);
-}
-
-.texto-vacio {
-  text-align: center;
-  color: var(--gray);
-  padding: 2rem;
-  font-style: italic;
-}
-    /* ==== NUEVO ESTILO MODERNO ==== */
-.nueva-card-moderna {
-  border-left: 5px solid var(--primary);
-  border-radius: 10px;
-  background-color: white;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  padding: 1.5rem;
-  transition: all 0.2s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.nueva-card-moderna:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-}
-
-.nueva-cabecera {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nueva-invoice {
-  font-size: 1.2rem;
-  color: var(--dark);
-}
-
-.nueva-status {
-  padding: 0.3rem 0.8rem;
-  font-size: 0.75rem;
-  border-radius: 20px;
-  text-transform: uppercase;
-  font-weight: bold;
-}
-
-.nueva-status.en_proceso {
-  background-color: var(--warning);
-  color: #333;
-}
-
-.nueva-status.pagada {
-  background-color: #2ecc71;
-  color: white;
-}
-
-.nueva-status.impaga {
-  background-color: #e74c3c;
-  color: white;
-}
-
-.nueva-cuerpo {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem 1.5rem;
-  font-size: 0.9rem;
-  color: #444;
-}
-
-.nueva-cuerpo .campo i {
-  margin-right: 0.3rem;
-  color: var(--primary);
-}
-
-.campo-notas {
-  grid-column: 1 / -1;
-  margin-top: 0.5rem;
-  background: #f8f9fa;
-  padding: 0.75rem;
-  border-left: 4px solid var(--primary);
-  border-radius: 5px;
-  font-style: italic;
-}
-
-.nueva-status {
-  margin: 0.3rem 0;
-  width: fit-content;
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.nueva-status.en_proceso {
-  background-color: var(--warning);
-  color: #333;
-}
-
-.nueva-status.pagada {
-  background-color: #2ecc71;
-  color: white;
-}
-
-.nueva-status.impaga {
-  background-color: #e74c3c;
-  color: white;
-}
-
+    
     * {
       margin: 0;
       padding: 0;
@@ -153,69 +36,85 @@
       line-height: 1.6;
     }
     
-   .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: #000000; /* fondo claro */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-bottom: 4px solid var(--primary);
-}
-.logo-text {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--dark);
-  text-shadow: 1px 1px 0 var(--light-gray);
-}
+    /* ===== HEADER IDÉNTICO AL COTIZADOR ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #000000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-bottom: 4px solid var(--primary);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
 
-.logo-text span {
-  color: var(--primary); /* rojo mexicano */
-}
-    
-    
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-    }
-    
-    .logo span {
-      color: var(--primary);
-    }
-    
-    .user-info {
+    .branding {
       display: flex;
       align-items: center;
       gap: 1rem;
     }
-    
+
+    .logo-img {
+      max-height: 65px;
+      transition: var(--transition);
+      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
+    }
+
+    .logo-img:hover {
+      transform: scale(1.05);
+    }
+
+    .logo-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+    }
+
+    .logo-text span {
+      color: var(--primary);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: white;
+    }
+
     .avatar {
+      background: var(--primary);
+      color: white;
+      padding: 0.6rem 0.9rem;
+      border-radius: 50%;
+      font-weight: bold;
       width: 40px;
       height: 40px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
     }
-    
+
     .logout-btn {
-      background-color: var(--primary);
-      color: white;
+      background: none;
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
+      color: white;
+      font-size: 1rem;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s ease;
+      transition: var(--transition);
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
     }
-    
+
     .logout-btn:hover {
-      background-color: var(--primary-dark);
+      background: rgba(255,255,255,0.1);
+    }
+
+    #userRole {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.8);
     }
     
     .container {
@@ -223,55 +122,189 @@
       max-width: 1400px;
       margin: 0 auto;
     }
-    
+
+    /* === ESTILOS UNIFICADOS DE PESTAÑAS === */
     .tabs {
       display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      border-bottom: 3px solid #ddd;
+      overflow-x: auto;
     }
     
-    .tab {
-      padding: 0.75rem 1.5rem;
-      background-color: white;
-      border-radius: 5px;
+    a.tab {
+      text-decoration: none !important;
+    }
+
+    .tabs .tab,
+    .tabs .btn-calendario {
+      flex: 1;
+      min-width: 150px;
+      text-align: center;
+      padding: 0.8rem 1rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: none;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      background: #f5f5f5;
+      color: #555;
+      box-shadow: inset 0 -2px 0 transparent;
       cursor: pointer;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-weight: 500;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      justify-content: center;
+      gap: 0.4rem;
+      position: relative;
+    }
+
+    /* Estado activo tipo pestaña de navegador */
+    .tabs .tab.active,
+    .tabs .btn-calendario.active {
+      background: white;
+      color: #000;
+      box-shadow: inset 0 -3px 0 currentColor;
+      font-weight: 600;
+    }
+
+    /* Hover elegante */
+    .tabs .tab:hover,
+    .tabs .btn-calendario:hover {
+      background: #fafafa;
+      color: #111;
+    }
+
+    /* Badges modernos */
+    .tab .tab-badge {
+      position: absolute;
+      top: 6px;
+      right: 12px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    /* Colores personalizados */
+    .tab.nueva.active { color: #e91e63; }
+    .tab.en-proceso.active { color: #3498db; }
+    .tab.pagadas.active { color: #2ecc71; }
+    .tab.impagas.active { color: #e74c3c; }
+    .tab.canceladas.active { color: #7f8c8d; }
+    .btn-calendario.active { color: #f39c12; }
+    .tab.menu.active { color: #9b59b6; }
+
+    /* Badge colores */
+    .tab.en-proceso .tab-badge { background: #3498db; }
+    .tab.pagadas .tab-badge { background: #2ecc71; }
+    .tab.impagas .tab-badge { background: #e74c3c; }
+    .tab.canceladas .tab-badge { background: #7f8c8d; }
+
+    /* ==== NUEVO ESTILO MODERNO PARA TARJETAS ==== */
+    .nueva-card-moderna {
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      background-color: white;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      padding: 1.5rem;
+      transition: all 0.2s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .nueva-card-moderna:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    }
+
+    .nueva-cabecera {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nueva-invoice {
+      font-size: 1.2rem;
+      color: var(--dark);
+    }
+
+    .nueva-status {
+      padding: 0.3rem 0.8rem;
+      font-size: 0.75rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .nueva-status.en_proceso {
+      background-color: var(--warning);
+      color: #333;
+    }
+
+    .nueva-status.pagada {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .nueva-status.impaga {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .nueva-cuerpo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem 1.5rem;
+      font-size: 0.9rem;
+      color: #444;
+    }
+
+    .nueva-cuerpo .campo i {
+      margin-right: 0.3rem;
+      color: var(--primary);
+    }
+
+    .campo-notas {
+      grid-column: 1 / -1;
+      margin-top: 0.5rem;
+      background: #f8f9fa;
+      padding: 0.75rem;
+      border-left: 4px solid var(--primary);
+      border-radius: 5px;
+      font-style: italic;
+    }
+
+    /* Agrega esto a tu sección de estilos */
+    #buscadorCotizaciones {
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
       transition: all 0.3s ease;
     }
-    
-    .tab:hover {
-      background-color: var(--light-gray);
+
+    #buscadorCotizaciones:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(228, 0, 124, 0.2);
     }
-    
-    .tab.active {
-      background-color: var(--dark);
-      color: white;
+
+    .texto-vacio {
+      text-align: center;
+      color: var(--gray);
+      padding: 2rem;
+      font-style: italic;
     }
-    
-    .tab-badge {
-      background-color: var(--primary);
-      color: white;
-      border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      margin-left: 0.3rem;
-    }
-    
+
     .card {
       background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
       padding: 2rem;
       margin-bottom: 2rem;
+      border: 1px solid #e0e0e0;
     }
     
     .card-title {
@@ -281,6 +314,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #eee;
     }
     
     .form-grid {
@@ -291,7 +326,7 @@
     }
     
     .form-group {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
     
     .form-group label {
@@ -299,21 +334,23 @@
       margin-bottom: 0.5rem;
       font-weight: 500;
       color: var(--dark);
+      font-size: 0.9rem;
     }
     
     .form-control {
       width: 100%;
       padding: 0.75rem;
       border: 1px solid #ddd;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
       font-family: 'Poppins', sans-serif;
-      transition: all 0.3s ease;
+      transition: var(--transition);
+      font-size: 0.95rem;
     }
     
     .form-control:focus {
       outline: none;
-      border-color: var(--secondary);
-      box-shadow: 0 0 0 3px rgba(69, 123, 157, 0.2);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(228, 0, 124, 0.2);
     }
     
     .form-actions {
@@ -321,19 +358,22 @@
       gap: 1rem;
       justify-content: flex-end;
       margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #eee;
     }
     
     .btn {
       padding: 0.75rem 1.5rem;
       border: none;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
       font-family: 'Poppins', sans-serif;
       font-weight: 500;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      transition: all 0.3s ease;
+      transition: var(--transition);
+      font-size: 0.95rem;
     }
     
     .btn-primary {
@@ -343,6 +383,8 @@
     
     .btn-primary:hover {
       background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     
     .btn-info {
@@ -352,6 +394,8 @@
     
     .btn-info:hover {
       background-color: #3a6a8a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     
     .btn-warning {
@@ -361,6 +405,8 @@
     
     .btn-warning:hover {
       background-color: #e0b758;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     
     .btn-secondary {
@@ -370,19 +416,46 @@
     
     .btn-secondary:hover {
       background-color: #5a6268;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn-outline-secondary {
+      background-color: transparent;
+      border: 1px solid var(--gray);
+      color: var(--gray);
+    }
+    
+    .btn-outline-success {
+      background-color: transparent;
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+    
+    .btn-outline-danger {
+      background-color: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+    
+    .btn-outline-warning {
+      background-color: transparent;
+      border: 1px solid var(--warning);
+      color: var(--warning);
     }
     
     .platos-container {
       grid-column: 1 / -1;
-      background-color: var(--light-gray);
+      background-color: var(--light);
       padding: 1.5rem;
-      border-radius: 8px;
+      border-radius: var(--border-radius);
       margin-top: 1rem;
+      border: 1px solid #e0e0e0;
     }
     
     .platos-categorias {
       display: flex;
-      gap: 1rem;
+      gap: 0.5rem;
       margin-bottom: 1.5rem;
       flex-wrap: wrap;
     }
@@ -394,7 +467,8 @@
       border-radius: 20px;
       cursor: pointer;
       font-weight: 500;
-      transition: all 0.3s ease;
+      transition: var(--transition);
+      font-size: 0.85rem;
     }
     
     .categoria-btn.active {
@@ -405,7 +479,7 @@
     
     .platos-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
@@ -413,31 +487,41 @@
     .plato-item {
       background-color: white;
       padding: 1rem;
-      border-radius: 8px;
+      border-radius: var(--border-radius);
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.75rem;
+      border: 1px solid #e0e0e0;
+      transition: var(--transition);
+    }
+    
+    .plato-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     }
     
     .plato-header {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
     
     .plato-header input[type="checkbox"] {
       width: 18px;
       height: 18px;
+      accent-color: var(--primary);
     }
     
     .plato-nombre {
       font-weight: 500;
+      font-size: 1rem;
     }
     
     .plato-precio {
       color: var(--success);
       font-weight: 600;
+      font-size: 0.9rem;
     }
     
     .plato-cantidad {
@@ -445,33 +529,39 @@
       align-items: center;
       gap: 0.5rem;
       margin-top: 0.5rem;
+      flex-wrap: wrap;
     }
     
     .plato-cantidad input {
       width: 70px;
       padding: 0.5rem;
       border: 1px solid #ddd;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
     }
     
     .resumen-platos {
       background-color: white;
       padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
       margin-top: 1rem;
+      border: 1px solid #e0e0e0;
     }
     
     .resumen-platos h4 {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       color: var(--dark);
+      font-size: 1.2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
     }
     
     .resumen-linea {
       display: flex;
       justify-content: space-between;
-      padding: 0.5rem 0;
+      padding: 0.75rem 0;
       border-bottom: 1px solid #eee;
+      align-items: center;
     }
     
     .resumen-total {
@@ -479,8 +569,12 @@
       justify-content: space-between;
       padding: 1rem 0;
       font-weight: 600;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: var(--dark);
+      margin-top: 0.5rem;
+      background-color: var(--light);
+      padding: 1rem;
+      border-radius: var(--border-radius);
     }
     
     .resumen-input {
@@ -494,9 +588,10 @@
     .pago-item {
       background-color: white;
       padding: 1rem;
-      border-radius: 8px;
+      border-radius: var(--border-radius);
       margin-bottom: 1rem;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--box-shadow);
+      border: 1px solid #e0e0e0;
     }
     
     .pago-fila {
@@ -512,6 +607,13 @@
       color: var(--danger);
       cursor: pointer;
       font-size: 1.2rem;
+      transition: var(--transition);
+      padding: 0.5rem;
+      border-radius: 50%;
+    }
+    
+    .btn-eliminar-pago:hover {
+      background-color: rgba(231, 111, 81, 0.1);
     }
     
     .notas-container {
@@ -524,18 +626,22 @@
     .notas-box {
       background-color: white;
       padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      border: 1px solid #e0e0e0;
     }
     
     .notas-box h4 {
       margin-bottom: 1rem;
       color: var(--dark);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
     }
     
     textarea.form-control {
       min-height: 150px;
       resize: vertical;
+      font-family: 'Poppins', sans-serif;
     }
     
     .loading-overlay {
@@ -544,7 +650,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.7);
       display: none;
       justify-content: center;
       align-items: center;
@@ -588,12 +694,13 @@
     .modal-content {
       background-color: white;
       padding: 2rem;
-      border-radius: 10px;
+      border-radius: var(--border-radius);
       max-width: 800px;
       width: 90%;
       max-height: 90vh;
       overflow-y: auto;
       position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
     
     .close-modal {
@@ -603,6 +710,11 @@
       font-size: 1.5rem;
       cursor: pointer;
       color: var(--gray);
+      transition: var(--transition);
+    }
+    
+    .close-modal:hover {
+      color: var(--danger);
     }
     
     /* Estilos para la tabla del resumen */
@@ -614,13 +726,14 @@
     
     .resumen-platos th, .resumen-platos td {
       text-align: left;
-      padding: 8px;
-      border-bottom: 1px solid #ddd;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
     }
     
     .resumen-platos th {
       background-color: #f8f9fa;
       font-weight: 500;
+      color: var(--dark);
     }
     
     .resumen-platos tr:nth-child(even) {
@@ -631,9 +744,9 @@
     .resumen-platos input[type="text"],
     .resumen-platos input[type="number"] {
       width: 100%;
-      padding: 5px;
+      padding: 8px;
       border: 1px solid #ddd;
-      border-radius: 3px;
+      border-radius: var(--border-radius);
     }
     
     /* Estilo para las filas de categoría */
@@ -649,30 +762,71 @@
       color: var(--danger);
       cursor: pointer;
       padding: 0 5px;
+      transition: var(--transition);
     }
     
-    @media (max-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .pago-fila {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-      }
-      
-      .notas-container {
-        grid-template-columns: 1fr;
-      }
+    .btn-eliminar-fila:hover {
+      transform: scale(1.2);
     }
-
+    
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .form-check-input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+    
+    .form-check-label {
+      font-size: 0.9rem;
+      color: var(--dark);
+    }
+    
+    .estado-grupo {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    
+    .estado-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      transition: var(--transition);
+    }
+    
+    .estado-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .invoice-number {
+      font-size: 0.9em;
+      color: var(--gray);
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    
+    .invoice-number span {
+      font-weight: 600;
+      color: var(--primary);
+    }
+    
     /* Estilos para las tarjetas de cotización */
     .cotizacion-card {
       background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
       padding: 1.5rem;
       margin-bottom: 1.5rem;
+      border: 1px solid #e0e0e0;
     }
     
     .cotizacion-header {
@@ -737,11 +891,57 @@
       padding: 0.5rem 1rem;
       font-size: 0.9rem;
     }
+    
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .pago-fila {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      
+      .notas-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        padding: 1rem;
+      }
+      
+      .logo-text {
+        font-size: 1.5rem;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .tabs {
+        flex-wrap: wrap;
+      }
+      
+      .tabs .tab,
+      .tabs .btn-calendario {
+        min-width: 120px;
+        font-size: 0.85rem;
+      }
+    }
   </style>
+
 </head>
 <body>
-  <div class="header">
-    <div class="logo"><span>Catering</span></div>
+ <div class="header">
+    <div class="branding">
+      <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" class="logo-img">
+      <div class="logo-text"> <span>Cotizaciones en Proceso</span></div>
+    </div>
     <div class="user-info">
       <div class="avatar" id="userAvatar">CM</div>
       <div>
@@ -756,35 +956,34 @@
   
   <div class="container">
     <div class="tabs">
-      <a href="cotizador.html" class="tab" data-tab="nueva">
-        <i class="fas fa-plus"></i> Nueva Cotización
-      </a>
-      <div class="tab active" data-tab="en_proceso">
-        <i class="fas fa-spinner"></i> En Proceso <span class="tab-badge" id="badgeEnProceso">0</span>
-      </div>
-      <a href="pagadas.html" class="tab" data-tab="pagada">
-        <i class="fas fa-check-circle"></i> Pagadas <span class="tab-badge" id="badgePagadas">0</span>
-      </a>
-      <a href="impagas.html" class="tab" data-tab="impaga">
-        <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
-      </a>
-       </a>
-      <a href="cancelado.html" class="tab" data-tab="cancelado">
-        <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
-      </a>
-       <button type="button" class="btn btn-info" id="verCalendarioBtn">
-        <i class="fas fa-calendar-alt"></i> Ver Calendario
-      </button>
-      <a href="menu.html" class="tab" data-tab="menu">
-  <i class="fas fa-utensils"></i> Menú
-</a>
-    </div>
+       <a href="cotizador.html" class="tab nueva" data-tab="nueva">
+   <div class="tab nueva" data-tab="nueva">
+    <i class="fas fa-plus"></i> Nueva Cotización
+  </div>
+  <a href="en-proceso.html" class="tab en-proceso active" data-tab="en_proceso">
+    <i class="fas fa-spinner"></i> En Proceso <span class="tab-badge" id="badgeEnProceso">0</span>
+  </a>
+  <a href="pagadas.html" class="tab pagadas" data-tab="pagada">
+    <i class="fas fa-check-circle"></i> Pagadas <span class="tab-badge" id="badgePagadas">0</span>
+  </a>
+  <a href="impagas.html" class="tab impagas" data-tab="impaga">
+    <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
+  </a>
+  <a href="cancelado.html" class="tab canceladas" data-tab="cancelada">
+    <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
+  </a>
+  <button type="button" class="tab btn-calendario" id="verCalendarioBtn">
+    <i class="fas fa-calendar-alt"></i> Ver Calendario
+  </button>
+  <a href="menu.html" class="tab menu" data-tab="menu">
+    <i class="fas fa-utensils"></i> Menú
+  </a>
+</div>
+
     
     <div class="tab-content active" id="en_proceso-tab">
       <div class="card">
-        <h2 class="card-title">
-          <i class="fas fa-spinner"></i> Cotizaciones en Proceso
-        </h2>
+        
         <!-- Agregar este campo de búsqueda -->
   <div class="form-group" style="margin-bottom: 1.5rem;">
     <div style="display: flex; gap: 0.5rem;">

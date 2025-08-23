@@ -170,14 +170,11 @@ app.delete('/api/cotizaciones/:id', requireLogin, async (req, res) => {
   }
 });
 
-
-
 // Función para generar PDFs
 const generarPDF = (tipo, datos) => {
   return new Promise((resolve) => {
     const doc = new PDFDocument({ margin: 50, size: 'A4' });
-    const nombreArchivo = `${tipo}_${Date.now()}.pdf`;
-
+    const nombreArchivo = `${tipo}_${datos.cliente.replace(/\s/g, '_')}_${Date.now()}.pdf`;
     const rutaPDF = path.join(__dirname, 'public', 'pdfs', nombreArchivo);
     const stream = fs.createWriteStream(rutaPDF);
     doc.pipe(stream);
@@ -222,12 +219,17 @@ const generarPDF = (tipo, datos) => {
     fechaObj.setMinutes(fechaObj.getMinutes() + fechaObj.getTimezoneOffset());
     const fechaFormateada = fechaObj.toLocaleDateString('es-ES');
 
-    // Agrega fila de texto
-    const agregarFila = (label, value, isBold = false) => {
-      doc.font(isBold ? 'Helvetica-Bold' : 'Helvetica')
+    // Agrega fila de texto - MODIFICADO: Etiquetas en negrita hasta Status
+    const agregarFila = (label, value, isBold = false, isLabelBold = false) => {
+      // Aplicar negrita a la etiqueta si isLabelBold es true
+      doc.font(isLabelBold ? 'Helvetica-Bold' : 'Helvetica')
          .fontSize(10)
-         .text(label, infoX, currentY, { width: 150, align: 'left' })
+         .text(label, infoX, currentY, { width: 150, align: 'left' });
+      
+      // Aplicar negrita al valor si isBold es true
+      doc.font(isBold ? 'Helvetica-Bold' : 'Helvetica')
          .text(value, infoX + 160, currentY, { width: 340, align: 'left' });
+      
       currentY += 20;
     };
 
@@ -280,23 +282,49 @@ const generarPDF = (tipo, datos) => {
     if (datos.status === 'en_proceso') statusColor = '#e9c46a';
     if (datos.status === 'cancelado') statusColor = '#f4a261';
 
-    // Información básica común
-    agregarFila(tipo === 'cliente' ? 'Date:' : 'Fecha:', fechaFormateada, true);
-    agregarFila(tipo === 'cliente' ? 'Day:' : 'Día:', datos.dia);
-    agregarFila(tipo === 'cliente' ? 'Client:' : 'Cliente:', datos.cliente, true);
-    agregarFila(tipo === 'cliente' ? 'Contact Number:' : 'Número de contacto:', datos.numero);
-    agregarFila(tipo === 'cliente' ? 'Event Time:' : 'Hora del evento:', datos.hora_evento);
+    // Información básica común - MODIFICADO: Etiquetas en negrita
+    agregarFila(tipo === 'cliente' ? 'Date:' : 'Fecha:', fechaFormateada, true, true);
+    agregarFila(tipo === 'cliente' ? 'Day:' : 'Día:', datos.dia, false, true);
+    
+    // MODIFICADO: Manejo especial para el campo Cliente con más espacio
+    doc.font('Helvetica-Bold') // Etiqueta en negrita
+       .fontSize(10)
+       .text(tipo === 'cliente' ? 'Client:' : 'Cliente:', infoX, currentY, { width: 150, align: 'left' });
+    
+    // Valor del cliente con manejo de texto largo
+    const alturaCliente = agregarTextoConSalto(
+      datos.cliente, 
+      infoX + 160, 
+      currentY, 
+      340, 
+      60, 
+      15
+    );
+    
+    currentY += Math.max(20, alturaCliente); // Asegurar espacio suficiente
+    
+    agregarFila(tipo === 'cliente' ? 'Contact Number:' : 'Número de contacto:', datos.numero, false, true);
+    agregarFila(tipo === 'cliente' ? 'Event Time:' : 'Hora del evento:', datos.hora_evento, false, true);
 
     if (tipo === 'cliente') {
       // PDF del cliente (inglés) - Versión detallada
-      agregarFila('Service:', datos.servicio);
-      agregarFila('Location:', datos.ubicacion);
-      agregarFila('Serving Time:', datos.hora_servir);
-      agregarFila('Status:', datos.status.toUpperCase(), true);
-      doc.fillColor(statusColor).text(datos.status.toUpperCase(), infoX + 160, currentY - 20);
+      agregarFila('Service:', datos.servicio, false, true);
+      agregarFila('Location:', datos.ubicacion, false, true);
+      agregarFila('Serving Time:', datos.hora_servir, false, true);
+      
+      // Status con etiqueta en negrita pero valor con color especial
+      doc.font('Helvetica-Bold') // Etiqueta en negrita
+         .fontSize(10)
+         .text('Status:', infoX, currentY, { width: 150, align: 'left' });
+      
+      doc.fillColor(statusColor)
+         .font('Helvetica-Bold') // Status en negrita pero con color
+         .text(datos.status.toUpperCase(), infoX + 160, currentY, { width: 340, align: 'left' });
+      
       doc.fillColor('#000000');
+      currentY += 20;
 
-      currentY += 30;
+      currentY += 10; // Espacio adicional antes de la sección de menú
       doc.font('Helvetica-Bold').text('MENU DETAILS', infoX, currentY);
       currentY += 20;
 
@@ -377,28 +405,27 @@ const generarPDF = (tipo, datos) => {
           currentY += Math.max(15, alturaTexto);
 
           // Mostrar descripción si no es manual
-          // Mostrar descripción si no es manual
-if (plato.descripcion && !plato.esManual) {
-    const descripcionLimpia = (plato.descripcion || '')
-        .normalize('NFKC')
-        .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
-        .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
-        .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
-        .replace(/[!¡]/g, '')                             // signos de admiración
-        .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
-        .trim();
+          if (plato.descripcion && !plato.esManual) {
+            const descripcionLimpia = (plato.descripcion || '')
+                .normalize('NFKC')
+                .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
+                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
+                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
+                .replace(/[!¡]/g, '')                             // signos de admiración
+                .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
+                .trim();
 
-             asegurarEspacio(20);
-    doc.font('Helvetica-Oblique')
-       .fontSize(9)
-       .fillColor('#555555')
-       .text(`${descripcionLimpia}`, infoX + 90, currentY, {
-         width: 400,
-         align: 'justify',
-         lineGap: 2
-       });
-    doc.fillColor('#000000').fontSize(10);
-    currentY += doc.heightOfString(descripcionLimpia, { width: 400 }) + 5;
+            asegurarEspacio(20);
+            doc.font('Helvetica-Oblique')
+               .fontSize(9)
+               .fillColor('#555555')
+               .text(`${descripcionLimpia}`, infoX + 90, currentY, {
+                 width: 400,
+                 align: 'justify',
+                 lineGap: 2
+               });
+            doc.fillColor('#000000').fontSize(10);
+            currentY += doc.heightOfString(descripcionLimpia, { width: 400 }) + 5;
           } else {
             currentY += 10;
           }
@@ -424,13 +451,12 @@ if (plato.descripcion && !plato.esManual) {
       agregarFilaDerecha('Subtotal:', `$${datos.subtotal.toFixed(2)}`);
       asegurarEspacio(60);
       
-           // Mostrar Tax Exempt si corresponde
-  if (datos.taxExempt) {
-    agregarFilaDerecha('TAX EXEMPT:', '$0.00', true, '#e63946');
-  } else {
-    agregarFilaDerecha(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
-  }
-  
+      // Mostrar Tax Exempt si corresponde
+      if (datos.taxExempt) {
+        agregarFilaDerecha('TAX EXEMPT:', '$0.00', true, '#e63946');
+      } else {
+        agregarFilaDerecha(`Tax (${datos.taxPercentage}%):`, `$${datos.tax.toFixed(2)}`);
+      }
       
       asegurarEspacio(60);
       agregarFilaDerecha(`Gratuity (${datos.gratuityPercentage}%):`, `$${datos.gratuity.toFixed(2)}`);
@@ -476,16 +502,25 @@ if (plato.descripcion && !plato.esManual) {
 
     } else {
       // PDF Cocina (español) - Versión simplificada
-      agregarFila('Servicio:', datos.servicio);
-      agregarFila('Ubicación:', datos.ubicacion);
-      agregarFila('Contacto en lugar:', datos.contacto);
-      agregarFila('Hora de servir:', datos.hora_servir);
-      agregarFila('Hora de salida:', datos.hora_salida);
-      agregarFila('Estado:', datos.status.toUpperCase(), true);
-      doc.fillColor(statusColor).text(datos.status.toUpperCase(), infoX + 160, currentY - 20);
+      agregarFila('Servicio:', datos.servicio, false, true);
+      agregarFila('Ubicación:', datos.ubicacion, false, true);
+      agregarFila('Contacto en lugar:', datos.contacto, false, true);
+      agregarFila('Hora de servir:', datos.hora_servir, false, true);
+      agregarFila('Hora de salida:', datos.hora_salida, false, true);
+      
+      // Status con etiqueta en negrita pero valor con color especial
+      doc.font('Helvetica-Bold') // Etiqueta en negrita
+         .fontSize(10)
+         .text('Estado:', infoX, currentY, { width: 150, align: 'left' });
+      
+      doc.fillColor(statusColor)
+         .font('Helvetica-Bold') // Status en negrita pero con color
+         .text(datos.status.toUpperCase(), infoX + 160, currentY, { width: 340, align: 'left' });
+      
       doc.fillColor('#000000');
+      currentY += 20;
 
-      currentY += 30;
+      currentY += 10; // Espacio adicional antes de la sección de menú
       doc.font('Helvetica-Bold').text('DETALLES DEL MENÚ', infoX, currentY);
       currentY += 20;
 
@@ -547,28 +582,28 @@ if (plato.descripcion && !plato.esManual) {
           currentY += Math.max(15, alturaTexto);
 
           // Mostrar descripción 
-        // Mostrar descripción si no es manual
-if (plato.descripcion && !plato.esManual) {
-    const descripcionLimpia = (plato.descripcion || '')
-        .normalize('NFKC')
-        .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
-        .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
-        .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
-        .replace(/[!¡]/g, '')                             // signos de admiración
-        .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
-        .trim();
+          // Mostrar descripción si no es manual
+          if (plato.descripcion && !plato.esManual) {
+            const descripcionLimpia = (plato.descripcion || '')
+                .normalize('NFKC')
+                .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
+                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
+                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
+                .replace(/[!¡]/g, '')                             // signos de admiración
+                .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
+                .trim();
             
-           asegurarEspacio(20);
-    doc.font('Helvetica-Oblique')
-       .fontSize(9)
-       .fillColor('#555555')
-       .text(` ${descripcionLimpia}`, infoX + 90, currentY, {
-         width: 400,
-         align: 'justify',
-         lineGap: 2
-       });
-    doc.fillColor('#000000').fontSize(10);
-    currentY += doc.heightOfString(descripcionLimpia, { width: 400 }) + 5;
+            asegurarEspacio(20);
+            doc.font('Helvetica-Oblique')
+               .fontSize(9)
+               .fillColor('#555555')
+               .text(` ${descripcionLimpia}`, infoX + 90, currentY, {
+                 width: 400,
+                 align: 'justify',
+                 lineGap: 2
+               });
+            doc.fillColor('#000000').fontSize(10);
+            currentY += doc.heightOfString(descripcionLimpia, { width: 400 }) + 5;
           } else {
             currentY += 10;
           }
@@ -603,7 +638,6 @@ if (plato.descripcion && !plato.esManual) {
     stream.on('finish', () => resolve(nombreArchivo));
   });
 };
-
 
 // Crear cotización
 app.post('/api/cotizaciones', requireLogin, async (req, res) => {
@@ -880,5 +914,3 @@ app.delete('/api/platos/:id', requireLogin, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor en http://localhost:${PORT}`);
 });
-
-

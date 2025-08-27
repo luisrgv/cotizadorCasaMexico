@@ -1545,7 +1545,7 @@ function actualizarResumenPlatos() {
           cantidadTexto = `${cantidad}T`;
         } else {
           precioPorPersona = precioBase;
-          cantidadTexto = `${cantidad}/2 T`;
+          cantidadTexto = `${cantidad}`;
         }
       } else if (categoria === 'Specialty') {
         if (tipo === '20') {
@@ -1553,14 +1553,9 @@ function actualizarResumenPlatos() {
           cantidadTexto = `${cantidad}T`;
         } else {
           precioPorPersona = precioBase;
-          cantidadTexto = `${cantidad}/2 T`;
+          cantidadTexto = `${cantidad}`;
         }
-      }else if (categoria === 'Desserts') {
-       
-        precioPorPersona = precioBase; 
-        cantidadTexto = `${cantidad}T`;
-        
-      
+      }
    } else if (categoria === 'Chef Cristina Experience') {
   const precioInput = platoItem.querySelector('.precio-personalizado');
   const cantidadInput = platoItem.querySelector('.cantidad-plato');
@@ -2483,6 +2478,4 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
-
-
 

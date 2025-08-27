@@ -1555,7 +1555,11 @@ function actualizarResumenPlatos() {
           precioPorPersona = precioBase;
           cantidadTexto = `${cantidad}/2 T`;
         }
-      }
+      }else if (categoria === 'Desserts') {
+       
+          cantidadTexto = `${cantidad}T`;
+        
+      
    } else if (categoria === 'Chef Cristina Experience') {
   const precioInput = platoItem.querySelector('.precio-personalizado');
   const cantidadInput = platoItem.querySelector('.cantidad-plato');
@@ -2478,4 +2482,5 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
+
 

@@ -876,21 +876,29 @@ document.addEventListener('click', async (e) => {
     }
   }
 });
-//numero de cotizaciones 
 
+//numero de cotizaciones 
   async function actualizarBadgeCotizaciones() {
     try {
       const res = await fetch('/api/cotizaciones');
       const data = await res.json();
+
+      
       const enProceso = data.cotizaciones.filter(c => c.status === 'en_proceso');
       const pagadas = data.cotizaciones.filter(c => c.status === 'pagado');
       const impagas = data.cotizaciones.filter(c => c.status === 'impago');
       const canceladas = data.cotizaciones.filter(c => c.status === 'cancelado');
-
+        // NUEVO: conteo de Tax Exempt
+    const taxExempt = data.cotizaciones.filter(c => 
+      c?.taxExempt === true ||
+      String(c?.taxExempt).toLowerCase() === 'true' ||
+      Number(c?.taxPercentage) === 0
+    );
       document.getElementById('badgeEnProceso').textContent = enProceso.length;
       document.getElementById('badgePagadas') && (document.getElementById('badgePagadas').textContent = pagadas.length);
       document.getElementById('badgeImpagas') && (document.getElementById('badgeImpagas').textContent = impagas.length);
-      document.getElementById('badgeCanceladas') && (document.getElementById('badgeCanceladas').textContent = canceladas.length);
+      document.getElementById('badgeCanceladas').textContent = canceladas.length;
+      document.getElementById('badgeTaxExempt').textContent = taxExempt.length;
     } catch (err) {
       console.error('Error cargando cotizaciones:', err);
     }

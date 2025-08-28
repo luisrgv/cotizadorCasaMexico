@@ -877,6 +877,10 @@ a.tab {
   <a href="cancelado.html" class="tab canceladas" data-tab="cancelada">
     <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
   </a>
+    </a>
+  <a href="TaxExempt.html" class="tab TaxExempt data-tab="TaxExempt>
+    <i class="fas fa-file-invoice-dollar"></i> Tax Exempt <span class="tab-badge" id="badgeTaxExempt">0</span>
+  </a>
  <button type="button" class="tab btn-calendario" id="verCalendarioBtn">
     <i class="fas fa-calendar-alt"></i> Ver Calendario
       </button>
@@ -904,6 +908,7 @@ a.tab {
     <button type="button" class="btn btn-outline-success estado-btn" data-estado="pagado">Pagado</button>
     <button type="button" class="btn btn-outline-danger estado-btn" data-estado="impago">Impago</button>
     <button type="button" class="btn btn-outline-warning estado-btn" data-estado="cancelado">Cancelado</button>
+    <button type="button" class="btn btn-outline-warning estado-btn" data-estado="TaxExempt">TaxExempt</button>
   </div>
   <input type="hidden" id="estadoHidden" value="">
 </div>
@@ -1555,9 +1560,8 @@ function actualizarResumenPlatos() {
           precioPorPersona = precioBase;
           cantidadTexto = `${cantidad}/2 T`;
         }
+        
       }
-       
-                         
    } else if (categoria === 'Chef Cristina Experience') {
   const precioInput = platoItem.querySelector('.precio-personalizado');
   const cantidadInput = platoItem.querySelector('.cantidad-plato');
@@ -1567,6 +1571,10 @@ function actualizarResumenPlatos() {
 
   precioPorPersona = precioManual;
   cantidad = cantidadManual;
+  cantidadTexto = `${cantidad}T`;
+} else if (categoria === 'Desserts') {
+  
+  cantidadTexto = `${cantidad} T`;
 }
 
 
@@ -2423,11 +2431,19 @@ if (categoria === 'Chef Cristina Experience') {
       const pagadas = data.cotizaciones.filter(c => c.status === 'pagado');
       const impagas = data.cotizaciones.filter(c => c.status === 'impago');
       const canceladas = data.cotizaciones.filter(c => c.status === 'cancelado');
+          // NUEVO: conteo de Tax Exempt
+    const taxExempt = data.cotizaciones.filter(c => 
+      c?.taxExempt === true ||
+      String(c?.taxExempt).toLowerCase() === 'true' ||
+      Number(c?.taxPercentage) === 0
+    );
 
       document.getElementById('badgeEnProceso').textContent = enProceso.length;
       document.getElementById('badgePagadas') && (document.getElementById('badgePagadas').textContent = pagadas.length);
       document.getElementById('badgeImpagas') && (document.getElementById('badgeImpagas').textContent = impagas.length);
       document.getElementById('badgeCanceladas').textContent = canceladas.length;
+      document.getElementById('badgeTaxExempt').textContent = taxExempt.length;
+      
     } catch (err) {
       console.error('Error cargando cotizaciones:', err);
     }
@@ -2480,5 +2496,3 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
-
-

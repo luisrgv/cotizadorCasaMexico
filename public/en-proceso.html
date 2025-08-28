@@ -195,11 +195,13 @@
     .btn-calendario.active { color: #f39c12; }
     .tab.menu.active { color: #9b59b6; }
 
+
     /* Badge colores */
     .tab.en-proceso .tab-badge { background: #3498db; }
     .tab.pagadas .tab-badge { background: #2ecc71; }
     .tab.impagas .tab-badge { background: #e74c3c; }
     .tab.canceladas .tab-badge { background: #7f8c8d; }
+    .tab.TaxExempt .tab-badge { background: #e91e63; }
 
     /* ==== NUEVO ESTILO MODERNO PARA TARJETAS ==== */
     .nueva-card-moderna {
@@ -972,6 +974,9 @@
   <a href="cancelado.html" class="tab canceladas" data-tab="cancelada">
     <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
   </a>
+  <a href="Tax-Exempt.html" class="tab TaxExempt active" data-tab="tax-exempt">
+    <i class="fas fa-file-invoice-dollar"></i> Tax Exempt <span class="tab-badge" id="badgeTaxExempt">0</span>
+ </a>
   <button type="button" class="tab btn-calendario" id="verCalendarioBtn">
     <i class="fas fa-calendar-alt"></i> Ver Calendario
   </button>

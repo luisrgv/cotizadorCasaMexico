@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotizador - Casa México</title>
-  
+  <title>Cotizaciones en Proceso - Casa México</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -37,6 +36,7 @@
       line-height: 1.6;
     }
     
+    /* ===== HEADER IDÉNTICO AL COTIZADOR ===== */
     .header {
       display: flex;
       justify-content: space-between;
@@ -122,170 +122,183 @@
       max-width: 1400px;
       margin: 0 auto;
     }
- 
 
-/* EN PROCESO */
-.tab.en-proceso {
-  background-color: #7f8c8d;
-  color: white;
-}
-.tab.en-proceso:hover {
-  background-color: #636e72;
-}
-.tab.en-proceso .tab-badge {
-  background-color: #636e72;
-}
-
-/* PAGADAS */
-.tab.pagadas {
-  background-color: #2ecc71;
-  color: white;
-}
-.tab.pagadas:hover {
-  background-color: #27ae60;
-}
-.tab.pagadas .tab-badge {
-  background-color: #27ae60;
-}
-
-/* IMPAGAS */
-.tab.impagas {
-  background-color: #e74c3c;
-  color: white;
-}
-.tab.impagas:hover {
-  background-color: #c0392b;
-}
-.tab.impagas .tab-badge {
-  background-color: #c0392b;
-}
-
-/* CANCELADAS */
-.tab.canceladas {
-  background-color: #e0b758;
-  color: white;
-}
-.tab.canceladas:hover {
-  background-color: #e9c46a ;
-}
-.tab.canceladas .tab-badge {
-  background-color: #e76f51;
-}
-
-
-
-/* MENÚ */
-.tab.menu {
-  background-color: #9b59b6;
-  color: white;
-}
-.tab.menu:hover {
-  background-color: #8e44ad;
-}
-.tab.menu .tab-badge {
-  background-color: #8e44ad;
-}
-
-   .tabs {
-  display: flex;
-  margin-bottom: 1rem;
-  border-bottom: 3px solid #ddd;
-  overflow-x: auto;
-}
-a.tab {
-  text-decoration: none !important;
-}
-
-.tabs .tab,
-.tabs .btn-calendario {
-  flex: 1;
-  min-width: 150px;
-  text-align: center;
-  padding: 0.8rem 1rem;
-  font-weight: 500;
-  font-size: 0.95rem;
-  border: none;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  background: #f5f5f5;
-  color: #555;
-  box-shadow: inset 0 -2px 0 transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  position: relative;
-}
-
-/* Estado activo tipo pestaña de navegador */
-.tabs .tab.active,
-.tabs .btn-calendario.active {
-  background: white;
-  color: #000;
-  box-shadow: inset 0 -3px 0 currentColor;
-  font-weight: 600;
-}
-
-/* Hover elegante */
-.tabs .tab:hover,
-.tabs .btn-calendario:hover {
-  background: #fafafa;
-  color: #111;
-}
-
-/* Badges modernos */
-.tab .tab-badge {
-  position: absolute;
-  top: 6px;
-  right: 12px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  color: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-}
-
-/* Colores personalizados */
-.tab.nueva.active { color: #e91e63; }
-.tab.en-proceso.active { color: #3498db; }
-.tab.pagadas.active { color: #2ecc71; }
-.tab.impagas.active { color: #e74c3c; }
-.tab.canceladas.active { color: #7f8c8d; }
-.btn-calendario.active { color: #f39c12; }
-.tab.menu.active { color: #9b59b6; }
-
-/* Badge colores */
-.tab.en-proceso .tab-badge { background: #3498db; }
-.tab.pagadas .tab-badge { background: #2ecc71; }
-.tab.impagas .tab-badge { background: #e74c3c; }
-.tab.canceladas .tab-badge { background: #7f8c8d; }
-
-    .tab:hover {
-      background-color: var(--light-gray);
-      transform: translateY(-2px);
+    /* === ESTILOS UNIFICADOS DE PESTAÑAS === */
+    .tabs {
+      display: flex;
+      margin-bottom: 1rem;
+      border-bottom: 3px solid #ddd;
+      overflow-x: auto;
     }
     
-    .tab.active {
-      background-color: var(--dark);
-      color: white;
-      border-color: var(--dark);
+    a.tab {
+      text-decoration: none !important;
     }
-    
-    .tab-badge {
-      background-color: var(--primary);
-      color: white;
-      border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      display: inline-flex;
+
+    .tabs .tab,
+    .tabs .btn-calendario {
+      flex: 1;
+      min-width: 150px;
+      text-align: center;
+      padding: 0.8rem 1rem;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: none;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      background: #f5f5f5;
+      color: #555;
+      box-shadow: inset 0 -2px 0 transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
-      margin-left: 0.3rem;
+      gap: 0.4rem;
+      position: relative;
     }
-    
+
+    /* Estado activo tipo pestaña de navegador */
+    .tabs .tab.active,
+    .tabs .btn-calendario.active {
+      background: white;
+      color: #000;
+      box-shadow: inset 0 -3px 0 currentColor;
+      font-weight: 600;
+    }
+
+    /* Hover elegante */
+    .tabs .tab:hover,
+    .tabs .btn-calendario:hover {
+      background: #fafafa;
+      color: #111;
+    }
+
+    /* Badges modernos */
+    .tab .tab-badge {
+      position: absolute;
+      top: 6px;
+      right: 12px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    /* Colores personalizados */
+    .tab.nueva.active { color: #e91e63; }
+    .tab.en-proceso.active { color: #3498db; }
+    .tab.pagadas.active { color: #2ecc71; }
+    .tab.impagas.active { color: #e74c3c; }
+    .tab.canceladas.active { color: #7f8c8d; }
+    .btn-calendario.active { color: #f39c12; }
+    .tab.menu.active { color: #9b59b6; }
+
+    /* Badge colores */
+    .tab.en-proceso .tab-badge { background: #3498db; }
+    .tab.pagadas .tab-badge { background: #2ecc71; }
+    .tab.impagas .tab-badge { background: #e74c3c; }
+    .tab.canceladas .tab-badge { background: #7f8c8d; }
+    .tab.TaxExempt .tab-badge { background: #e91e63; }
+
+    /* ==== NUEVO ESTILO MODERNO PARA TARJETAS ==== */
+    .nueva-card-moderna {
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      background-color: white;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      padding: 1.5rem;
+      transition: all 0.2s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .nueva-card-moderna:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    }
+
+    .nueva-cabecera {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nueva-invoice {
+      font-size: 1.2rem;
+      color: var(--dark);
+    }
+
+    .nueva-status {
+      padding: 0.3rem 0.8rem;
+      font-size: 0.75rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .nueva-status.en_proceso {
+      background-color: var(--warning);
+      color: #333;
+    }
+
+    .nueva-status.pagada {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .nueva-status.impaga {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .nueva-cuerpo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem 1.5rem;
+      font-size: 0.9rem;
+      color: #444;
+    }
+
+    .nueva-cuerpo .campo i {
+      margin-right: 0.3rem;
+      color: var(--primary);
+    }
+
+    .campo-notas {
+      grid-column: 1 / -1;
+      margin-top: 0.5rem;
+      background: #f8f9fa;
+      padding: 0.75rem;
+      border-left: 4px solid var(--primary);
+      border-radius: 5px;
+      font-style: italic;
+    }
+
+    /* Agrega esto a tu sección de estilos */
+    #buscadorCotizaciones {
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    #buscadorCotizaciones:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(228, 0, 124, 0.2);
+    }
+
+    .texto-vacio {
+      text-align: center;
+      color: var(--gray);
+      padding: 2rem;
+      font-style: italic;
+    }
+
     .card {
       background-color: white;
       border-radius: var(--border-radius);
@@ -807,6 +820,79 @@ a.tab {
       color: var(--primary);
     }
     
+    /* Estilos para las tarjetas de cotización */
+    .cotizacion-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e0e0e0;
+    }
+    
+    .cotizacion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .cotizacion-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--dark);
+    }
+    
+    .cotizacion-cliente {
+      font-weight: 500;
+    }
+    
+    .cotizacion-status {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .status-en_proceso {
+      background-color: var(--warning);
+      color: #333;
+    }
+    
+    .cotizacion-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .cotizacion-detail-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .cotizacion-detail {
+      font-size: 0.9rem;
+    }
+    
+    .cotizacion-detail-notes {
+      grid-column: 1 / -1;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    
+    .cotizacion-actions {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+    
     @media (max-width: 768px) {
       .form-grid {
         grid-template-columns: 1fr;
@@ -837,32 +923,42 @@ a.tab {
         width: 100%;
         justify-content: center;
       }
+      
+      .tabs {
+        flex-wrap: wrap;
+      }
+      
+      .tabs .tab,
+      .tabs .btn-calendario {
+        min-width: 120px;
+        font-size: 0.85rem;
+      }
     }
   </style>
+
 </head>
 <body>
- <div class="header">
-  <div class="branding">
-    <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" class="logo-img">
-    <div class="logo-text"> <span>Catering</span></div>
-  </div>
-
-  <div class="user-info">
-    <div class="avatar" id="userAvatar">CM</div>
-    <div>
-      <div id="userName">Usuario</div>
-      <div id="userRole" style="font-size: 0.9rem; color: #1675b5;">Rol</div>
+  <div class="header">
+    <div class="branding">
+      <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" class="logo-img">
+      <div class="logo-text"> <span>Cotizaciones Canceladas</span></div>
     </div>
-    <button class="logout-btn" id="logoutBtn">
-      <i class="fas fa-sign-out-alt"></i> Salir
-    </button>
+    <div class="user-info">
+      <div class="avatar" id="userAvatar">CM</div>
+      <div>
+        <div id="userName">Usuario</div>
+        <div id="userRole" style="font-size: 0.8rem; color: #bdc3c7;">Rol</div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Salir
+      </button>
+    </div>
   </div>
-</div>
-
   
   <div class="container">
-   <div class="tabs">
-  <div class="tab nueva active" data-tab="nueva">
+    <div class="tabs">
+       <a href="cotizador.html" class="tab nueva" data-tab="nueva">
+   <div class="tab nueva" data-tab="nueva">
     <i class="fas fa-plus"></i> Nueva Cotización
   </div>
   <a href="en-proceso.html" class="tab en-proceso" data-tab="en_proceso">
@@ -874,248 +970,37 @@ a.tab {
   <a href="impagas.html" class="tab impagas" data-tab="impaga">
     <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
   </a>
-  <a href="cancelado.html" class="tab canceladas" data-tab="cancelada">
+  <a href="cancelado.html" class="tab canceladas active" data-tab="cancelada">
     <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
   </a>
-    </a>
-  <a href="TaxExempt.html" class="tab TaxExempt data-tab="TaxExempt>
+  <a href="TaxExempt.html" class="tab TaxExempt " data-tab="tax-exempt">
     <i class="fas fa-file-invoice-dollar"></i> Tax Exempt <span class="tab-badge" id="badgeTaxExempt">0</span>
-  </a>
- <button type="button" class="tab btn-calendario" id="verCalendarioBtn">
+ </a>
+  <button type="button" class="tab btn-calendario" id="verCalendarioBtn">
     <i class="fas fa-calendar-alt"></i> Ver Calendario
-      </button>
+  </button>
   <a href="menu.html" class="tab menu" data-tab="menu">
     <i class="fas fa-utensils"></i> Menú
   </a>
 </div>
-
-     
     
-   <div class="tab-content active" id="nueva-tab">
+    <div class="tab-content active" id="canceladadas-tab">
       <div class="card">
-        <h2 class="card-title">
-  <div style="display: flex; justify-content: space-between; width: 100%;">
-    <div>
-     
-      <div style="font-size: 0.9em; color: var(--gray); margin-top: 0.5rem;">INVOICE#<span id="invoiceNumberDisplay">-</span></div>
+      
+         <!-- Agregar este campo de búsqueda -->
+  <div class="form-group" style="margin-bottom: 1.5rem;">
+    <div style="display: flex; gap: 0.5rem;">
+      <input type="text" id="buscadorCotizaciones" class="form-control" 
+             placeholder="Buscar por cliente o invoice #" style="flex: 1;">
+      <button id="limpiarBusqueda" class="btn btn-secondary" style="padding: 0.5rem 1rem;">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
-      </div>
-</h2>
-        <div class="form-group" style="width: 100%; max-width: 500px;">
-  <label>📊 Estado</label>
-  <div id="estadoGrupo" style="display: flex; gap: 5px; flex-wrap: nowrap;">
-    <button type="button" class="btn btn-outline-secondary estado-btn" data-estado="en_proceso">En Proceso</button>
-    <button type="button" class="btn btn-outline-success estado-btn" data-estado="pagado">Pagado</button>
-    <button type="button" class="btn btn-outline-danger estado-btn" data-estado="impago">Impago</button>
-    <button type="button" class="btn btn-outline-warning estado-btn" data-estado="cancelado">Cancelado</button>
-     </div>
-  <input type="hidden" id="estadoHidden" value="">
-</div>
-
-
-        <form id="cotizacionForm">
-          <div class="form-grid">
-            <!-- Información básica -->
-            <input type="hidden" id="invoiceNumber" class="form-control" readonly>
-            
-            <div class="form-group">
-              <label for="fecha">📅 Fecha del Evento</label>
-              <input type="date" id="fecha" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="dia">📅 Día</label>
-              <input type="text" id="dia" class="form-control" readonly>
-            </div>
-            
-            
-            <div class="form-group">
-              <label for="cliente">👤 Nombre del Cliente</label>
-              <input type="text" id="cliente" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="numero">📱 Número de Contacto</label>
-              <input type="tel" id="numero" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="servicio">🍽️ Tipo de Servicio</label>
-              <input type="text" id="servicio" class="form-control" list="servicios" required>
-              <datalist id="servicios">
-                <option value="Catering">
-                <option value="The Golden Handmade Tortilla">
-                <option value="Full Catering with Chef Cristina Martinez">
-                <option value="Pick Up">
-                <option value="Delivery Catering">
-                <option value="Redes Sociales">
-                <option value="Donación">
-              </datalist>
-            </div>
-            <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="chkDeliveryManual">
-  <label class="form-check-label" for="chkDeliveryManual">
-    Delivery Fee
-  </label>
-</div>
-
-            <div class="form-group">
-              <label for="ubicacion">📍 Ubicación del Evento</label>
-              <input type="text" id="ubicacion" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="contacto">👤 Contacto en el Lugar</label>
-              <input type="text" id="contacto" class="form-control">
-            </div>
-            
-            <!-- Horarios -->
-            <div class="form-group">
-              <label for="hora_evento">⏰ Hora del Evento</label>
-              <input type="time" id="hora_evento" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="hora_servir">⏰ Hora de Servir Alimentos</label>
-              <input type="time" id="hora_servir" class="form-control">
-            </div>
-            
-            <div class="form-group">
-              <label for="hora_salida">⏰ Hora de Salida de Casa México</label>
-              <input type="time" id="hora_salida" class="form-control">
-            </div>
-          </div>
-          
-          <!-- Sección de platos -->
-          <div class="platos-container">
-            <h3>🍽️ Menú</h3>
-            
-            <div class="platos-categorias" id="categoriasMenu">
-              <button class="categoria-btn active" data-categoria="Appetizers">Appetizers</button>
-              <button class="categoria-btn" data-categoria="Tacos">Tacos Chef Cristina M.</button>
-              <button class="categoria-btn" data-categoria="Specialty">Specialty</button>
-              <button class="categoria-btn" data-categoria="Desserts">Dessert & Aguas</button>
-               <button class="categoria-btn" data-categoria="Chef Cristina Experience">Chef Cristina Experience</button>
-            </div>
-            
-           <div class="platos-list" id="platosList">
-  <!-- Los platos se cargarán dinámicamente aquí -->
-</div>
-            
-            <div class="resumen-platos" id="resumenPlatos" style="display: none;">
-              <h4>📋 Resumen del Pedido</h4>
-              <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
-                <thead>
-                  <tr>
-                    <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Quantity</th>
-                    <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Product</th>
-                    <th style="text-align: right; padding: 5px; border-bottom: 1px solid #ddd;">Cost</th>
-                    <th style="width: 30px;"></th>
-                  </tr>
-                </thead>
-                <tbody id="listaResumen">
-                  <!-- Se llenará dinámicamente -->
-                </tbody>
-              </table>
-              
-              <div style="text-align: right;">
-                <button type="button" class="btn btn-secondary" id="agregarFilaBtn" style="margin-bottom: 10px;">
-                  <i class="fas fa-plus"></i> Agregar Fila Manual
-                </button>
-              </div>
-              
-              <div class="resumen-linea">
-                <span class="resumen-label">Subtotal:</span>
-                <span class="resumen-valor">$<span id="subtotalResumen">0.00</span></span>
-              </div>
-              
-              <div class="resumen-linea" id="taxContainer">
-                <span class="resumen-label">
-                  Tax:
-                  <input type="number" id="taxPercentage" value="8" min="0" max="100" step="1" 
-                         class="resumen-input">%
-                </span>
-                <span class="resumen-valor">$<span id="taxResumen">0.00</span></span>
-              </div>
-              
-              <div class="form-check" style="margin-top: 1rem;">
-  <input class="form-check-input" type="checkbox" id="taxExempt">
-  <label class="form-check-label" for="taxExempt" style="color: var(--danger); font-weight: bold;">
-    Tax Exempt
-  </label>
-</div>
-
-              <div class="resumen-linea" id="gratuityContainer">
-                <span class="resumen-label">
-                  Gratuity:
-                  <input type="number" id="gratuityPercentage" value="20" min="0" max="100" step="1" 
-                         class="resumen-input">%
-                </span>
-                <span class="resumen-valor">$<span id="gratuityResumen">0.00</span></span>
-              </div>
-              
-              <div class="resumen-linea" id="deliveryContainer" style="display: none;">
-                <span class="resumen-label">
-                  Delivery Fee:
-                  <input type="number" id="deliveryFee" value="0" min="0" step="1" 
-                         class="resumen-input">
-                </span>
-                <span class="resumen-valor">$<span id="deliveryResumen">0.00</span></span>
-              </div>
-              
-              <div class="resumen-total">
-                <span class="resumen-label">Total a pagar:</span>
-                <span class="resumen-valor">$<span id="totalResumen">0.00</span></span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Sección de pagos -->
-          <div class="form-group" style="grid-column: 1 / -1; margin-top: 1.5rem;">
-            <h3>💳 Pagos</h3>
-            <div id="pagosContainer">
-                  <!-- No habrá pago inicial, se agregará al hacer clic en el botón -->
-            </div>
-            <button type="button" class="btn btn-secondary" id="agregarPagoBtn" style="margin-top: 1rem;">
-              <i class="fas fa-plus"></i> Agregar Pago
-           </button>
-          </div>
-          
-          <!-- Notas -->
-          <div class="form-group" style="grid-column: 1 / -1; position: relative;">
-            <label for="notasArea">📝 Notas Adicionales</label>
-            <div id="notasArea"
-                class="form-control"
-                contenteditable="true"
-                style="min-height: 200px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace;">
-              <!-- Aquí se insertará dinámicamente el encabezado y el contenido -->
-            </div>
-            <div id="editadoIcono"
-                style="position: absolute; top: 5px; right: 10px; font-size: 0.9rem; color: #7f8c8d; display: none;">
-              ✏️ Editado
-            </div>
-          </div>
-          
-          <div class="notas-box">
-            <h4>👨‍🍳 Notas para Cocina</h4>
-            <textarea id="notasCocina" class="form-control" placeholder="Instrucciones especiales para la cocina..."></textarea>
-          </div>
-          
-          <!-- Botones de acción -->
-          <div class="form-actions">
-            <button type="button" class="btn btn-primary" id="guardarBtn">
-              <i class="fas fa-save"></i> Guardar Cotización
-            </button>
-            
-            <button type="button" class="btn btn-info" id="generarPDFCliente">
-              <i class="fas fa-file-pdf"></i> PDF Cliente
-            </button>
-            
-            <button type="button" class="btn btn-warning" id="generarPDFCocina">
-              <i class="fas fa-file-pdf"></i> PDF Cocina
-            </button>
-          </div>
-        </form>
+  </div>
+  
+        <div class="cotizaciones-list" id="cotizacionesCancelado">
+          <!-- Se llenará dinámicamente -->
+        </div>
       </div>
     </div>
   </div>
@@ -1131,1367 +1016,217 @@ a.tab {
     </div>
   </div>
   
+  <!-- Modal para editar cotización -->
+  <div class="modal" id="modalEditar">
+    <div class="modal-content" style="max-width: 900px;">
+      <span class="close-modal">&times;</span>
+      <h2 class="card-title">
+        <i class="fas fa-edit"></i> Editar Cotización
+      </h2>
+      
+      <form id="formEditar">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editStatus">📊 Estado</label>
+            <select id="editStatus" class="form-control" required>
+              <option value="en_proceso">En Proceso</option>
+              <option value="pagada">Pagada</option>
+              <option value="impaga">Impaga</option>
+                <option value="cancelada">Cancelada</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="editInvoiceNumber">📅 Número de Invoice</label>
+            <input type="text" id="editInvoiceNumber" class="form-control" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label for="editFecha">📅 Fecha del Evento</label>
+            <input type="date" id="editFecha" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editDia">📅 Día</label>
+            <input type="text" id="editDia" class="form-control" readonly>
+          </div>
+          
+          <div class="form-group">
+            <label for="editCliente">👤 Nombre del Cliente</label>
+            <input type="text" id="editCliente" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editNumero">📱 Número de Contacto</label>
+            <input type="tel" id="editNumero" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editServicio">🍽️ Tipo de Servicio</label>
+            <input type="text" id="editServicio" class="form-control" list="editServicios" required>
+            <datalist id="editServicios">
+              <option value="Catering">
+              <option value="The Golden Handmade Tortilla">
+              <option value="Full Catering with Chef Cristina Martinez">
+              <option value="Pick Up">
+              <option value="Delivery Catering">
+              <option value="Redes Sociales">
+              <option value="Donación">
+            </datalist>
+          </div>
+          
+          <div class="form-group">
+            <label for="editUbicacion">📍 Ubicación del Evento</label>
+            <input type="text" id="editUbicacion" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editContacto">👤 Contacto en el Lugar</label>
+            <input type="text" id="editContacto" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="editHoraEvento">⏰ Hora del Evento</label>
+            <input type="time" id="editHoraEvento" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="editHoraServir">⏰ Hora de Servir Alimentos</label>
+            <input type="time" id="editHoraServir" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="editHoraSalida">⏰ Hora de Salida de Casa México</label>
+            <input type="time" id="editHoraSalida" class="form-control">
+          </div>
+        </div>
+        
+        <!-- Sección de platos -->
+        <div class="platos-container">
+          <h3>🍽️ Menú</h3>
+          
+          <div class="platos-categorias" id="editCategoriasMenu">
+            <button type="button" class="categoria-btn active" data-categoria="Appetizers">Appetizers</button>
+            <button type="button" class="categoria-btn" data-categoria="Tacos">Tacos Chef Cristina M.</button>
+            <button type="button" class="categoria-btn" data-categoria="Specialty">Specialty</button>
+            <button type="button" class="categoria-btn" data-categoria="Desserts">Dessert & Aguas</button>
+          </div>
+          
+          <div class="platos-list" id="editPlatosList">
+            <!-- Se llenará dinámicamente -->
+          </div>
+          
+          <div class="resumen-platos" id="editResumenPlatos" style="display: none;">
+            <h4>📋 Resumen del Pedido</h4>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+              <thead>
+                <tr>
+                  <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Quantity</th>
+                  <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Product</th>
+                  <th style="text-align: right; padding: 5px; border-bottom: 1px solid #ddd;">Cost</th>
+                  <th style="width: 30px;"></th>
+                </tr>
+              </thead>
+              <tbody id="editListaResumen">
+                <!-- Se llenará dinámicamente -->
+              </tbody>
+            </table>
+            
+            <div style="text-align: right;">
+              <button type="button" class="btn btn-secondary" id="editAgregarFilaBtn" style="margin-bottom: 10px;">
+                <i class="fas fa-plus"></i> Agregar Fila Manual
+              </button>
+            </div>
+            
+            <div class="resumen-linea">
+              <span class="resumen-label">Subtotal:</span>
+              <span class="resumen-valor">$<span id="editSubtotalResumen">0.00</span></span>
+            </div>
+            
+            <div class="resumen-linea" id="editTaxContainer">
+              <span class="resumen-label">
+                Tax:
+                <input type="number" id="editTaxPercentage" value="8" min="0" max="100" step="1" 
+                       class="resumen-input">%
+              </span>
+              <span class="resumen-valor">$<span id="editTaxResumen">0.00</span></span>
+            </div>
+            
+            <div class="resumen-linea" id="editGratuityContainer">
+              <span class="resumen-label">
+                Gratuity:
+                <input type="number" id="editGratuityPercentage" value="20" min="0" max="100" step="1" 
+                       class="resumen-input">%
+              </span>
+              <span class="resumen-valor">$<span id="editGratuityResumen">0.00</span></span>
+            </div>
+            
+            <div class="resumen-linea" id="editDeliveryContainer" style="display: none;">
+              <span class="resumen-label">
+                Delivery Fee:
+                <input type="number" id="editDeliveryFee" value="0" min="0" step="5" 
+                       class="resumen-input">
+              </span>
+              <span class="resumen-valor">$<span id="editDeliveryResumen">0.00</span></span>
+            </div>
+            
+            <div class="resumen-total">
+              <span class="resumen-label">Total a pagar:</span>
+              <span class="resumen-valor">$<span id="editTotalResumen">0.00</span></span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sección de pagos -->
+        <div class="form-group" style="grid-column: 1 / -1; margin-top: 1.5rem;">
+          <h3>💳 Pagos</h3>
+          <div id="editPagosContainer">
+            <!-- Se llenará dinámicamente -->
+          </div>
+          <button type="button" class="btn btn-secondary" id="editAgregarPagoBtn" style="margin-top: 1rem;">
+            <i class="fas fa-plus"></i> Agregar Pago
+          </button>
+        </div>
+        
+        <!-- Notas -->
+        <div class="notas-container">
+          <div class="notas-box">
+            <h4>📝 Notas Adicionales</h4>
+            <div id="editNotas" class="form-control" contenteditable="true" 
+                 style="min-height: 200px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace;">
+            </div>
+          </div>
+          
+          <div class="notas-box">
+            <h4>👨‍🍳 Notas para Cocina</h4>
+            <textarea id="editNotasCocina" class="form-control" placeholder="Instrucciones especiales para la cocina..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="guardarCambios">
+            <i class="fas fa-save"></i> Guardar Cambios
+          </button>
+          
+          <button type="button" class="btn btn-info" id="editGenerarPDFCliente">
+            <i class="fas fa-file-pdf"></i> PDF Cliente
+          </button>
+          
+          <button type="button" class="btn btn-warning" id="editGenerarPDFCocina">
+            <i class="fas fa-file-pdf"></i> PDF Cocina
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
   <!-- Loading overlay -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <p id="loadingText">Procesando...</p>
   </div>
   
-<script>
-  // Variables globales
-  let currentUser = null;
-  let platosSeleccionados = [];
-  let currentCotizacionId = null;
-  let cambiandoCategoria = false;
-  let filasManuales = [];
-  let encabezadoInsertado = false;
-  let contenidoOriginal = '';
-  
-  // DOM Content Loaded
-document.addEventListener('DOMContentLoaded', async () => {
-  // Detectar si hay ID de edición
-  const params = new URLSearchParams(window.location.search);
-  const idCotizacion = params.get('edit');
-// tax
-
-
-  // Inicializar Tax Exempt (nueva cotización)
-  document.getElementById('taxExempt').checked = false;
-  document.getElementById('taxPercentage').value = 8; // Valor por defecto
-  document.getElementById('taxPercentage').disabled = false;
-
-  // Configurar evento para Tax Exempt
-  document.getElementById('taxExempt').addEventListener('change', function() {
-    document.getElementById('taxPercentage').disabled = this.checked;
-    if (this.checked) {
-      document.getElementById('taxPercentage').value = 0;
-    } else {
-      document.getElementById('taxPercentage').value = 8; // Restaurar valor por defecto
-    }
-    actualizarTotalesDesdeTabla();
-  });
-
- 
-
-  // Verificar sesión
-  await verificarSesion();
-
-  // Configurar eventos
-  configurarEventos();
-// Cargar platos desde la base de datos
-  await cargarPlatosDesdeBD();
-
-  if (idCotizacion) {
-    // Cargar cotización existente
-    await cargarCotizacionParaEditar(idCotizacion);
-  } else {
-    // Generar nuevo número de invoice si no estamos editando
-    await cargarUltimoInvoice();
-  }
-   
-
-    // Autocompletar día al seleccionar fecha
-    document.getElementById('fecha').addEventListener('change', function() {
-      if (this.value) {
-        const fecha = new Date(this.value);
-        fecha.setMinutes(fecha.getMinutes() + fecha.getTimezoneOffset());
-        const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        document.getElementById('dia').value = days[fecha.getDay()];
-      }
-    });
-    
-    
-    
-    // Configurar filtrado por categorías
-    document.querySelectorAll('.categoria-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const categoria = this.dataset.categoria;
-        filtrarPlatosPorCategoria(categoria);
-      });
-    });
-    
-    // Mostrar todos los platos inicialmente
-    filtrarPlatosPorCategoria('Appetizers');
-    
-    
-    
-    // Configurar botón para agregar filas manuales
-    document.getElementById('agregarFilaBtn').addEventListener('click', agregarFilaManual);
-    
-    // Configurar notas
-    configurarNotas();
-  });
-  
-  // Función para verificar sesión
-  async function verificarSesion() {
-    try {
-      const response = await fetch('/api/user-info');
-      const data = await response.json();
-      
-      if (!data.user) {
-        window.location.href = '/';
-        return;
-      }
-      
-      currentUser = data.user;
-      document.getElementById('userName').textContent = currentUser.username;
-      document.getElementById('userRole').textContent = currentUser.role;
-      document.getElementById('userAvatar').textContent = 
-        currentUser.username.charAt(0).toUpperCase();
-    } catch (error) {
-      console.error('Error al verificar sesión:', error);
-      window.location.href = '/';
-    }
-  }
-  
-  // Función para cargar el último invoice
-  async function cargarUltimoInvoice() {
-    try {
-      const response = await fetch('/api/cotizaciones/ultimo-invoice');
-      if (!response.ok) throw new Error('Error al obtener invoice');
-      
-      const data = await response.json();
-      const siguienteInvoice = (data.ultimoInvoice || 0) + 1;
-      
-      document.getElementById('invoiceNumber').value = siguienteInvoice;
-      document.getElementById('invoiceNumberDisplay').textContent = siguienteInvoice;
-    } catch (error) {
-      console.error('Error al obtener último invoice:', error);
-      document.getElementById('invoiceNumberDisplay').textContent = '1';
-    }
-  }
-  
-  // Función para configurar notas
-  function configurarNotas() {
-    const notasArea = document.getElementById('notasArea');
-    const editadoIcono = document.getElementById('editadoIcono');
-    
-    function crearEncabezado() {
-      const ahora = new Date();
-      const fechaHora = ahora.toLocaleString();
-      const encabezado = document.createElement('div');
-      encabezado.textContent = `${currentUser.username} - ${fechaHora}`;
-      encabezado.style.fontWeight = 'bold';
-      encabezado.contentEditable = 'false';
-      encabezado.id = 'encabezado';
-      return encabezado;
-    }
-    
-    function crearCuerpoNota(texto = '') {
-      const cuerpoNota = document.createElement('div');
-      cuerpoNota.contentEditable = 'true';
-      cuerpoNota.id = 'cuerpoNota';
-      cuerpoNota.innerText = texto;
-      return cuerpoNota;
-    }
-    
-    function colocarCursorAlFinal(elemento) {
-      const range = document.createRange();
-      const sel = window.getSelection();
-      range.selectNodeContents(elemento);
-      range.collapse(false);
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
-    
-    // Detectar cambios
-    notasArea.addEventListener('input', () => {
-      const cuerpoNota = document.getElementById('cuerpoNota');
-    
-      if (!encabezadoInsertado) {
-        const textoUsuario = notasArea.innerText.trim();
-        if (textoUsuario.length > 0) {
-          notasArea.innerHTML = '';
-          const encabezado = crearEncabezado();
-          const cuerpoNota = crearCuerpoNota(textoUsuario);
-          notasArea.appendChild(encabezado);
-          notasArea.appendChild(cuerpoNota);
-          colocarCursorAlFinal(cuerpoNota);
-          encabezadoInsertado = true;
-          contenidoOriginal = textoUsuario;
-        }
-      } else {
-        if (cuerpoNota && cuerpoNota.innerText.trim() === '') {
-          encabezadoInsertado = false;
-          contenidoOriginal = '';
-          notasArea.innerHTML = '';
-        }
-      }
-    });
-    
-    // Escuchar Enter para agregar nueva nota
-    notasArea.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-    
-        const ahora = new Date();
-        const fecha = ahora.toLocaleDateString('es-ES');
-        const hora = ahora.toLocaleTimeString('es-ES', { hour12: false });
-        const username = currentUser?.username || 'Usuario';
-    
-        const encabezado = document.createElement('div');
-        encabezado.textContent = `${username} - ${fecha}, ${hora}`;
-        encabezado.style.fontWeight = 'bold';
-        encabezado.contentEditable = 'false';
-        encabezado.className = 'encabezado';
-    
-        const cuerpoNota = document.createElement('div');
-        cuerpoNota.contentEditable = 'true';
-        cuerpoNota.className = 'cuerpoNota';
-        cuerpoNota.innerHTML = '&nbsp;';
-    
-        notasArea.appendChild(encabezado);
-        notasArea.appendChild(cuerpoNota);
-    
-        setTimeout(() => {
-          colocarCursorAlFinal(cuerpoNota);
-        }, 0);
-      }
-    });
-  }
-  
-
-  function reconstruirNotasDesdeTexto(textoPlano) {
-    const notasArea = document.getElementById('notasArea');
-    notasArea.innerHTML = '';
-    encabezadoInsertado = false;
-
-    if (!textoPlano || !textoPlano.trim()) return;
-
-    const lineas = textoPlano.split(/\r?\n/);
-
-    // Coincide con "usuario - 13/8/2025, 15:20" (con o sin hora/segundos/AM-PM)
-    const esEncabezado = (s) =>
-      /^.+\s-\s\d{1,2}\/\d{1,2}\/\d{4}(?:,?\s*\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?)?$/.test(s.trim());
-
-    let headerActual = null;
-    let cuerpo = [];
-    let esPrimero = true;
-
-    const volcar = () => {
-      // Crear encabezado
-      const enc = document.createElement('div');
-      enc.textContent = headerActual;
-      enc.style.fontWeight = 'bold';
-      enc.contentEditable = 'false';
-      if (esPrimero) enc.id = 'encabezado'; else enc.className = 'encabezado';
-
-      // Crear cuerpo
-      const body = document.createElement('div');
-      body.contentEditable = 'true';
-      body.innerText = cuerpo.join('\n').trim();
-      if (esPrimero) body.id = 'cuerpoNota'; else body.className = 'cuerpoNota';
-
-      notasArea.appendChild(enc);
-      notasArea.appendChild(body);
-
-      esPrimero = false;
-    };
-
-    for (const l of lineas) {
-      if (esEncabezado(l)) {
-        if (headerActual !== null) volcar();
-        headerActual = l.trim();
-        cuerpo = [];
-      } else {
-        cuerpo.push(l);
-      }
-    }
-    if (headerActual !== null) {
-      volcar();
-      encabezadoInsertado = true; // ya hay encabezado, no crear otro al teclear
-    } else {
-      // No había encabezados guardados: dejar texto tal cual
-      notasArea.innerText = textoPlano;
-      encabezadoInsertado = false;
-    }
-  }
-
-
-
-  // Función para filtrar platos por categoría
-  function filtrarPlatosPorCategoria(categoria) {
-    cambiandoCategoria = true;
-    
-    document.querySelectorAll('.categoria-btn').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.dataset.categoria === categoria) {
-        btn.classList.add('active');
-      }
-    });
-    
-    document.querySelectorAll('.plato-item').forEach(plato => {
-      if (plato.dataset.categoria === categoria) {
-        plato.style.display = 'block';
-      } else {
-        plato.style.display = 'none';
-      }
-    });
-    
-    setTimeout(() => {
-      cambiandoCategoria = false;
-    }, 100);
-  }
-  
-  // Función para agregar fila manualmente
- function agregarFilaManual(plato = {}) {
-  const tbody = document.getElementById('listaResumen');
-  const tr = document.createElement('tr');
-  tr.className = 'fila-manual';
-  
-  tr.innerHTML = `
-    <td style="padding: 5px;"><input type="text" class="form-control" style="width: 60px;" 
-       placeholder="1T" value="${plato.cantidadTexto || '1T'}"></td>
-    <td style="padding: 5px;"><input type="text" class="form-control" 
-       placeholder="Nombre del producto" value="${plato.nombre || ''}"></td>
-    <td style="padding: 5px; text-align: right;">
-      <input type="number" class="form-control" style="width: 100px; text-align: right;" 
-             placeholder="0.00" step="0.01" min="0" value="${plato.precio_total || '0'}">
-    </td>
-    <td style="text-align: center;">
-      <button type="button" class="btn-eliminar-fila">
-        <i class="fas fa-times"></i>
-      </button>
-    </td>
-  `;
-  
-  tbody.appendChild(tr);
-  filasManuales.push(tr);
-  
-  tr.querySelectorAll('input').forEach(input => {
-    input.addEventListener('change', actualizarTotalesDesdeTabla);
-  });
-  
-  tr.querySelector('.btn-eliminar-fila').addEventListener('click', () => {
-    tr.remove();
-    filasManuales = filasManuales.filter(fila => fila !== tr);
-    actualizarTotalesDesdeTabla();
-  });
-  
-  actualizarTotalesDesdeTabla();
-}
-  
-  // Función para actualizar totales desde la tabla
-  function actualizarTotalesDesdeTabla() {
-    let subtotal = 0;
-    
-    platosSeleccionados.forEach(p => subtotal += p.precio_total);
-    
-    filasManuales.forEach(tr => {
-      const precioInput = tr.querySelector('input[type="number"]');
-      const precio = parseFloat(precioInput.value) || 0;
-      subtotal += precio;
-    });
-    
-
-   // Calcular tax (0% si está marcado Tax Exempt)
-  const taxExempt = document.getElementById('taxExempt').checked;
-  const taxPercentage = taxExempt ? 0 : parseFloat(document.getElementById('taxPercentage').value);
-  const tax = subtotal * (taxPercentage / 100);
-
-
-    const gratuityPercentage = parseFloat(document.getElementById('gratuityPercentage').value);
-    const gratuity = subtotal * (gratuityPercentage / 100);
-    
-   const deliveryFee = document.getElementById('chkDeliveryManual').checked ? 
-    (parseFloat(document.getElementById('deliveryFee').value)) || 0 : 0;
-  
-  const total = subtotal + tax + gratuity + deliveryFee;
-  
-  document.getElementById('subtotalResumen').textContent = subtotal.toFixed(2);
-  document.getElementById('taxResumen').textContent = tax.toFixed(2);
-  document.getElementById('gratuityResumen').textContent = gratuity.toFixed(2);
-  document.getElementById('deliveryResumen').textContent = deliveryFee.toFixed(2);
-  document.getElementById('totalResumen').textContent = total.toFixed(2);
-}
-  
-  // Función para actualizar el resumen de platos seleccionados
-function actualizarResumenPlatos() {
-  if (cambiandoCategoria) return;
-
-  const tbody = document.getElementById('listaResumen');
-  const filasAutomaticas = Array.from(tbody.querySelectorAll('tr')).filter(tr =>
-    !tr.classList.contains('fila-manual') && !tr.classList.contains('categoria-row')
-  );
-  filasAutomaticas.forEach(tr => tr.remove());
-
-  platosSeleccionados = [];
-  const platosPorCategoria = {};
-
-  document.querySelectorAll('#platosList input[type="checkbox"]:checked').forEach(checkbox => {
-    const platoItem = checkbox.closest('.plato-item');
-    const nombre = checkbox.getAttribute('data-nombre');
-    const precioBase = parseFloat(checkbox.getAttribute('data-precio'));
-    const precioFull = parseFloat(checkbox.getAttribute('data-precio-full') || precioBase * 2);
-    const precio30 = parseFloat(checkbox.getAttribute('data-precio-30') || precioBase * 2);
-    const cantidadInput = platoItem.querySelector('.cantidad-plato');
-    const tipoSelect = platoItem.querySelector('select');
-    const categoria = platoItem.getAttribute('data-categoria');
-    
-    let cantidad = parseInt(cantidadInput?.value) || 1;
-    let cantidadTexto = `${cantidad}`;
-    let precioPorPersona = precioBase;
-
-    if (tipoSelect) {
-      const tipo = tipoSelect.value;
-
-      if (categoria === 'Appetizers') {
-        if (tipo === 'full') {
-          precioPorPersona = precioFull;
-          cantidadTexto = `${cantidad}T`;
-        } else {
-          precioPorPersona = precioBase;
-          cantidadTexto = `${cantidad}/2 T`;
-        }
-      } else if (categoria === 'Tacos') {
-        if (tipo === '30') {
-          precioPorPersona = precio30;
-          cantidadTexto = `${cantidad}T`;
-        } else {
-          precioPorPersona = precioBase;
-          cantidadTexto = `${cantidad}/2 T`;
-        }
-      } else if (categoria === 'Specialty') {
-        if (tipo === '20') {
-          precioPorPersona = precio30;
-          cantidadTexto = `20 pcs`;
-        } else {
-          precioPorPersona = precioBase;
-          cantidadTexto = `10 pcs`;
-        }
-        
-      }
-   } else if (categoria === 'Chef Cristina Experience') {
-  const precioInput = platoItem.querySelector('.precio-personalizado');
-  const cantidadInput = platoItem.querySelector('.cantidad-plato');
-
-  const precioManual = parseFloat(precioInput?.value) || 0;
-  const cantidadManual = parseInt(cantidadInput?.value) || 1;
-
-  precioPorPersona = precioManual;
-  cantidad = cantidadManual;
-  cantidadTexto = `${cantidad}T`;
-} else if (categoria === 'Desserts') {
-  
-  cantidadTexto = `${cantidad} T`;
-}
-
-
-
-
-
-    const precioTotal = parseFloat((precioPorPersona * cantidad).toFixed(2));
-
-    if (!isNaN(precioTotal) && nombre && categoria) {
-      platosSeleccionados.push({
-        nombre,
-        precio_por_persona: precioPorPersona,
-        cantidad,
-        cantidadTexto,
-        precio_total: precioTotal,
-        categoria,
-        modificado: false
-      });
-
-      if (!platosPorCategoria[categoria]) {
-        platosPorCategoria[categoria] = [];
-      }
-
-      platosPorCategoria[categoria].push({
-        nombre,
-        cantidadTexto,
-        precioTotal
-      });
-    }
-  });
-
-  for (const categoria in platosPorCategoria) {
-    let categoriaRow = Array.from(tbody.querySelectorAll('.categoria-row')).find(row =>
-      row.textContent.includes(categoria)
-    );
-
-    if (!categoriaRow) {
-      categoriaRow = document.createElement('tr');
-      categoriaRow.className = 'categoria-row';
-      categoriaRow.innerHTML = `<td colspan="4" style="padding: 5px; font-weight: bold; background-color: #f1f1f1;">${categoria}</td>`;
-
-      const primeraManual = tbody.querySelector('.fila-manual');
-      if (primeraManual) {
-        tbody.insertBefore(categoriaRow, primeraManual);
-      } else {
-        tbody.appendChild(categoriaRow);
-      }
-    }
-
-    platosPorCategoria[categoria].forEach(plato => {
-      const tr = document.createElement('tr');
-      tr.className = 'fila-automatica';
-      tr.innerHTML = `
-        <td style="padding: 5px;"><input type="text" class="form-control" style="width: 60px;" value="${plato.cantidadTexto}"></td>
-        <td style="padding: 5px;"><input type="text" class="form-control" value="${plato.nombre}"></td>
-        <td style="padding: 5px; text-align: right;"><input type="number" class="form-control" style="width: 100px; text-align: right;" value="${plato.precioTotal.toFixed(2)}" step="0.01" min="0"></td>
-        <td style="text-align: center;"><button type="button" class="btn-eliminar-fila"><i class="fas fa-times"></i></button></td>
-      `;
-
-      tbody.insertBefore(tr, categoriaRow.nextSibling);
-
-      tr.querySelectorAll('input').forEach(input => {
-        input.addEventListener('change', function () {
-          const index = platosSeleccionados.findIndex(p => p.nombre === plato.nombre);
-          if (index !== -1) {
-            if (this.type === 'number') {
-              platosSeleccionados[index].precio_total = parseFloat(this.value) || 0;
-              platosSeleccionados[index].modificado = true;
-            } else if (this.type === 'text') {
-              if (this.value.includes('T')) {
-                platosSeleccionados[index].cantidadTexto = this.value;
-              } else {
-                platosSeleccionados[index].nombre = this.value;
-              }
-            }
-          }
-          actualizarTotalesDesdeTabla();
-        });
-      });
-
-      tr.querySelector('.btn-eliminar-fila').addEventListener('click', () => {
-        const checkbox = document.querySelector(`input[data-nombre="${plato.nombre}"]`);
-        if (checkbox) checkbox.checked = false;
-
-        platosSeleccionados = platosSeleccionados.filter(p => p.nombre !== plato.nombre);
-        tr.remove();
-        actualizarTotalesDesdeTabla();
-      });
-    });
-  }
-
-  actualizarTotalesDesdeTabla();
-  document.getElementById('resumenPlatos').style.display = (platosSeleccionados.length > 0 || filasManuales.length > 0) ? 'block' : 'none';
-}
-  
-  // Función para agregar inputs de pago
-  function agregarPagoInput(pago = {}) {
-  const container = document.getElementById('pagosContainer');
-  const div = document.createElement('div');
-  div.className = 'pago-item';
-  
-  // Formatear la fecha correctamente
-  let fechaFormateada = '';
-  if (pago.fecha) {
-    // Si la fecha viene con tiempo (formato ISO)
-    if (typeof pago.fecha === 'string' && pago.fecha.includes('T')) {
-      fechaFormateada = pago.fecha.split('T')[0];
-    } 
-    // Si es un objeto Date
-    else if (pago.fecha instanceof Date) {
-      fechaFormateada = pago.fecha.toISOString().split('T')[0];
-    }
-    // Si ya está en formato yyyy-MM-dd
-    else if (typeof pago.fecha === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(pago.fecha)) {
-      fechaFormateada = pago.fecha;
-    }
-    // Si es una fecha válida pero en otro formato
-    else if (!isNaN(new Date(pago.fecha).getTime())) {
-      const dateObj = new Date(pago.fecha);
-      fechaFormateada = dateObj.toISOString().split('T')[0];
-    }
-  } else {
-    // Fecha por defecto (hoy)
-    fechaFormateada = new Date().toISOString().split('T')[0];
-  }
-
-  // Asegurar que el monto sea un número válido
-  const monto = typeof pago.monto === 'number' ? pago.monto.toFixed(2) : 
-               (pago.monto ? parseFloat(pago.monto).toFixed(2) : '0.00');
-
-  div.innerHTML = `
-    <div class="pago-fila">
-      <input type="date" class="pago-fecha form-control" value="${fechaFormateada}" required>
-      <input type="number" class="pago-monto form-control" placeholder="Monto" 
-             value="${monto}" step="0.01" min="0" required>
-      <select class="pago-metodo form-control" required>
-        <option value="square" ${pago.metodo === 'square' ? 'selected' : ''}>Square</option>
-        <option value="venmo" ${pago.metodo === 'venmo' ? 'selected' : ''}>Venmo</option>
-        <option value="toast" ${pago.metodo === 'toast' ? 'selected' : ''}>Toast</option>
-        <option value="cash" ${pago.metodo === 'cash' ? 'selected' : ''}>Cash</option>
-        <option value="PO" ${pago.metodo === 'PO' ? 'selected' : ''}>PO</option>
-        <option value="Zelle" ${pago.metodo === 'Zelle' ? 'selected' : ''}>Zelle</option>
-        <option value="otro" ${pago.metodo === 'otro' ? 'selected' : ''}>Otro</option>
-      </select>
-      <input type="text" class="pago-notas form-control" placeholder="Notas" 
-             value="${pago.notas || ''}">
-      <button type="button" class="btn btn-danger btn-eliminar-pago">
-        <i class="fas fa-trash"></i>
-      </button>
-    </div>
-  `;
-    container.appendChild(div);
-    
-    div.querySelector('.btn-eliminar-pago').addEventListener('click', () => {
-      div.remove();
-    });
-    
-    div.querySelector('.pago-monto').addEventListener('change', actualizarTotalesDesdeTabla);
-  }
-
-  // Función para cargar cotización para editar
-async function cargarCotizacionParaEditar(id) {
-  try {
-    const response = await fetch(`/api/cotizaciones/${id}`);
-    const { cotizacion } = await response.json();
-    if (!cotizacion) return;
-    
-    // Configurar tax exempt
-    const taxExempt = cotizacion.taxExempt || false;
-    document.getElementById('taxExempt').checked = taxExempt;
-    document.getElementById('taxPercentage').disabled = taxExempt;
-    if (taxExempt) {
-      document.getElementById('taxPercentage').value = 0;
-    } else {
-      document.getElementById('taxPercentage').value = cotizacion.taxPercentage || 8;
-    }
-    console.log('Estado recibido:', cotizacion.status);
-    document.getElementById('invoiceNumber').value = cotizacion.invoiceNumber;
-    document.getElementById('invoiceNumberDisplay').textContent = cotizacion.invoiceNumber;
-
-    const estado = cotizacion.status || '';
-document.getElementById('estadoHidden').value = estado;
-
-// Limpiar botones y estilos
-const botonesEstado = document.querySelectorAll('.estado-btn');
-botonesEstado.forEach(btn => {
-  const tipo = btn.getAttribute('data-estado');
-  btn.className = 'btn estado-btn btn-outline-' + tipo; // restaurar estilo
-  btn.disabled = false;
-});
-
-// Marcar el botón activo
-const activo = document.querySelector(`.estado-btn[data-estado="${estado}"]`);
-if (activo) {
-  activo.className = 'btn estado-btn btn-primary';
-}
-
-inicializarBotonesEstado();
-
-    document.getElementById('fecha').value = cotizacion.fecha?.split('T')[0] || '';
-    document.getElementById('dia').value = cotizacion.dia || '';
-    document.getElementById('cliente').value = cotizacion.cliente || '';
-    document.getElementById('numero').value = cotizacion.numero || '';
-    document.getElementById('hora_evento').value = cotizacion.hora_evento || '';
-    document.getElementById('hora_servir').value = cotizacion.hora_servir || '';
-    document.getElementById('hora_salida').value = cotizacion.hora_salida || '';
-    document.getElementById('servicio').value = cotizacion.servicio || '';
-    document.getElementById('ubicacion').value = cotizacion.ubicacion || '';
-    document.getElementById('contacto').value = cotizacion.contacto || '';
-
-    // Establecer los valores guardados de TAX y Gratuity
-document.getElementById('taxPercentage').value = cotizacion.taxPercentage || 0;
-
-
-    
-    document.getElementById('gratuityPercentage').value = cotizacion.gratuityPercentage || 0; // Permitir 0
-    document.getElementById('taxExempt').checked = cotizacion.taxExempt || false;
-
-    // Actualizar la visibilidad del tax percentage
-document.getElementById('taxExempt').addEventListener('change', function() {
-  document.getElementById('taxPercentage').disabled = this.checked;
-  if (this.checked) {
-    document.getElementById('taxPercentage').value = 0;
-  }
-  actualizarTotalesDesdeTabla();
-});
-
-    document.getElementById('deliveryFee').value = cotizacion.deliveryFee || 0;
-    document.getElementById('notasCocina').value = cotizacion.notasCocina || '';
-
-    if (cotizacion.deliveryFee > 0) {
-      document.getElementById('chkDeliveryManual').checked = true;
-      document.getElementById('deliveryContainer').style.display = 'flex';
-      document.getElementById('deliveryFee').value = cotizacion.deliveryFee;
-    }
-
-    document.getElementById('chkDeliveryManual').addEventListener('change', function () {
-      document.getElementById('deliveryContainer').style.display = this.checked ? 'flex' : 'none';
-      actualizarResumenPlatos();
-    });
-
-    // Cargar notas
-    const notasArea = document.getElementById('notasArea');
-    if (notasArea && cotizacion.notas) {
-      reconstruirNotasDesdeTexto(cotizacion.notas);
-
-    }
-
-    // Cargar platos
-    if (Array.isArray(cotizacion.platos)) {
-      cotizacion.platos.forEach(plato => {
-        const checkbox = document.querySelector(`input[type="checkbox"][data-nombre="${plato.nombre}"]`);
-        if (checkbox) {
-          checkbox.checked = true;
-          const platoItem = checkbox.closest('.plato-item');
-          const cantidadInput = platoItem.querySelector('.cantidad-plato');
-          const selectInput = platoItem.querySelector('select');
-          const categoria = platoItem.dataset.categoria;
-          
-          // Cargar precio modificado si existe
-          if (plato.modificado) {
-            const precioInput = platoItem.querySelector('input[type="number"]');
-            if (precioInput) {
-              precioInput.value = plato.precio_total.toFixed(2);
-            }
-          }
-          
-          // Establecer cantidad para categorías especiales
-          cantidadInput.value = plato.cantidad || 1;
-          
-          // Establecer valor en el selectInput
-          if (selectInput) {
-            switch (categoria) {
-              case 'Appetizers':
-                if (plato.cantidadTexto?.includes('Full') ||
-                    (plato.precio_por_persona && plato.precio_por_persona > parseFloat(checkbox.dataset.precio))) {
-                  selectInput.value = 'full';
-                } else {
-                  selectInput.value = 'half';
-                }
-                break;
-
-              case 'Tacos':
-                if (categoria === 'Tacos') {
-  selectInput.value = plato.cantidadTexto?.includes('T') ? '30' : '15';
-}
-
-                break;
-
-              case 'Specialty':
-                if (categoria === 'Specialty') {
-  selectInput.value = plato.cantidadTexto?.includes('T') ? '20' : '10';
-}
-                break;
-
-              default:
-                selectInput.value = 'half';
-            }
-          }
-          // Manejar Chef Cristina Experience
-          if (categoria === 'Chef Cristina Experience') {
-            const inputPrecio = platoItem.querySelector('.precio-personalizado');
-            if (inputPrecio) {
-              inputPrecio.value = plato.precio_por_persona?.toFixed(2) || '0.00';
-            }
-            
-            platosSeleccionados.push({
-              nombre: plato.nombre,
-              precio_por_persona: plato.precio_por_persona || 0,
-              cantidad: plato.cantidad || 1,
-              cantidadTexto: plato.cantidadTexto || '1',
-              precio_total: plato.precio_total || 0,
-              categoria: plato.categoria,
-              descripcion: plato.descripcion || '',
-              modificado: true
-            });
-          }
-        } else {
-          // Fila manual si no es del menú
-          agregarFilaManual({
-            nombre: plato.nombre,
-            cantidadTexto: plato.cantidadTexto || `${plato.cantidad || 1}`,
-            precio_total: plato.precio_total
-          });
-          
-        }
-      });
-      
-      actualizarResumenPlatos();
-    }
-
-    // Cargar pagos
-    if (Array.isArray(cotizacion.pagos)) {
-      cotizacion.pagos.forEach(pago => agregarPagoInput(pago));
-    }
-
-    const titulo = document.querySelector('.card-title');
-    if (titulo) titulo.innerHTML += ` <span style="color: orange;">(Edición)</span>`;
-
-  } catch (err) {
-    console.error('Error al cargar cotización para editar:', err);
-    alert('No se pudo cargar la cotización');
-  }
-}
-
-
-  // Función para configurar los eventos
-  function configurarEventos() {
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-      try {
-        await fetch('/logout', { method: 'GET' });
-        window.location.href = '/';
-      } catch (error) {
-        console.error('Error al cerrar sesión:', error);
-      }
-    });
-    
-    document.getElementById('agregarPagoBtn').addEventListener('click', () => {
-      agregarPagoInput();
-    });
-    
-    document.getElementById('guardarBtn').addEventListener('click', guardarCotizacion);
-    
-    document.getElementById('verCalendarioBtn').addEventListener('click', () => {
-      window.location.href = '/calendario';
-    });
-    
-    document.getElementById('taxPercentage').addEventListener('change', actualizarTotalesDesdeTabla);
-    document.getElementById('gratuityPercentage').addEventListener('change', actualizarTotalesDesdeTabla);
-    document.getElementById('deliveryFee').addEventListener('change', actualizarTotalesDesdeTabla);
-    
-    document.querySelectorAll('#platosList input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', function() {
-        actualizarResumenPlatos();
-      });
-    });
-    
-    document.querySelectorAll('#platosList .cantidad-plato').forEach(input => {
-      input.addEventListener('change', actualizarResumenPlatos);
-    });
-    
-    document.querySelectorAll('#platosList select').forEach(select => {
-      select.addEventListener('change', actualizarResumenPlatos);
-    });
-    
-    document.getElementById('cotizacionForm').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA' && e.target.type !== 'submit') {
-        e.preventDefault();
-      }
-    });
-    
-    document.getElementById('cotizacionForm').addEventListener('submit', function(e) {
-      if (cambiandoCategoria) {
-        e.preventDefault();
-        return false;
-      }
-    });
-    
-    // Eventos para botones de PDF
-    document.getElementById('generarPDFCliente').addEventListener('click', async () => {
-      await generarPDF('cliente');
-    });
-    
-    document.getElementById('generarPDFCocina').addEventListener('click', async () => {
-      await generarPDF('cocina');
-    });
-
-
-   
-
-    // Evento para manejar los botones de estado
-document.querySelectorAll('.estado-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const estado = btn.getAttribute('data-estado');
-    document.getElementById('estadoHidden').value = estado;
-
-    // Quitar clases activas de todos
-    document.querySelectorAll('.estado-btn').forEach(b => {
-      b.classList.remove('btn-primary', 'btn-outline-secondary', 'btn-outline-success', 'btn-outline-danger');
-      b.classList.add('btn-outline-' + b.getAttribute('data-estado')); // restaurar estilo original
-    });
-
-    // Activar solo el botón clicado
-    btn.classList.remove('btn-outline-' + estado);
-    btn.classList.add('btn-primary');
-  });
-});
-
-
-inicializarBotonesEstado();
-
-  }
-  
-
-
-  // Función para generar PDFs
-async function generarPDF(tipo) {
-  // 1. Validar campos obligatorios igual que al guardar
-  const cliente = document.getElementById('cliente').value;
-  const fecha = document.getElementById('fecha').value;
-  
-  if (!cliente || !fecha) {
-    alert('Por favor ingrese al menos el nombre del cliente y la fecha');
-    return;
-  }
-
-  // 2. Preparar los datos EXACTAMENTE como en guardarCotizacion()
-  const datos = {
-    invoiceNumber: document.getElementById('invoiceNumber').value,
-    fecha: document.getElementById('fecha').value,
-    dia: document.getElementById('dia').value,
-    cliente: document.getElementById('cliente').value,
-    numero: document.getElementById('numero').value,
-    hora_evento: document.getElementById('hora_evento').value,
-    hora_servir: document.getElementById('hora_servir').value,
-    hora_salida: document.getElementById('hora_salida').value,
-    servicio: document.getElementById('servicio').value,
-    ubicacion: document.getElementById('ubicacion').value,
-    contacto: document.getElementById('contacto').value,
-    status: document.getElementById('estadoHidden').value,
-    taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
-    gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) ,
-    deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
-      (parseFloat(document.getElementById('deliveryFee').value)) || 0 : 0,
-    notas: document.getElementById('notasArea').innerText,
-    notasCocina: document.getElementById('notasCocina').value,
-    platos: [],
-    pagos: []
-  };
-
-  // 3. Procesar platos igual que en guardarCotizacion()
-  const platosItems = document.querySelectorAll('.plato-item');
-  
-  // Platos seleccionados del menú
-  platosSeleccionados.forEach(p => {
-    const platoItem = Array.from(platosItems).find(item => 
-      item.querySelector(`input[data-nombre="${p.nombre}"]`)
-    );
-    const descripcion = platoItem?.querySelector('.plato-descripcion')?.textContent.trim() || '';
-    
-    datos.platos.push({
-      nombre: p.nombre,
-      precio_por_persona: p.precio_por_persona,
-      cantidad: p.cantidad,
-      cantidadTexto: p.cantidadTexto,
-      precio_total: p.precio_total,
-      categoria: p.categoria,
-      descripcion: descripcion,
-      modificado: p.modificado || false
-    });
-  });
-
-  // Filas manuales (igual que en guardar)
-  filasManuales.forEach((tr, index) => {
-    const inputs = tr.querySelectorAll('input');
-    datos.platos.push({
-      nombre: inputs[1]?.value || `Producto ${index + 1}`,
-      precio_por_persona: parseFloat(inputs[2]?.value) || 0,
-      cantidad: 1,
-      cantidadTexto: inputs[0]?.value || '1',
-      precio_total: parseFloat(inputs[2]?.value) || 0,
-      categoria: 'OTROS',
-      descripcion: 'Agregado manualmente',
-      modificado: true,
-      esManual: true
-    });
-  });
-
-  // Pagos (igual que en guardar)
-  document.querySelectorAll('.pago-item').forEach(item => {
-    datos.pagos.push({
-      fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],
-      monto: parseFloat(item.querySelector('.pago-monto')?.value) || 0,
-      metodo: item.querySelector('.pago-metodo')?.value || 'cash',
-      notas: item.querySelector('.pago-notas')?.value || ''
-    });
-  });
-
-  // 4. Calcular totales igual que en guardarCotizacion()
-  datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
-  datos.tax = datos.subtotal * (datos.taxPercentage / 100);
-  datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
-  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee;
-
-  // 5. Mostrar loading y enviar al servidor
-  mostrarLoading(`Generando PDF para ${tipo === 'cliente' ? 'cliente' : 'cocina'}...`);
-  
-  try {
-    const response = await fetch('/api/generar-pdf', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tipo, datos })
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Error al generar PDF');
-    }
-    
-    const data = await response.json();
-    window.open(data.pdfUrl, '_blank');
-    
-  } catch (error) {
-    console.error('Error al generar PDF:', error);
-    alert(`Error: ${error.message}`);
-  } finally {
-    ocultarLoading();
-  }
-}
-  
-  // Función para guardar cotización
-async function guardarCotizacion() {
-  const formulario = document.getElementById('cotizacionForm');
-  if (!formulario.checkValidity()) {
-    formulario.reportValidity();
-    return;
-  }
-  
-  if (platosSeleccionados.length === 0 && filasManuales.length === 0) {
-    alert('Por favor seleccione al menos un plato o agregue productos manualmente');
-    return;
-  }
-  
-  const datos = {
-    invoiceNumber: document.getElementById('invoiceNumber').value,
-    fecha: document.getElementById('fecha').value,
-    dia: document.getElementById('dia').value,
-    cliente: document.getElementById('cliente').value,
-    numero: document.getElementById('numero').value,
-    hora_evento: document.getElementById('hora_evento').value,
-    hora_servir: document.getElementById('hora_servir').value,
-    hora_salida: document.getElementById('hora_salida').value,
-    servicio: document.getElementById('servicio').value,
-    ubicacion: document.getElementById('ubicacion').value,
-    contacto: document.getElementById('contacto').value,
-    status: document.getElementById('estadoHidden').value,
-
-     platos: platosSeleccionados.map(p => {
-      const platoItem = document.querySelector(`.plato-item[data-categoria="${p.categoria}"] input[data-nombre="${p.nombre}"]`)?.closest('.plato-item');
-      const descripcion = platoItem?.querySelector('.plato-descripcion')?.textContent.trim() || '';
-      
-      return {
-        nombre: p.nombre,
-        precio_por_persona: p.precio_por_persona,
-        cantidad: p.cantidad,
-        cantidadTexto: p.cantidadTexto,
-        precio_total: p.precio_total,
-        categoria: p.categoria,
-        descripcion: descripcion,  // Asegúrate de incluir esto
-        modificado: p.modificado || false
-      };
-    }),
-
-    taxExempt: document.getElementById('taxExempt').checked,
-    taxPercentage: document.getElementById('taxExempt').checked ? 0 : (parseFloat(document.getElementById('taxPercentage').value) || 8),
-
-     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) , // Cambiado para permitir 0
-
-    taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
-   
-    deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
-             (parseFloat(document.getElementById('deliveryFee').value) || 0) : 0,
-    notas: document.getElementById('notasArea').innerText,
-    notasCocina: document.getElementById('notasCocina').value
-  };
-  
-  if (filasManuales.length > 0) {
-    datos.platos = datos.platos.concat(filasManuales.map((tr, index) => {
-      const inputs = tr.querySelectorAll('input');
-      const cantidadTexto = inputs[0]?.value || '-';
-      return {
-        nombre: inputs[1]?.value || `Producto ${index + 1}`,
-        precio_por_persona: parseFloat(inputs[2]?.value) || 0,
-        cantidad: 1,
-        cantidadTexto,
-        precio_total: parseFloat(inputs[2]?.value) || 0,
-        modificado: true // Las filas manuales siempre se consideran modificadas
-      };
-    }));
-  }
-  
-  datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
-  datos.tax = datos.subtotal * (datos.taxPercentage / 100);
-  datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
-  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee;
-  
-  datos.pagos = Array.from(document.querySelectorAll('.pago-item')).map(item => ({
-    fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],
-    monto: parseFloat(item.querySelector('.pago-monto')?.value) || 0,
-    metodo: item.querySelector('.pago-metodo')?.value || 'cash',
-    notas: item.querySelector('.pago-notas')?.value || ''
-  }));
-  
-  mostrarLoading('Guardando cotización...');
-  
-  try {
-    const response = await fetch('/api/cotizaciones', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(datos)
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Error al guardar cotización');
-    }
-    
-    const data = await response.json();
-    alert('Cotización guardada exitosamente');
-    
-    if (data.pdfCliente && data.pdfCocina) {
-      window.open(data.pdfCliente, '_blank');
-      window.open(data.pdfCocina, '_blank');
-    }
-    
-    if (data.cotizacion && data.cotizacion.invoiceNumber) {
-      document.getElementById('invoiceNumber').value = data.cotizacion.invoiceNumber;
-      document.getElementById('invoiceNumberDisplay').textContent = data.cotizacion.invoiceNumber;
-    }
-    
-  } catch (error) {
-    console.error('Error al guardar cotización:', error);
-    alert(`Error: ${error.message}`);
-  } finally {
-    ocultarLoading();
-  }
-}
-  
-  // Funciones para mostrar/ocultar loading
-  function mostrarLoading(mensaje) {
-    document.getElementById('loadingOverlay').style.display = 'flex';
-    document.getElementById('loadingText').textContent = mensaje;
-  }
-  
-  function ocultarLoading() {
-    document.getElementById('loadingOverlay').style.display = 'none';
-  }
-// Función para cargar los platos desde la base de datos
-async function cargarPlatosDesdeBD() {
-  try {
-    const response = await fetch('/api/platos');
-    const data = await response.json();
-    
-    if (!data.platos || data.platos.length === 0) {
-      console.warn('No se encontraron platos en la base de datos');
-      return;
-    }
-    
-    const platosList = document.getElementById('platosList');
-    platosList.innerHTML = '';
-    
-    const categorias = ['Appetizers', 'Tacos', 'Specialty', 'Desserts', 'Chef Cristina Experience'];
-    
-    categorias.forEach(categoria => {
-      const platosCategoria = data.platos.filter(p => p.categoria === categoria);
-      
-      if (platosCategoria.length > 0) {
-        platosCategoria.forEach(plato => {
-          const platoItem = document.createElement('div');
-          platoItem.className = 'plato-item';
-          platoItem.dataset.categoria = plato.categoria;
-          
-          if (categoria === 'Appetizers') {
-            platoItem.innerHTML = `
-              <div class="plato-header">
-                <input type="checkbox" id="plato-${plato._id}" 
-                       data-nombre="${plato.nombre}" 
-                       data-precio="${plato.precio_15}"
-                       data-precio-full="${plato.precio_30}">
-                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
-              </div>
-              <div class="plato-precio">$${plato.precio_15.toFixed(2)} (Half Tray) / $${plato.precio_30.toFixed(2)} (Full Tray)</div>
-              <div class="plato-cantidad">
-                <label>Cantidad:</label>
-                <input type="number" min="1" value="1" class="cantidad-plato">
-                <select class="form-control" style="width: 100px;">
-                  <option value="half">Half Tray</option>
-                  <option value="full">Full Tray</option>
-                </select>
-              </div>
-              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
-                ${plato.descripcion}
-              </div>` : ''}
-            `;
-          } else if (categoria === 'Tacos') {
-            platoItem.innerHTML = `
-              <div class="plato-header">
-                <input type="checkbox" id="plato-${plato._id}" 
-                       data-nombre="${plato.nombre}" 
-                       data-precio="${plato.precio_15}"
-                       data-precio-30="${plato.precio_30}">
-                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
-              </div>
-              <div class="plato-precio">$${plato.precio_15.toFixed(2)} (15 pers.) / $${plato.precio_30.toFixed(2)} (30 pers.)</div>
-              <div class="plato-cantidad">
-                <label>Cantidad:</label>
-                <input type="number" min="1" value="1" class="cantidad-plato">
-                <select class="form-control" style="width: 100px;">
-                  <option value="15">15 personas</option>
-                  <option value="30">30 personas</option>
-                </select>
-              </div>
-              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
-                ${plato.descripcion}
-              </div>` : ''}
-            `;
-          } else if (categoria === 'Specialty') {
-            platoItem.innerHTML = `
-              <div class="plato-header">
-                <input type="checkbox" id="plato-${plato._id}" 
-                       data-nombre="${plato.nombre}" 
-                       data-precio="${plato.precio_15}"
-                       data-precio-30="${plato.precio_30}">
-                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
-              </div>
-              <div class="plato-precio">$${plato.precio_15.toFixed(2)} (10 pcs) / $${plato.precio_30.toFixed(2)} (20 pcs)</div>
-              <div class="plato-cantidad">
-                <label>Cantidad:</label>
-                <input type="number" min="1" value="1" class="cantidad-plato">
-                <select class="form-control" style="width: 100px;">
-                  <option value="10">10 pcs</option>
-                  <option value="20">20 pcs</option>
-                </select>
-              </div>
-              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
-                ${plato.descripcion}
-              </div>` : ''}
-            `;
-          } else if (categoria === 'Desserts') {
-            platoItem.innerHTML = `
-              <div class="plato-header">
-                <input type="checkbox" id="plato-${plato._id}" 
-                       data-nombre="${plato.nombre}" 
-                       data-precio="${plato.precio_full}">
-                <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
-              </div>
-              <div class="plato-precio">$${plato.precio_full.toFixed(2)} (Full)</div>
-              <div class="plato-cantidad">
-                <label>Cantidad:</label>
-                <input type="number" min="1" value="1" class="cantidad-plato">
-              </div>
-              ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
-                ${plato.descripcion}
-              </div>` : ''}
-            `;
-          } else  if (categoria === 'Chef Cristina Experience') {
-      platoItem.innerHTML = `
-        <div class="plato-header">
-          <input type="checkbox" id="plato-${plato._id}" 
-                 data-nombre="${plato.nombre}" 
-                 data-precio="0">
-          <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
-        </div>
-        <div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray); margin-bottom: 0.5rem;">
-          ${plato.descripcion || ''}
-        </div>
-        <div class="plato-cantidad" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;">
-          <label style="margin-right: 4px;">Cantidad:</label>
-          <input type="number" min="1" value="1" class="cantidad-plato form-control" style="max-width: 70px;">
-          <label style="margin-left: 10px;">Precio:</label>
-          <input type="number" min="0" value="${plato.precio_full || 0}" class="precio-personalizado form-control" step="0.01" style="max-width: 100px;">
-        </div>
-      `;
-    }
-if (categoria === 'Chef Cristina Experience') {
-  const precioInput = platoItem.querySelector('.precio-personalizado');
-  const cantidadInput = platoItem.querySelector('.cantidad-plato');
-
-  if (precioInput) {
-    precioInput.addEventListener('input', () => {
-      actualizarResumenPlatos();
-    });
-  }
-
-  if (cantidadInput) {
-    cantidadInput.addEventListener('input', () => {
-      actualizarResumenPlatos();
-    });
-  }
-}
-
-
-          
-          platosList.appendChild(platoItem);
-        });
-      }
-    });
-    
-    // Configurar eventos para los nuevos elementos
-    document.querySelectorAll('#platosList input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', actualizarResumenPlatos);
-    });
-    
-    document.querySelectorAll('#platosList .cantidad-plato').forEach(input => {
-      input.addEventListener('change', actualizarResumenPlatos);
-    });
-    
-    document.querySelectorAll('#platosList select').forEach(select => {
-      select.addEventListener('change', actualizarResumenPlatos);
-    });
-    
-  } catch (error) {
-    console.error('Error al cargar platos:', error);
-  }
-}
-
-//numero de cotizaciones 
-
-  async function actualizarBadgeCotizaciones() {
-    try {
-      const res = await fetch('/api/cotizaciones');
-      const data = await res.json();
-      const enProceso = data.cotizaciones.filter(c => c.status === 'en_proceso');
-      const pagadas = data.cotizaciones.filter(c => c.status === 'pagado');
-      const impagas = data.cotizaciones.filter(c => c.status === 'impago');
-      const canceladas = data.cotizaciones.filter(c => c.status === 'cancelado');
-          // NUEVO: conteo de Tax Exempt
-    const taxExempt = data.cotizaciones.filter(c => 
-      c?.taxExempt === true ||
-      String(c?.taxExempt).toLowerCase() === 'true' ||
-      Number(c?.taxPercentage) === 0
-    );
-
-      document.getElementById('badgeEnProceso').textContent = enProceso.length;
-      document.getElementById('badgePagadas') && (document.getElementById('badgePagadas').textContent = pagadas.length);
-      document.getElementById('badgeImpagas') && (document.getElementById('badgeImpagas').textContent = impagas.length);
-      document.getElementById('badgeCanceladas').textContent = canceladas.length;
-      document.getElementById('badgeTaxExempt').textContent = taxExempt.length;
-      
-    } catch (err) {
-      console.error('Error cargando cotizaciones:', err);
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    actualizarBadgeCotizaciones();
-  });
-// En el DOMContentLoaded, agrega este evento:
-document.getElementById('chkDeliveryManual').addEventListener('change', function() {
-  document.getElementById('deliveryContainer').style.display = this.checked ? 'flex' : 'none';
-  actualizarResumenPlatos();
-});
-
-
- // Actualizar servicio cuando cambia
-   document.getElementById('servicio').addEventListener('change', function() {
-  actualizarResumenPlatos();
-});
-
-
-
-
-
-
-
-
-
-function inicializarBotonesEstado() {
-  const botones = document.querySelectorAll('.estado-btn');
-  botones.forEach(btn => {
-    const nuevoBtn = btn.cloneNode(true);
-    btn.parentNode.replaceChild(nuevoBtn, btn);
-
-    nuevoBtn.addEventListener('click', () => {
-      const estado = nuevoBtn.getAttribute('data-estado');
-      document.getElementById('estadoHidden').value = estado;
-
-      document.querySelectorAll('.estado-btn').forEach(b => {
-        const tipo = b.getAttribute('data-estado');
-        b.className = 'btn estado-btn btn-outline-' + tipo;
-      });
-
-      nuevoBtn.className = 'btn estado-btn btn-primary';
-    });
-  });
-}
-
-</script>
-
+  <script src="js/cancelado.js"></script>
 </body>
 </html>

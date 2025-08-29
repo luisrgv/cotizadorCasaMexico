@@ -908,7 +908,7 @@ a.tab {
     <button type="button" class="btn btn-outline-success estado-btn" data-estado="pagado">Pagado</button>
     <button type="button" class="btn btn-outline-danger estado-btn" data-estado="impago">Impago</button>
     <button type="button" class="btn btn-outline-warning estado-btn" data-estado="cancelado">Cancelado</button>
-   </div>
+     </div>
   <input type="hidden" id="estadoHidden" value="">
 </div>
 
@@ -1554,10 +1554,10 @@ function actualizarResumenPlatos() {
       } else if (categoria === 'Specialty') {
         if (tipo === '20') {
           precioPorPersona = precio30;
-          cantidadTexto = `${cantidad}T`;
+          cantidadTexto = `20 pcs`;
         } else {
           precioPorPersona = precioBase;
-          cantidadTexto = `${cantidad}/2 T`;
+          cantidadTexto = `10 pcs`;
         }
         
       }
@@ -2495,4 +2495,3 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
-

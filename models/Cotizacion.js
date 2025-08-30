@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
 const CotizacionSchema = new mongoose.Schema({
-  invoiceNumber: { type: Number, unique: true, required: false }, // 🔄 ya se generará en el pre('save')
-
+  invoiceNumber: { type: Number, unique: true, required: false }, 
   fecha: { type: Date, required: true },
-  dia: { type: String }, // Se calculará automáticamente
+  dia: { type: String }, 
   cliente: { type: String, required: true },
   numero: { type: String },
   hora_evento: String,
@@ -15,9 +14,14 @@ const CotizacionSchema = new mongoose.Schema({
   contacto: String,
   status: { 
     type: String, 
-    enum: ['pagado', 'impago', 'en_proceso', 'cancelado'], // Agregado 'cancelado'
+    enum: ['pagado', 'impago', 'en_proceso', 'cancelado'], 
     default: 'impago',
     required: true 
+  },
+  marca: {
+    type: String,
+    enum: ['chef', 'casa_mexico', 'south'],
+    default: 'chef'
   },
   pagos: [{
     fecha: Date,
@@ -37,27 +41,25 @@ const CotizacionSchema = new mongoose.Schema({
   cantidadTexto: String,
   precio_total: Number,
   descripcion: String,
-  tipoSeleccionado: String // Nuevo campo para guardar la selección (half/full, 15/30, 10/20)
+  tipoSeleccionado: String //para guardar la selección (half/full, 15/30, 10/20)
 }],
 
   numeroPersonas: { type: Number, required: true },
   subtotal: { type: Number, required: true },
   tax: { type: Number, required: true },
   taxExempt: { type: Boolean, default: false },
-  taxPercentage: { type: Number, default: 8 }, // Porcentaje editable
+  taxPercentage: { type: Number, default: 8 }, 
   gratuity: { type: Number, required: true },
-  gratuityPercentage: { type: Number, default: 20 }, // Porcentaje editable
+  gratuityPercentage: { type: Number, default: 20 }, 
   deliveryFee: { type: Number, default: 0, required: true  },
   precioTotal: { type: Number, required: true },
   notas: String,
-  notasCocina: String, // Nuevo campo para notas de cocina
+  notasCocina: String, 
   creadoPor: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date }
 });
 
-// Middleware para asignar número de invoice y día de la semana
-// Cotizacion.js - Asegurar el middleware pre-save
 CotizacionSchema.pre('save', async function(next) {
   if (this.isNew) {
     // Obtener el último invoiceNumber y sumar 1

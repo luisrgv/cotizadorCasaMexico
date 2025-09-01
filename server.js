@@ -6,14 +6,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
-
-
-
-// Configuración de la aplicación
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
-app.use(express.static("public")); // si tienes tu HTML allí
+app.use(express.static("public")); 
 
 // Modelos
 const User = require('./models/User');
@@ -182,34 +178,76 @@ const generarPDF = (tipo, datos) => {
     const totalPagado = (datos.pagos || []).reduce((suma, p) => suma + (p.monto || 0), 0);
     const saldoPendiente = Math.max(0, datos.precioTotal - totalPagado);
     const taxExempt = datos.taxExempt || false;
-
-    // Logo
-    const logoPath = path.join(__dirname, 'public', 'img', 'logo-casa-mexico.png');
-    if (fs.existsSync(logoPath)) {
-      doc.image(logoPath, 30, 30, { width: 100 });
+// Determinar logo, encabezado y dirección según la marca
+    let logoPath, encabezado, direccion;
+    
+    switch(datos.marca || 'chef') {
+      case 'casa_mexico':
+        logoPath = path.join(__dirname, 'public', 'img', 'logo-chef.png');
+        encabezado = 'Casa México Catering';
+        direccion = '1134 S. 9th St\nPhiladelphia PA 19147\n(267)-470-1464';
+        break;
+      case 'south':
+        logoPath = path.join(__dirname, 'public', 'img', 'logo-south.png');
+        encabezado = 'South Catering';
+        direccion = '1134 S. 9th St\nPhiladelphia PA 19147\n(267)-470-1464';
+        break;
+      case 'chef':
+      default:
+        logoPath = path.join(__dirname, 'public', 'img', 'logo-casa-mexico.png');
+        encabezado = 'Chef Cristina Martinez Catering';
+        direccion = '1134 S. 9th St\nPhiladelphia PA 19147\n(267)-470-1464';
+        break;
     }
-
+    
+    // Logo
+    if (fs.existsSync(logoPath)) {
+      doc.image(logoPath, 50, 10, { width: 110 });
+    } else {
+      // Logo por defecto si no existe el específico
+      const defaultLogo = path.join(__dirname, 'public', 'img', 'logo-casa-mexico.png');
+      if (fs.existsSync(defaultLogo)) {
+        doc.image(defaultLogo, 50, 10, { width: 110 });
+      }
+    }
+    
+    // Encabezado y dirección a la derecha
+    const pageWidth = doc.page.width;
+    const rightMargin = 50;
+    
     // Encabezado
     doc.fillColor('#1d3557')
        .fontSize(20)
        .font('Helvetica-Bold')
-       .text('Chef Cristina Martinez Catering', {
+       .text(encabezado, 0, 55, { 
          align: 'center',
-         paragraphGap: 5
+         width: pageWidth
        });
     
+    // Número de invoice - centrado
     doc.fontSize(14)
-       .text(`Invoice #: ${datos.invoiceNumber || 'N/A'}`, {
+       .text(`Invoice #: ${datos.invoiceNumber || 'N/A'}`, 0, 80, {
          align: 'center',
-         paragraphGap: 20
+         width: pageWidth
        });
-
+    
+    // Dirección a la derecha
+    doc.fontSize(9)
+       .fillColor('#555555')
+       .text(direccion, pageWidth - 200, 55, {
+         align: 'right',
+         width: 180,
+         lineGap: 3
+       });
+    
     // Línea decorativa
-    doc.moveTo(50, 120)
-       .lineTo(550, 120)
+    doc.moveTo(50, 110)
+       .lineTo(pageWidth - 50, 110)
        .lineWidth(2)
        .stroke('#E4007C');
-
+    
+    
+    
     // Información principal
     const infoX = 50;
     let currentY = 140;
@@ -408,11 +446,11 @@ const generarPDF = (tipo, datos) => {
           if (plato.descripcion && !plato.esManual) {
             const descripcionLimpia = (plato.descripcion || '')
                 .normalize('NFKC')
-                .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
-                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
-                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
-                .replace(/[!¡]/g, '')                             // signos de admiración
-                .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
+                .replace(/^[^\p{L}\p{N}]+/gu, '')      
+                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') 
+                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")               
+                .replace(/[!¡]/g, '')                           
+                .replace(/[\r\n\t]+/g, ' ')                      
                 .trim();
 
             asegurarEspacio(20);
@@ -586,11 +624,11 @@ const generarPDF = (tipo, datos) => {
           if (plato.descripcion && !plato.esManual) {
             const descripcionLimpia = (plato.descripcion || '')
                 .normalize('NFKC')
-                .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
-                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
-                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
-                .replace(/[!¡]/g, '')                             // signos de admiración
-                .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
+                .replace(/^[^\p{L}\p{N}]+/gu, '')                
+                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') 
+                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                    
+                .replace(/[!¡]/g, '')                           
+                .replace(/[\r\n\t]+/g, ' ')                     
                 .trim();
             
             asegurarEspacio(20);
@@ -664,6 +702,7 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       ubicacion: datos.ubicacion,
       contacto: datos.contacto,
       status: datos.status || 'impago',
+       marca: datos.marca || 'chef', 
       platos: datos.platos.map(p => ({
       nombre: p.nombre,
       descripcion: p.descripcion || '',
@@ -914,4 +953,3 @@ app.delete('/api/platos/:id', requireLogin, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor en http://localhost:${PORT}`);
 });
-

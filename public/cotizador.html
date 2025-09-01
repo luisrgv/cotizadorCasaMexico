@@ -76,7 +76,17 @@
     .logo-text span {
       color: var(--primary);
     }
+    /* Estilos para botones de marca */
+.marca-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
 
+.marca-btn:hover {
+  transform: translateY(-2px);
+}
     .user-info {
       display: flex;
       align-items: center;
@@ -911,7 +921,22 @@ a.tab {
      </div>
   <input type="hidden" id="estadoHidden" value="">
 </div>
-
+<!-- Nueva sección para seleccionar marca -->
+<div class="form-group" style="width: 100%; max-width: 500px; margin-top: 1rem;">
+  <label>🏢 Catering</label>
+  <div id="marcaGrupo" style="display: flex; gap: 5px; flex-wrap: nowrap;">
+    <button type="button" class="btn btn-outline-secondary marca-btn active" data-marca="chef">
+      <i class="fas fa-user-circle"></i> Chef Cristina M.
+    </button>
+    <button type="button" class="btn btn-outline-primary marca-btn" data-marca="casa_mexico">
+      <i class="fas fa-store"></i> Casa México
+    </button>
+    <button type="button" class="btn btn-outline-info marca-btn" data-marca="south">
+      <i class="fas fa-map-marker-alt"></i> South Philly
+    </button>
+  </div>
+  <input type="hidden" id="marcaHidden" value="chef">
+</div>
 
         <form id="cotizacionForm">
           <div class="form-grid">
@@ -1153,7 +1178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const idCotizacion = params.get('edit');
 // tax
-
+ inicializarBotonesMarca();
 
   // Inicializar Tax Exempt (nueva cotización)
   document.getElementById('taxExempt').checked = false;
@@ -1741,6 +1766,22 @@ async function cargarCotizacionParaEditar(id) {
     const { cotizacion } = await response.json();
     if (!cotizacion) return;
     
+ if (cotizacion.marca) {
+      document.getElementById('marcaHidden').value = cotizacion.marca;
+      
+      // Activar el botón correspondiente
+      const botonMarca = document.querySelector(`.marca-btn[data-marca="${cotizacion.marca}"]`);
+      if (botonMarca) {
+        document.querySelectorAll('.marca-btn').forEach(b => {
+          b.classList.remove('btn-primary');
+          b.classList.add('btn-outline-secondary', 'btn-outline-primary', 'btn-outline-info');
+        });
+        botonMarca.classList.remove('btn-outline-secondary', 'btn-outline-primary', 'btn-outline-info');
+        botonMarca.classList.add('btn-primary');
+      }
+    }
+
+
     // Configurar tax exempt
     const taxExempt = cotizacion.taxExempt || false;
     document.getElementById('taxExempt').checked = taxExempt;
@@ -2034,6 +2075,7 @@ async function generarPDF(tipo) {
     ubicacion: document.getElementById('ubicacion').value,
     contacto: document.getElementById('contacto').value,
     status: document.getElementById('estadoHidden').value,
+    marca: document.getElementById('marcaHidden').value,
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) ,
     deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
@@ -2150,6 +2192,7 @@ async function guardarCotizacion() {
     ubicacion: document.getElementById('ubicacion').value,
     contacto: document.getElementById('contacto').value,
     status: document.getElementById('estadoHidden').value,
+     marca: document.getElementById('marcaHidden').value,
 
      platos: platosSeleccionados.map(p => {
       const platoItem = document.querySelector(`.plato-item[data-categoria="${p.categoria}"] input[data-nombre="${p.nombre}"]`)?.closest('.plato-item');
@@ -2464,12 +2507,30 @@ document.getElementById('chkDeliveryManual').addEventListener('change', function
 });
 
 
+// Función para inicializar botones de marca
+function inicializarBotonesMarca() {
+  document.querySelectorAll('.marca-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const marca = btn.getAttribute('data-marca');
+      document.getElementById('marcaHidden').value = marca;
+      
+      // Quitar clases activas de todos
+      document.querySelectorAll('.marca-btn').forEach(b => {
+        b.classList.remove('btn-primary');
+        b.classList.add('btn-outline-secondary', 'btn-outline-primary', 'btn-outline-info');
+      });
+      
+      // Activar solo el botón clicado
+      btn.classList.remove('btn-outline-secondary', 'btn-outline-primary', 'btn-outline-info');
+      btn.classList.add('btn-primary');
+      // Activar este
+      this.classList.add('active');
+      // Actualizar hidden
+      document.getElementById('marcaHidden').value = this.dataset.marca;
 
-
-
-
-
-
+    });
+  });
+}
 
 function inicializarBotonesEstado() {
   const botones = document.querySelectorAll('.estado-btn');

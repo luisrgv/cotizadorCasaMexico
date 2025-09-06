@@ -6,10 +6,14 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+
+
+
+// Configuración de la aplicación
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
-app.use(express.static("public")); 
+app.use(express.static("public")); // si tienes tu HTML allí
 
 // Modelos
 const User = require('./models/User');
@@ -340,7 +344,7 @@ const generarPDF = (tipo, datos) => {
     );
     
     currentY += Math.max(20, alturaCliente); // Asegurar espacio suficiente
-    
+    agregarFila(tipo === 'cliente' ? 'Email:' : 'Email:', datos.email || 'No proporcionado', false, true);
     agregarFila(tipo === 'cliente' ? 'Contact Number:' : 'Número de contacto:', datos.numero, false, true);
     agregarFila(tipo === 'cliente' ? 'Event Time:' : 'Hora del evento:', datos.hora_evento, false, true);
 
@@ -446,11 +450,11 @@ const generarPDF = (tipo, datos) => {
           if (plato.descripcion && !plato.esManual) {
             const descripcionLimpia = (plato.descripcion || '')
                 .normalize('NFKC')
-                .replace(/^[^\p{L}\p{N}]+/gu, '')      
-                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') 
-                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")               
-                .replace(/[!¡]/g, '')                           
-                .replace(/[\r\n\t]+/g, ' ')                      
+                .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
+                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
+                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
+                .replace(/[!¡]/g, '')                             // signos de admiración
+                .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
                 .trim();
 
             asegurarEspacio(20);
@@ -624,11 +628,11 @@ const generarPDF = (tipo, datos) => {
           if (plato.descripcion && !plato.esManual) {
             const descripcionLimpia = (plato.descripcion || '')
                 .normalize('NFKC')
-                .replace(/^[^\p{L}\p{N}]+/gu, '')                
-                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') 
-                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                    
-                .replace(/[!¡]/g, '')                           
-                .replace(/[\r\n\t]+/g, ' ')                     
+                .replace(/^[^\p{L}\p{N}]+/gu, '')                // Elimina símbolos al inicio
+                .replace(/[\u0000-\u001F\u007F-\u009F\u200B-\u200D\uFEFF\uFFFD]/g, '') // invisibles
+                .replace(/[‘’‚‛‟"ʼʽ]/g, "'")                     // comillas raras
+                .replace(/[!¡]/g, '')                             // signos de admiración
+                .replace(/[\r\n\t]+/g, ' ')                       // saltos de línea/tab
                 .trim();
             
             asegurarEspacio(20);
@@ -694,6 +698,7 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       fecha: datos.fecha,
       dia: datos.dia,
       cliente: datos.cliente,
+       email: datos.email || '',
       numero: datos.numero,
       hora_evento: datos.hora_evento,
       hora_servir: datos.hora_servir,

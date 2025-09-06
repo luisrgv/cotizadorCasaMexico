@@ -958,7 +958,11 @@ a.tab {
               <label for="cliente">👤 Nombre del Cliente</label>
               <input type="text" id="cliente" class="form-control" required>
             </div>
-            
+                        <div class="form-group">
+              <label for="email">📧 Email</label>
+              <input type="email" id="email" class="form-control" placeholder="cliente@ejemplo.com">
+            </div>
+
             <div class="form-group">
               <label for="numero">📱 Número de Contacto</label>
               <input type="tel" id="numero" class="form-control" required>
@@ -1817,6 +1821,7 @@ inicializarBotonesEstado();
     document.getElementById('fecha').value = cotizacion.fecha?.split('T')[0] || '';
     document.getElementById('dia').value = cotizacion.dia || '';
     document.getElementById('cliente').value = cotizacion.cliente || '';
+    document.getElementById('email').value = cotizacion.email || '';
     document.getElementById('numero').value = cotizacion.numero || '';
     document.getElementById('hora_evento').value = cotizacion.hora_evento || '';
     document.getElementById('hora_servir').value = cotizacion.hora_servir || '';
@@ -2067,6 +2072,7 @@ async function generarPDF(tipo) {
     fecha: document.getElementById('fecha').value,
     dia: document.getElementById('dia').value,
     cliente: document.getElementById('cliente').value,
+     email: document.getElementById('email').value,
     numero: document.getElementById('numero').value,
     hora_evento: document.getElementById('hora_evento').value,
     hora_servir: document.getElementById('hora_servir').value,
@@ -2184,6 +2190,7 @@ async function guardarCotizacion() {
     fecha: document.getElementById('fecha').value,
     dia: document.getElementById('dia').value,
     cliente: document.getElementById('cliente').value,
+     email: document.getElementById('email').value,
     numero: document.getElementById('numero').value,
     hora_evento: document.getElementById('hora_evento').value,
     hora_servir: document.getElementById('hora_servir').value,

@@ -491,6 +491,15 @@
       cargarEventos();
     });
 
+  // 👇 Normaliza las variantes que podrían venir desde DB
+  function normalizarStatus(s) {
+    const v = (s || '').toString().trim().toLowerCase();
+    if (['pagada','pagado','paid','completada','completado','payd'].includes(v)) return 'pagada';
+    if (['impaga','no pagada','unpaid','pendiente de pago','no_pagada','impago'].includes(v)) return 'impaga';
+    if (['en_proceso','en proceso','proceso','pendiente','pendiente de confirmación','pendiente_confirmacion'].includes(v)) return 'en_proceso';
+    return 'en_proceso';
+  }
+
     async function cargarEventos() {
       mostrarLoading('Cargando eventos...');
       try {
@@ -527,7 +536,7 @@
             cliente: evento.cliente || 'Sin nombre',
             servicio: evento.servicio || 'Sin servicio',
             hora_evento: evento.hora_evento || '--:--',
-            status: evento.status || 'en_proceso'
+          status: normalizarStatus(evento.status)
           };
         });
         

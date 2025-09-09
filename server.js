@@ -507,11 +507,23 @@ const generarPDF = (tipo, datos) => {
         agregarFilaDerecha('Delivery Fee:', `$${datos.deliveryFee.toFixed(2)}`);
       }
 
+      if (datos.rentalFee > 0) {
+  agregarFilaDerecha('Rental Fee:', `$${datos.rentalFee.toFixed(2)}`);
+  if (datos.rentalDescripcion && datos.rentalDescripcion.trim() !== '') {
+    // Espacio y descripción (ajustar ancho según tu layout)
+    asegurarEspacio(6);
+    doc.font('Helvetica').fontSize(9)
+       .text(datos.rentalDescripcion, infoX, currentY, { width: 340, align: 'left', lineGap: 2 });
+    currentY += doc.heightOfString(datos.rentalDescripcion, { width: 340 }) + 6;
+  }
+}
       currentY += 10;
       doc.moveTo(infoX, currentY).lineTo(550, currentY).stroke();
       currentY += 10;
       asegurarEspacio(100);
       
+
+
       doc.font('Helvetica-Bold')
          .text('TOTAL:', infoX, currentY, { width: 150, align: 'left' })
          .text(`$${datos.precioTotal.toFixed(2)}`, infoX + 160, currentY, { width: 340, align: 'right' });
@@ -729,6 +741,8 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       gratuity: datos.gratuity,
       gratuityPercentage: datos.gratuityPercentage ,
       deliveryFee: datos.deliveryFee || 0,
+      rentalFee: datos.rentalFee || 0,
+      rentalDescripcion: datos.rentalDescripcion || '',
       precioTotal: datos.precioTotal,
       notas: datos.notas || 'Ninguna',
       notasCocina: datos.notasCocina || 'Ninguna',
@@ -823,7 +837,7 @@ app.post('/api/generar-pdf', requireLogin, async (req, res) => {
       datos.subtotal = datos.platosSeleccionados.reduce((sum, p) => sum + (p.precio_total || 0), 0);
       datos.tax = datos.subtotal * ((datos.taxPercentage || 8) / 100);
       datos.gratuity = datos.subtotal * ((datos.gratuityPercentage || 20) / 100);
-      datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + (datos.deliveryFee || 0);
+      datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + (datos.deliveryFee || 0 ) + (datos.rentalFee || 0);
     }
 
     // Crear directorio para PDFs si no existe

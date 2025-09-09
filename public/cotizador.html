@@ -1083,6 +1083,31 @@ a.tab {
                 <span class="resumen-valor">$<span id="gratuityResumen">0.00</span></span>
               </div>
               
+              <!-- Check para Rental Fee -->
+ <div class="form-check" style="display:flex; align-items:center; gap:0.5rem;">
+    <input class="form-check-input" type="checkbox" id="chkRentalManual">
+    <label class="form-check-label" for="chkRentalManual">Rental Fee</label>
+  </div>
+
+
+<div class="resumen-linea" id="rentalContainer" style="display:none; flex-direction:column; gap:6px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+    <span class="resumen-label" style="flex:1; margin-right:10px;">
+      Rental Fee:
+      <input type="number" id="rentalFee" value="0" min="0" step="0.01" class="resumen-input" style="max-width:120px; margin-left:8px;">
+    </span>
+    <span class="resumen-valor">$<span id="rentalResumen">0.00</span></span>
+  </div>
+
+  <!-- Descripción editable (un solo campo) -->
+  <input type="text" id="rentalDescripcion" class="form-control" placeholder="Descripción de Rental (editable)"
+         value="Sala privada en Casa México, un lugar único y cómodo para que tengas una experiencia de catering inolvidable"
+         style="width:100%; margin-top:6px;">
+</div>
+
+
+
+
               <div class="resumen-linea" id="deliveryContainer" style="display: none;">
                 <span class="resumen-label">
                   Delivery Fee:
@@ -1200,7 +1225,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     actualizarTotalesDesdeTabla();
   });
 
- 
+ document.getElementById('chkRentalManual').addEventListener('change', function() {
+  const container = document.getElementById('rentalContainer');
+  if (this.checked) {
+    container.style.display = 'flex';
+  } else {
+    container.style.display = 'none';
+    document.getElementById('rentalFee').value = 0;
+  }
+  actualizarTotalesDesdeTabla();
+});
+
+document.getElementById('rentalFee').addEventListener('input', actualizarTotalesDesdeTabla);
+
 
   // Verificar sesión
   await verificarSesion();
@@ -1525,12 +1562,19 @@ document.addEventListener('DOMContentLoaded', async () => {
    const deliveryFee = document.getElementById('chkDeliveryManual').checked ? 
     (parseFloat(document.getElementById('deliveryFee').value)) || 0 : 0;
   
-  const total = subtotal + tax + gratuity + deliveryFee;
+
+    
+const rentalFee = (document.getElementById('chkRentalManual')?.checked)
+    ? (parseFloat(document.getElementById('rentalFee')?.value) || 0)
+    : 0;
+
+  const total = subtotal + tax + gratuity + deliveryFee + rentalFee;
   
   document.getElementById('subtotalResumen').textContent = subtotal.toFixed(2);
   document.getElementById('taxResumen').textContent = tax.toFixed(2);
   document.getElementById('gratuityResumen').textContent = gratuity.toFixed(2);
   document.getElementById('deliveryResumen').textContent = deliveryFee.toFixed(2);
+  document.getElementById('rentalResumen').textContent = rentalFee.toFixed(2);
   document.getElementById('totalResumen').textContent = total.toFixed(2);
 }
   
@@ -1837,7 +1881,7 @@ document.getElementById('taxPercentage').value = cotizacion.taxPercentage || 0;
     
     document.getElementById('gratuityPercentage').value = cotizacion.gratuityPercentage || 0; // Permitir 0
     document.getElementById('taxExempt').checked = cotizacion.taxExempt || false;
-
+    
     // Actualizar la visibilidad del tax percentage
 document.getElementById('taxExempt').addEventListener('change', function() {
   document.getElementById('taxPercentage').disabled = this.checked;
@@ -1848,6 +1892,15 @@ document.getElementById('taxExempt').addEventListener('change', function() {
 });
 
     document.getElementById('deliveryFee').value = cotizacion.deliveryFee || 0;
+    // cargar rental
+document.getElementById('rentalFee').value = cotizacion.rentalFee || 0;
+document.getElementById('rentalDescripcion').value = cotizacion.rentalDescripcion || 'Sala privada en Casa México, un lugar único y cómodo para que tengas una experiencia de catering inolvidable';
+
+if (cotizacion.rentalFee && cotizacion.rentalFee > 0) {
+  document.getElementById('chkRentalManual').checked = true;
+  document.getElementById('rentalContainer').style.display = 'flex';
+}
+    
     document.getElementById('notasCocina').value = cotizacion.notasCocina || '';
 
     if (cotizacion.deliveryFee > 0) {
@@ -2084,6 +2137,9 @@ async function generarPDF(tipo) {
     marca: document.getElementById('marcaHidden').value,
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) ,
+    rentalFee: document.getElementById('chkRentalManual').checked ? (parseFloat(document.getElementById('rentalFee').value) || 0) : 0,
+rentalDescripcion: document.getElementById('rentalDescripcion')?.value?.trim() || '',
+
     deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
       (parseFloat(document.getElementById('deliveryFee').value)) || 0 : 0,
     notas: document.getElementById('notasArea').innerText,
@@ -2144,7 +2200,7 @@ async function generarPDF(tipo) {
   datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
   datos.tax = datos.subtotal * (datos.taxPercentage / 100);
   datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
-  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee;
+  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee + datos.rentalFee;
 
   // 5. Mostrar loading y enviar al servidor
   mostrarLoading(`Generando PDF para ${tipo === 'cliente' ? 'cliente' : 'cocina'}...`);
@@ -2223,9 +2279,12 @@ async function guardarCotizacion() {
      gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) , // Cambiado para permitir 0
 
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
-   
+    rentalFee: parseFloat(document.getElementById('rentalFee').value) || 0,
     deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
              (parseFloat(document.getElementById('deliveryFee').value) || 0) : 0,
+    rentalFee: document.getElementById('chkRentalManual').checked ? (parseFloat(document.getElementById('rentalFee').value) || 0) : 0,
+rentalDescripcion: document.getElementById('rentalDescripcion')?.value?.trim() || '',
+
     notas: document.getElementById('notasArea').innerText,
     notasCocina: document.getElementById('notasCocina').value
   };
@@ -2248,7 +2307,7 @@ async function guardarCotizacion() {
   datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
   datos.tax = datos.subtotal * (datos.taxPercentage / 100);
   datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
-  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee;
+  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee + datos.rentalFee;
   
   datos.pagos = Array.from(document.querySelectorAll('.pago-item')).map(item => ({
     fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],

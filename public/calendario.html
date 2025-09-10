@@ -492,13 +492,15 @@
     });
 
   // 👇 Normaliza las variantes que podrían venir desde DB
-  function normalizarStatus(s) {
-    const v = (s || '').toString().trim().toLowerCase();
-    if (['pagada','pagado','paid','completada','completado','payd'].includes(v)) return 'pagada';
-    if (['impaga','no pagada','unpaid','pendiente de pago','no_pagada','impago'].includes(v)) return 'impaga';
-    if (['en_proceso','en proceso','proceso','pendiente','pendiente de confirmación','pendiente_confirmacion'].includes(v)) return 'en_proceso';
-    return 'en_proceso';
-  }
+function normalizarStatus(s) {
+  const v = (s || '').toString().trim().toLowerCase();
+  if (['pagada','pagado','paid','completada','completado','payd'].includes(v)) return 'pagada';
+  if (['impaga','no pagada','unpaid','pendiente de pago','no_pagada','impago'].includes(v)) return 'impaga';
+  if (['en_proceso','en proceso','proceso','pendiente','pendiente de confirmación','pendiente_confirmacion'].includes(v)) return 'en_proceso';
+  if (['cancelado','cancelada','canceled'].includes(v)) return 'cancelado';
+  return 'en_proceso';
+}
+
 
     async function cargarEventos() {
       mostrarLoading('Cargando eventos...');
@@ -538,8 +540,9 @@
             hora_evento: evento.hora_evento || '--:--',
           status: normalizarStatus(evento.status)
           };
-        });
-        
+          
+        })
+        .filter(evento => evento.status !== 'cancelado'); 
         console.log('Eventos cargados:', events);
       } catch (error) {
         console.error('Error cargando eventos:', error);

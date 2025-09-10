@@ -3,1230 +3,868 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotizaciones en Proceso - Casa México</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #E4007C;
-      --primary-dark: #c1121f;
-      --secondary: #457b9d;
-      --dark: #1a1a1a;
-      --light: #f8f9fa;
-      --gray: #6c757d;
-      --light-gray: #f1f1f1;
-      --success: #2a9d8f;
-      --warning: #e9c46a;
-      --danger: #e76f51;
-      --border-radius: 8px;
-      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  <title>Calendario - Chef Cristina Martinez Catering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+  :root {
+    --primary: #3a6a8a; /* Azul principal */
+    --primary-dark: #2c4e6a;
+    --secondary: #e63946; /* Rojo acento */
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --light-gray: #e9ecef;
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f7fa;
+    color: var(--dark);
+    line-height: 1.6;
+  }
+
+  /* Header moderno */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 2rem;
+    background: white;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo-img {
+    height: 50px;
+  }
+
+  .logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+  }
+
+  .logo-text span {
+    color: var(--secondary);
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .back-btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 10px rgba(58, 106, 138, 0.3);
+  }
+
+  .back-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(58, 106, 138, 0.4);
+  }
+
+  /* Contenedor principal */
+  .container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+  }
+
+  /* Encabezado del calendario */
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .month-navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .month-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    min-width: 250px;
+    text-align: center;
+    color: var(--primary-dark);
+  }
+
+  .nav-btn {
+    background-color: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+
+  .nav-btn:hover {
+    background-color: var(--primary);
+    color: white;
+  }
+
+  .btn-today {
+    background-color: var(--primary);
+    color: white;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(58, 106, 138, 0.3);
+  }
+
+  .btn-today:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(58, 106, 138, 0.4);
+  }
+
+  /* Grid del calendario */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+
+  .day-header {
+    background-color: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    font-weight: 500;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+  }
+
+  .day-cell {
+  background-color: white;
+  border: 1px solid #e9ecef;
+  min-height: 140px;
+  height: 140px; /* Altura fija */
+  width: 100%; /* Ancho completo de la celda de la grid */
+  padding: 0.8rem;
+  border-radius: 8px;
+  transition: all 0.3s;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden; /* Evita que el contenido desborde */
+}
+
+  .day-cell:hover {
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
+    border-color: var(--primary);
+  }
+
+  .day-number {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-align: right;
+    color: var(--gray);
+    font-size: 0.9rem;
+  }
+
+  .day-cell.today .day-number {
+    background-color: var(--primary);
+    color: white;
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 26px;
+    margin-left: auto;
+  }
+
+  .event-item {
+  padding: 0.4rem 0.6rem;
+  margin-bottom: 0.4rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Evita que el texto se divida en múltiples líneas */
+  background-color: white;
+  border-left: 3px solid var(--primary);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.2s;
+  max-width: 100%; /* Asegura que no exceda el ancho de la celda */
+}
+
+  .event-item:hover {
+    transform: translateX(3px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+
+.event-item.pagada {
+  background-color: #e8f5e9;
+  border-left-color: var(--success);
+  color: #1b5e20;
+}
+
+.event-item.impaga {
+  background-color: #ffebee;
+  border-left-color: var(--danger);
+  color: #c62828;
+}
+
+.event-item.en_proceso {
+  background-color: #fff8e1;
+  border-left-color: var(--warning);
+  color: #e65100;
+}
+
+/* Badge de estatus en el modal */
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.pagada {
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #1b5e20;
+}
+
+.status-badge.impaga {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #c62828;
+}
+
+.status-badge.en_proceso {
+  background-color: #fff8e1;
+  color: #e65100;
+  border: 1px solid #e65100;
+}
+  .more-events {
+    font-size: 0.7rem;
+    color: var(--gray);
+    text-align: center;
+    margin-top: 0.3rem;
+    font-style: italic;
+  }
+
+  /* Modal modernizado */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+
+  .modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 95%;
+    max-width: 1000px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: modalFadeIn 0.3s ease-out;
+  }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--gray);
+    background: rgba(0,0,0,0.05);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 10;
+  }
+
+  .close-modal:hover {
+    color: var(--danger);
+    background: rgba(220, 53, 69, 0.1);
+    transform: rotate(90deg);
+  }
+
+  /* Loading overlay moderno */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255,0.9);
+    z-index: 1001;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    backdrop-filter: blur(5px);
+  }
+
+  .spinner {
+    border: 4px solid rgba(58, 106, 138, 0.1);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
+  }
+
+  .loading-text {
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+    font-weight: 500;
+  }
+
+  /* Responsive */
+  @media (max-width: 992px) {
+    .calendar-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .calendar-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f5f5f5;
-      color: #333;
-      line-height: 1.6;
-    }
-    
-    /* ===== HEADER IDÉNTICO AL COTIZADOR ===== */
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: #000000;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      border-bottom: 4px solid var(--primary);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .branding {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .logo-img {
-      max-height: 65px;
-      transition: var(--transition);
-      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.2));
-    }
-
-    .logo-img:hover {
-      transform: scale(1.05);
-    }
-
-    .logo-text {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: white;
-      text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
-    }
-
-    .logo-text span {
-      color: var(--primary);
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      color: white;
-    }
-
-    .avatar {
-      background: var(--primary);
-      color: white;
-      padding: 0.6rem 0.9rem;
-      border-radius: 50%;
-      font-weight: bold;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .logout-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: var(--transition);
-      padding: 0.5rem;
-      border-radius: var(--border-radius);
-    }
-
-    .logout-btn:hover {
-      background: rgba(255,255,255,0.1);
-    }
-
-    #userRole {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.8);
-    }
-    
-    .container {
-      padding: 2rem;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    /* === ESTILOS UNIFICADOS DE PESTAÑAS === */
-    .tabs {
-      display: flex;
-      margin-bottom: 1rem;
-      border-bottom: 3px solid #ddd;
-      overflow-x: auto;
-    }
-    
-    a.tab {
-      text-decoration: none !important;
-    }
-
-    .tabs .tab,
-    .tabs .btn-calendario {
-      flex: 1;
-      min-width: 150px;
-      text-align: center;
-      padding: 0.8rem 1rem;
-      font-weight: 500;
-      font-size: 0.95rem;
-      border: none;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      background: #f5f5f5;
-      color: #555;
-      box-shadow: inset 0 -2px 0 transparent;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      position: relative;
-    }
-
-    /* Estado activo tipo pestaña de navegador */
-    .tabs .tab.active,
-    .tabs .btn-calendario.active {
-      background: white;
-      color: #000;
-      box-shadow: inset 0 -3px 0 currentColor;
-      font-weight: 600;
-    }
-
-    /* Hover elegante */
-    .tabs .tab:hover,
-    .tabs .btn-calendario:hover {
-      background: #fafafa;
-      color: #111;
-    }
-
-    /* Badges modernos */
-    .tab .tab-badge {
-      position: absolute;
-      top: 6px;
-      right: 12px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      color: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    /* Colores personalizados */
-    .tab.nueva.active { color: #e91e63; }
-    .tab.en-proceso.active { color: #3498db; }
-    .tab.pagadas.active { color: #2ecc71; }
-    .tab.impagas.active { color: #e74c3c; }
-    .tab.canceladas.active { color: #7f8c8d; }
-    .btn-calendario.active { color: #f39c12; }
-    .tab.menu.active { color: #9b59b6; }
-
-    /* Badge colores */
-    .tab.en-proceso .tab-badge { background: #3498db; }
-    .tab.pagadas .tab-badge { background: #2ecc71; }
-    .tab.impagas .tab-badge { background: #e74c3c; }
-    .tab.canceladas .tab-badge { background: #7f8c8d; }
-    .tab.TaxExempt .tab-badge { background: #e91e63; }
-
-    /* ==== NUEVO ESTILO MODERNO PARA TARJETAS ==== */
-    .nueva-card-moderna {
-      border-left: 5px solid var(--primary);
-      border-radius: 10px;
-      background-color: white;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-      padding: 1.5rem;
-      transition: all 0.2s ease-in-out;
-      display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .nueva-card-moderna:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-    }
-
-    .nueva-cabecera {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .nueva-invoice {
-      font-size: 1.2rem;
-      color: var(--dark);
-    }
-
-    .nueva-status {
-      padding: 0.3rem 0.8rem;
-      font-size: 0.75rem;
-      border-radius: 20px;
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-
-    .nueva-status.en_proceso {
-      background-color: var(--warning);
-      color: #333;
-    }
-
-    .nueva-status.pagada {
-      background-color: #2ecc71;
-      color: white;
-    }
-
-    .nueva-status.impaga {
-      background-color: #e74c3c;
-      color: white;
-    }
-
-    .nueva-cuerpo {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem 1.5rem;
-      font-size: 0.9rem;
-      color: #444;
-    }
-
-    .nueva-cuerpo .campo i {
-      margin-right: 0.3rem;
-      color: var(--primary);
-    }
-
-    .campo-notas {
-      grid-column: 1 / -1;
-      margin-top: 0.5rem;
-      background: #f8f9fa;
-      padding: 0.75rem;
-      border-left: 4px solid var(--primary);
-      border-radius: 5px;
-      font-style: italic;
-    }
-
-    /* Agrega esto a tu sección de estilos */
-    #buscadorCotizaciones {
-      padding: 0.75rem 1rem;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-family: 'Poppins', sans-serif;
-      transition: all 0.3s ease;
-    }
-
-    #buscadorCotizaciones:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(228, 0, 124, 0.2);
-    }
-
-    .texto-vacio {
-      text-align: center;
-      color: var(--gray);
-      padding: 2rem;
-      font-style: italic;
-    }
-
-    .card {
-      background-color: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      border: 1px solid #e0e0e0;
-    }
-    
-    .card-title {
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-      color: var(--dark);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: var(--dark);
-      font-size: 0.9rem;
-    }
-    
-    .form-control {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: var(--border-radius);
-      font-family: 'Poppins', sans-serif;
-      transition: var(--transition);
-      font-size: 0.95rem;
-    }
-    
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(228, 0, 124, 0.2);
-    }
-    
-    .form-actions {
-      display: flex;
       gap: 1rem;
-      justify-content: flex-end;
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #eee;
-    }
-    
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: var(--border-radius);
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: var(--transition);
-      font-size: 0.95rem;
-    }
-    
-    .btn-primary {
-      background-color: var(--primary);
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .btn-info {
-      background-color: var(--secondary);
-      color: white;
-    }
-    
-    .btn-info:hover {
-      background-color: #3a6a8a;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .btn-warning {
-      background-color: var(--warning);
-      color: #333;
-    }
-    
-    .btn-warning:hover {
-      background-color: #e0b758;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .btn-secondary {
-      background-color: var(--gray);
-      color: white;
-    }
-    
-    .btn-secondary:hover {
-      background-color: #5a6268;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .btn-outline-secondary {
-      background-color: transparent;
-      border: 1px solid var(--gray);
-      color: var(--gray);
-    }
-    
-    .btn-outline-success {
-      background-color: transparent;
-      border: 1px solid var(--success);
-      color: var(--success);
-    }
-    
-    .btn-outline-danger {
-      background-color: transparent;
-      border: 1px solid var(--danger);
-      color: var(--danger);
-    }
-    
-    .btn-outline-warning {
-      background-color: transparent;
-      border: 1px solid var(--warning);
-      color: var(--warning);
-    }
-    
-    .platos-container {
-      grid-column: 1 / -1;
-      background-color: var(--light);
-      padding: 1.5rem;
-      border-radius: var(--border-radius);
-      margin-top: 1rem;
-      border: 1px solid #e0e0e0;
-    }
-    
-    .platos-categorias {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    
-    .categoria-btn {
-      padding: 0.5rem 1rem;
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: var(--transition);
-      font-size: 0.85rem;
-    }
-    
-    .categoria-btn.active {
-      background-color: var(--dark);
-      color: white;
-      border-color: var(--dark);
-    }
-    
-    .platos-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    
-    .plato-item {
-      background-color: white;
       padding: 1rem;
-      border-radius: var(--border-radius);
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-      display: flex;
+    }
+    
+    .calendar-header {
       flex-direction: column;
-      gap: 0.75rem;
-      border: 1px solid #e0e0e0;
-      transition: var(--transition);
-    }
-    
-    .plato-item:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    }
-    
-    .plato-header {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    
-    .plato-header input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--primary);
-    }
-    
-    .plato-nombre {
-      font-weight: 500;
-      font-size: 1rem;
-    }
-    
-    .plato-precio {
-      color: var(--success);
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    
-    .plato-cantidad {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-      flex-wrap: wrap;
-    }
-    
-    .plato-cantidad input {
-      width: 70px;
-      padding: 0.5rem;
-      border: 1px solid #ddd;
-      border-radius: var(--border-radius);
-    }
-    
-    .resumen-platos {
-      background-color: white;
-      padding: 1.5rem;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      margin-top: 1rem;
-      border: 1px solid #e0e0e0;
-    }
-    
-    .resumen-platos h4 {
-      margin-bottom: 1.5rem;
-      color: var(--dark);
-      font-size: 1.2rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .resumen-linea {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.75rem 0;
-      border-bottom: 1px solid #eee;
-      align-items: center;
-    }
-    
-    .resumen-total {
-      display: flex;
-      justify-content: space-between;
-      padding: 1rem 0;
-      font-weight: 600;
-      font-size: 1.2rem;
-      color: var(--dark);
-      margin-top: 0.5rem;
-      background-color: var(--light);
-      padding: 1rem;
-      border-radius: var(--border-radius);
-    }
-    
-    .resumen-input {
-      width: 50px;
-      padding: 0.3rem;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      text-align: center;
-    }
-    
-    .pago-item {
-      background-color: white;
-      padding: 1rem;
-      border-radius: var(--border-radius);
-      margin-bottom: 1rem;
-      box-shadow: var(--box-shadow);
-      border: 1px solid #e0e0e0;
-    }
-    
-    .pago-fila {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 2fr auto;
       gap: 1rem;
-      align-items: center;
     }
     
-    .btn-eliminar-pago {
-      background: none;
-      border: none;
-      color: var(--danger);
-      cursor: pointer;
-      font-size: 1.2rem;
-      transition: var(--transition);
-      padding: 0.5rem;
-      border-radius: 50%;
+    .month-navigation {
+      order: 2;
     }
-    
-    .btn-eliminar-pago:hover {
-      background-color: rgba(231, 111, 81, 0.1);
-    }
-    
-    .notas-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-    
-    .notas-box {
-      background-color: white;
-      padding: 1.5rem;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      border: 1px solid #e0e0e0;
-    }
-    
-    .notas-box h4 {
-      margin-bottom: 1rem;
-      color: var(--dark);
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid #eee;
-    }
-    
-    textarea.form-control {
-      min-height: 150px;
-      resize: vertical;
-      font-family: 'Poppins', sans-serif;
-    }
-    
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      z-index: 1000;
-    }
-    
-    .spinner {
-      border: 5px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top: 5px solid white;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin-bottom: 1rem;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    #loadingText {
-      color: white;
-      font-size: 1.2rem;
-    }
-    
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    
-    .modal-content {
-      background-color: white;
-      padding: 2rem;
-      border-radius: var(--border-radius);
-      max-width: 800px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-      position: relative;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    }
-    
-    .close-modal {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--gray);
-      transition: var(--transition);
-    }
-    
-    .close-modal:hover {
-      color: var(--danger);
-    }
-    
-    /* Estilos para la tabla del resumen */
-    .resumen-platos table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 15px;
-    }
-    
-    .resumen-platos th, .resumen-platos td {
-      text-align: left;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .resumen-platos th {
-      background-color: #f8f9fa;
-      font-weight: 500;
-      color: var(--dark);
-    }
-    
-    .resumen-platos tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-    
-    /* Estilos para los inputs en la tabla */
-    .resumen-platos input[type="text"],
-    .resumen-platos input[type="number"] {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: var(--border-radius);
-    }
-    
-    /* Estilo para las filas de categoría */
-    .resumen-platos .categoria-row {
-      background-color: #f1f1f1;
-      font-weight: bold;
-    }
-    
-    /* Botón eliminar fila manual */
-    .btn-eliminar-fila {
-      background: none;
-      border: none;
-      color: var(--danger);
-      cursor: pointer;
-      padding: 0 5px;
-      transition: var(--transition);
-    }
-    
-    .btn-eliminar-fila:hover {
-      transform: scale(1.2);
-    }
-    
-    .form-check {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    
-    .form-check-input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--primary);
-    }
-    
-    .form-check-label {
-      font-size: 0.9rem;
-      color: var(--dark);
-    }
-    
-    .estado-grupo {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-    }
-    
-    .estado-btn {
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      transition: var(--transition);
-    }
-    
-    .estado-btn:hover {
-      transform: translateY(-2px);
-    }
-    
-    .invoice-number {
-      font-size: 0.9em;
-      color: var(--gray);
-      margin-top: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    
-    .invoice-number span {
-      font-weight: 600;
-      color: var(--primary);
-    }
-    
-    /* Estilos para las tarjetas de cotización */
-    .cotizacion-card {
-      background-color: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--box-shadow);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      border: 1px solid #e0e0e0;
-    }
-    
-    .cotizacion-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    
-    .cotizacion-title {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: var(--dark);
-    }
-    
-    .cotizacion-cliente {
-      font-weight: 500;
-    }
-    
-    .cotizacion-status {
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-    
-    .status-en_proceso {
-      background-color: var(--warning);
-      color: #333;
-    }
-    
-    .cotizacion-details {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-    
-    .cotizacion-detail-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .cotizacion-detail {
-      font-size: 0.9rem;
-    }
-    
-    .cotizacion-detail-notes {
-      grid-column: 1 / -1;
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-    }
-    
-    .cotizacion-actions {
-      display: flex;
-      gap: 0.5rem;
-      justify-content: flex-end;
-    }
-    
-    .btn-sm {
-      padding: 0.5rem 1rem;
-      font-size: 0.9rem;
-    }
-    
-    @media (max-width: 768px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      .pago-fila {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-      }
-      
-      .notas-container {
-        grid-template-columns: 1fr;
-      }
-      
-      .header {
-        padding: 1rem;
-      }
-      
-      .logo-text {
-        font-size: 1.5rem;
-      }
-      
-      .form-actions {
-        flex-direction: column;
-      }
-      
-      .btn {
-        width: 100%;
-        justify-content: center;
-      }
-      
-      .tabs {
-        flex-wrap: wrap;
-      }
-      
-      .tabs .tab,
-      .tabs .btn-calendario {
-        min-width: 120px;
-        font-size: 0.85rem;
-      }
-    }
-  </style>
+  }
 
+  @media (max-width: 576px) {
+    .calendar-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .month-title {
+      font-size: 1.4rem;
+    }
+  }
+</style>
 </head>
 <body>
-  <div class="header">
-    <div class="branding">
-      <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" class="logo-img">
-      <div class="logo-text"> <span>Cotizaciones Canceladas</span></div>
-    </div>
-    <div class="user-info">
-      <div class="avatar" id="userAvatar">CM</div>
-      <div>
-        <div id="userName">Usuario</div>
-        <div id="userRole" style="font-size: 0.8rem; color: #bdc3c7;">Rol</div>
-      </div>
-      <button class="logout-btn" id="logoutBtn">
-        <i class="fas fa-sign-out-alt"></i> Salir
-      </button>
-    </div>
+ <div class="header">
+  <div class="logo-container">
+    <img src="/img/logo-casa-mexico.png" alt="Casa México" class="logo-img">
+    <div class="logo-text">Calendario <span></span></div>
   </div>
-  
-  <div class="container">
-    <div class="tabs">
-       <a href="cotizador.html" class="tab nueva" data-tab="nueva">
-   <div class="tab nueva" data-tab="nueva">
-    <i class="fas fa-plus"></i> Nueva Cotización
+  <div class="user-info">
+    <button class="back-btn" id="backBtn">
+      <i class="fas fa-arrow-left"></i> Volver
+    </button>
   </div>
-  <a href="en-proceso.html" class="tab en-proceso" data-tab="en_proceso">
-    <i class="fas fa-spinner"></i> En Proceso <span class="tab-badge" id="badgeEnProceso">0</span>
-  </a>
-  <a href="pagadas.html" class="tab pagadas" data-tab="pagada">
-    <i class="fas fa-check-circle"></i> Pagadas <span class="tab-badge" id="badgePagadas">0</span>
-  </a>
-  <a href="impagas.html" class="tab impagas" data-tab="impaga">
-    <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
-  </a>
-  <a href="cancelado.html" class="tab canceladas active" data-tab="cancelada">
-    <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
-  </a>
-  <a href="TaxExempt.html" class="tab TaxExempt " data-tab="tax-exempt">
-    <i class="fas fa-file-invoice-dollar"></i> Tax Exempt <span class="tab-badge" id="badgeTaxExempt">0</span>
- </a>
-  <button type="button" class="tab btn-calendario" id="verCalendarioBtn">
-    <i class="fas fa-calendar-alt"></i> Ver Calendario
-  </button>
-  <a href="menu.html" class="tab menu" data-tab="menu">
-    <i class="fas fa-utensils"></i> Menú
-  </a>
 </div>
-    
-    <div class="tab-content active" id="canceladadas-tab">
-      <div class="card">
-      
-         <!-- Agregar este campo de búsqueda -->
-  <div class="form-group" style="margin-bottom: 1.5rem;">
-    <div style="display: flex; gap: 0.5rem;">
-      <input type="text" id="buscadorCotizaciones" class="form-control" 
-             placeholder="Buscar por cliente o invoice #" style="flex: 1;">
-      <button id="limpiarBusqueda" class="btn btn-secondary" style="padding: 0.5rem 1rem;">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  </div>
-  
-        <div class="cotizaciones-list" id="cotizacionesCancelado">
-          <!-- Se llenará dinámicamente -->
-        </div>
+
+  <div class="container">
+    <div class="calendar-header">
+      <div class="month-navigation">
+        <button class="nav-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
+        <div class="month-title" id="monthTitle">Mes Año</div>
+        <button class="nav-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
       </div>
+      <button class="btn-today" id="todayBtn">Hoy</button>
+    </div>
+
+    <div class="calendar-grid" id="calendarGrid">
+      <!-- Encabezados de días -->
+      <div class="day-header">Domingo</div>
+      <div class="day-header">Lunes</div>
+      <div class="day-header">Martes</div>
+      <div class="day-header">Miércoles</div>
+      <div class="day-header">Jueves</div>
+      <div class="day-header">Viernes</div>
+      <div class="day-header">Sábado</div>
+      <!-- Aquí se inyectan las celdas -->
     </div>
   </div>
-  
-  <!-- Modal para ver cotización -->
-  <div class="modal" id="cotizacionModal">
-    <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2 id="modalTitle">Detalles de Cotización</h2>
-      <div id="modalContent">
-        <!-- Contenido dinámico -->
-      </div>
-    </div>
+
+  <!-- Modal de evento -->
+<div class="modal" id="eventModal">
+  <div class="modal-content">
+    <span class="close-modal">&times;</span>
+    <h2 id="eventTitle" style="display: none;"></h2> <!-- Ocultamos el título ya que lo mostramos en el diseño interno -->
+    <div class="event-details" id="eventDetails"></div>
   </div>
-  
-  <!-- Modal para editar cotización -->
-  <div class="modal" id="modalEditar">
-    <div class="modal-content" style="max-width: 900px;">
-      <span class="close-modal">&times;</span>
-      <h2 class="card-title">
-        <i class="fas fa-edit"></i> Editar Cotización
-      </h2>
-      
-      <form id="formEditar">
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="editStatus">📊 Estado</label>
-            <select id="editStatus" class="form-control" required>
-              <option value="en_proceso">En Proceso</option>
-              <option value="pagada">Pagada</option>
-              <option value="impaga">Impaga</option>
-                <option value="cancelada">Cancelada</option>
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label for="editInvoiceNumber">📅 Número de Invoice</label>
-            <input type="text" id="editInvoiceNumber" class="form-control" readonly>
-          </div>
-          
-          <div class="form-group">
-            <label for="editFecha">📅 Fecha del Evento</label>
-            <input type="date" id="editFecha" class="form-control" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="editDia">📅 Día</label>
-            <input type="text" id="editDia" class="form-control" readonly>
-          </div>
-          
-          <div class="form-group">
-            <label for="editCliente">👤 Nombre del Cliente</label>
-            <input type="text" id="editCliente" class="form-control" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="editNumero">📱 Número de Contacto</label>
-            <input type="tel" id="editNumero" class="form-control" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="editServicio">🍽️ Tipo de Servicio</label>
-            <input type="text" id="editServicio" class="form-control" list="editServicios" required>
-            <datalist id="editServicios">
-              <option value="Catering">
-              <option value="The Golden Handmade Tortilla">
-              <option value="Full Catering with Chef Cristina Martinez">
-              <option value="Pick Up">
-              <option value="Delivery Catering">
-              <option value="Redes Sociales">
-              <option value="Donación">
-            </datalist>
-          </div>
-          
-          <div class="form-group">
-            <label for="editUbicacion">📍 Ubicación del Evento</label>
-            <input type="text" id="editUbicacion" class="form-control" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="editContacto">👤 Contacto en el Lugar</label>
-            <input type="text" id="editContacto" class="form-control">
-          </div>
-          
-          <div class="form-group">
-            <label for="editHoraEvento">⏰ Hora del Evento</label>
-            <input type="time" id="editHoraEvento" class="form-control" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="editHoraServir">⏰ Hora de Servir Alimentos</label>
-            <input type="time" id="editHoraServir" class="form-control">
-          </div>
-          
-          <div class="form-group">
-            <label for="editHoraSalida">⏰ Hora de Salida de Casa México</label>
-            <input type="time" id="editHoraSalida" class="form-control">
-          </div>
-        </div>
-        
-        <!-- Sección de platos -->
-        <div class="platos-container">
-          <h3>🍽️ Menú</h3>
-          
-          <div class="platos-categorias" id="editCategoriasMenu">
-            <button type="button" class="categoria-btn active" data-categoria="Appetizers">Appetizers</button>
-            <button type="button" class="categoria-btn" data-categoria="Tacos">Tacos Chef Cristina M.</button>
-            <button type="button" class="categoria-btn" data-categoria="Specialty">Specialty</button>
-            <button type="button" class="categoria-btn" data-categoria="Desserts">Dessert & Aguas</button>
-          </div>
-          
-          <div class="platos-list" id="editPlatosList">
-            <!-- Se llenará dinámicamente -->
-          </div>
-          
-          <div class="resumen-platos" id="editResumenPlatos" style="display: none;">
-            <h4>📋 Resumen del Pedido</h4>
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
-              <thead>
-                <tr>
-                  <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Quantity</th>
-                  <th style="text-align: left; padding: 5px; border-bottom: 1px solid #ddd;">Product</th>
-                  <th style="text-align: right; padding: 5px; border-bottom: 1px solid #ddd;">Cost</th>
-                  <th style="width: 30px;"></th>
-                </tr>
-              </thead>
-              <tbody id="editListaResumen">
-                <!-- Se llenará dinámicamente -->
-              </tbody>
-            </table>
-            
-            <div style="text-align: right;">
-              <button type="button" class="btn btn-secondary" id="editAgregarFilaBtn" style="margin-bottom: 10px;">
-                <i class="fas fa-plus"></i> Agregar Fila Manual
-              </button>
-            </div>
-            
-            <div class="resumen-linea">
-              <span class="resumen-label">Subtotal:</span>
-              <span class="resumen-valor">$<span id="editSubtotalResumen">0.00</span></span>
-            </div>
-            
-            <div class="resumen-linea" id="editTaxContainer">
-              <span class="resumen-label">
-                Tax:
-                <input type="number" id="editTaxPercentage" value="8" min="0" max="100" step="1" 
-                       class="resumen-input">%
-              </span>
-              <span class="resumen-valor">$<span id="editTaxResumen">0.00</span></span>
-            </div>
-            
-            <div class="resumen-linea" id="editGratuityContainer">
-              <span class="resumen-label">
-                Gratuity:
-                <input type="number" id="editGratuityPercentage" value="20" min="0" max="100" step="1" 
-                       class="resumen-input">%
-              </span>
-              <span class="resumen-valor">$<span id="editGratuityResumen">0.00</span></span>
-            </div>
-            
-            <div class="resumen-linea" id="editDeliveryContainer" style="display: none;">
-              <span class="resumen-label">
-                Delivery Fee:
-                <input type="number" id="editDeliveryFee" value="0" min="0" step="5" 
-                       class="resumen-input">
-              </span>
-              <span class="resumen-valor">$<span id="editDeliveryResumen">0.00</span></span>
-            </div>
-            
-            <div class="resumen-total">
-              <span class="resumen-label">Total a pagar:</span>
-              <span class="resumen-valor">$<span id="editTotalResumen">0.00</span></span>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Sección de pagos -->
-        <div class="form-group" style="grid-column: 1 / -1; margin-top: 1.5rem;">
-          <h3>💳 Pagos</h3>
-          <div id="editPagosContainer">
-            <!-- Se llenará dinámicamente -->
-          </div>
-          <button type="button" class="btn btn-secondary" id="editAgregarPagoBtn" style="margin-top: 1rem;">
-            <i class="fas fa-plus"></i> Agregar Pago
-          </button>
-        </div>
-        
-        <!-- Notas -->
-        <div class="notas-container">
-          <div class="notas-box">
-            <h4>📝 Notas Adicionales</h4>
-            <div id="editNotas" class="form-control" contenteditable="true" 
-                 style="min-height: 200px; overflow-y: auto; background: #fff; padding: 10px; border-radius: 5px; border: 1px solid #ccc; white-space: pre-wrap; font-family: monospace;">
-            </div>
-          </div>
-          
-          <div class="notas-box">
-            <h4>👨‍🍳 Notas para Cocina</h4>
-            <textarea id="editNotasCocina" class="form-control" placeholder="Instrucciones especiales para la cocina..."></textarea>
-          </div>
-        </div>
-        
-        <!-- Botones de acción -->
-        <div class="form-actions">
-          <button type="button" class="btn btn-primary" id="guardarCambios">
-            <i class="fas fa-save"></i> Guardar Cambios
-          </button>
-          
-          <button type="button" class="btn btn-info" id="editGenerarPDFCliente">
-            <i class="fas fa-file-pdf"></i> PDF Cliente
-          </button>
-          
-          <button type="button" class="btn btn-warning" id="editGenerarPDFCocina">
-            <i class="fas fa-file-pdf"></i> PDF Cocina
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-  
+</div>
+
   <!-- Loading overlay -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <p id="loadingText">Procesando...</p>
+    <p id="loadingText">Cargando calendario...</p>
   </div>
+
+  <script>
+    let currentDate = new Date();
+    let events = [];
+    let currentEvent = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      configurarEventos();
+      cargarEventos();
+    });
+
+  // 👇 Normaliza las variantes que podrían venir desde DB
+function normalizarStatus(s) {
+  const v = (s || '').toString().trim().toLowerCase();
+  if (['pagada','pagado','paid','completada','completado','payd'].includes(v)) return 'pagada';
+  if (['impaga','no pagada','unpaid','pendiente de pago','no_pagada','impago'].includes(v)) return 'impaga';
+  if (['en_proceso','en proceso','proceso','pendiente','pendiente de confirmación','pendiente_confirmacion'].includes(v)) return 'en_proceso';
+  if (['cancelado','cancelada','canceled'].includes(v)) return 'cancelado';
+  return 'en_proceso';
+}
+
+
+    async function cargarEventos() {
+      mostrarLoading('Cargando eventos...');
+      try {
+        const res = await fetch('/api/eventos');
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error || 'Error al cargar eventos');
+        
+        // Procesar eventos para asegurar formato consistente
+        events = data.eventos.map(evento => {
+          // Ajustar la fecha para evitar problemas de zona horaria
+          let fechaEvento;
+          if (evento.fecha instanceof Date) {
+            fechaEvento = new Date(evento.fecha);
+          } else if (typeof evento.fecha === 'string') {
+            // Si es string, asumimos formato YYYY-MM-DD y creamos fecha sin zona horaria
+            const dateParts = evento.fecha.split('T')[0].split('-');
+            const year = parseInt(dateParts[0]);
+            const month = parseInt(dateParts[1]) - 1; // Los meses en JS son 0-11
+            const day = parseInt(dateParts[2]);
+            fechaEvento = new Date(year, month, day);
+          } else {
+            // Si no es Date ni string, usamos la fecha actual como fallback
+            fechaEvento = new Date();
+          }
+          
+          // Ajustar la fecha para que no cambie por la zona horaria
+          fechaEvento = new Date(fechaEvento.getFullYear(), fechaEvento.getMonth(), fechaEvento.getDate());
+          
+          return {
+            ...evento,
+            _id: evento._id,
+            fecha: fechaEvento,
+            cliente: evento.cliente || 'Sin nombre',
+            servicio: evento.servicio || 'Sin servicio',
+            hora_evento: evento.hora_evento || '--:--',
+          status: normalizarStatus(evento.status)
+          };
+          
+        })
+        .filter(evento => evento.status !== 'cancelado'); 
+        console.log('Eventos cargados:', events);
+      } catch (error) {
+        console.error('Error cargando eventos:', error);
+        alert('Error al cargar eventos: ' + error.message);
+      } finally {
+        ocultarLoading();
+        renderCalendar();
+      }
+    }
+
+    function renderCalendar() {
+      const monthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio",
+                          "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+      document.getElementById('monthTitle').textContent =
+        `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+
+      const grid = document.getElementById('calendarGrid');
+      // Eliminar solo las celdas de días (mantener encabezados)
+      const dayCells = Array.from(grid.querySelectorAll('.day-cell'));
+      dayCells.forEach(cell => cell.remove());
+
+      const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+      const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      const startDay = firstDay.getDay(); // 0=Domingo, 6=Sábado
+
+      // Celdas vacías para días del mes anterior
+      for (let i = 0; i < startDay; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'day-cell';
+        grid.appendChild(emptyCell);
+      }
+
+      // Días del mes actual
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'day-cell';
+
+        // Número del día
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'day-number';
+        dayNumber.textContent = day;
+        
+        // Resaltar día actual
+        const today = new Date();
+        if (day === today.getDate() && 
+            currentDate.getMonth() === today.getMonth() && 
+            currentDate.getFullYear() === today.getFullYear()) {
+          dayNumber.style.color = 'var(--primary)';
+          dayNumber.style.fontWeight = 'bold';
+        }
+        
+        dayCell.appendChild(dayNumber);
+
+        // Filtrar eventos para este día
+        const eventosDelDia = events.filter(evento => {
+          return (
+            evento.fecha.getDate() === day &&
+            evento.fecha.getMonth() === currentDate.getMonth() &&
+            evento.fecha.getFullYear() === currentDate.getFullYear()
+          );
+        });
+
+        // Ordenar eventos por hora
+        eventosDelDia.sort((a, b) => {
+          return a.hora_evento.localeCompare(b.hora_evento);
+        });
+
+        // Mostrar eventos en la celda
+        eventosDelDia.slice(0, 3).forEach(evento => { // Mostrar máximo 3 eventos
+          const eventElement = document.createElement('div');
+          eventElement.className = `event-item ${evento.status}`;
+          eventElement.textContent = `${evento.hora_evento} - ${evento.cliente}`;
+          eventElement.addEventListener('click', () => mostrarDetalleEvento(evento));
+          dayCell.appendChild(eventElement);
+        });
+
+        // Mostrar indicador si hay más eventos
+        if (eventosDelDia.length > 3) {
+          const masEventos = document.createElement('div');
+          masEventos.className = 'event-item';
+          masEventos.textContent = `+${eventosDelDia.length - 3} más...`;
+          masEventos.style.fontStyle = 'italic';
+          dayCell.appendChild(masEventos);
+        }
+
+        grid.appendChild(dayCell);
+      }
+    }
+
+
+// Dentro del bucle donde creas los eventos:
+eventosDelDia.forEach(evento => {
+  const eventElement = document.createElement('div');
+  eventElement.className = `event-item ${evento.status || 'en_proceso'}`;
+  eventElement.textContent = `${evento.hora_evento} - ${evento.cliente}`;
+  eventElement.addEventListener('click', () => mostrarDetalleEvento(evento));
+  dayCell.appendChild(eventElement);
+});
+
+   function mostrarDetalleEvento(evento) {
+  currentEvent = evento;
   
-  <script src="js/cancelado.js"></script>
+  const statusMap = {
+  'pagada': 'Pagada',
+  'impaga': 'Impaga',
+  'en_proceso': 'En Proceso'
+};
+
+const statusText = statusMap[evento.status] || evento.status;
+
+  // Formatear fechas
+  const fecha = evento.fecha ? new Date(evento.fecha).toLocaleDateString('es-ES') : 'No especificada';
+  const createdAt = evento.createdAt ? new Date(evento.createdAt).toLocaleDateString('es-ES') : 'No especificada';
+  
+  // Generar HTML de platos
+  let platosHTML = '';
+  if (evento.platos && evento.platos.length > 0) {
+    platosHTML = evento.platos.map(plato => `
+      <tr>
+        <td style="text-align: center; padding: 8px; border-bottom: 1px solid #eee;">${plato.cantidadTexto || plato.cantidad || '-'}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${plato.nombre}</td>
+        <td style="text-align: right; padding: 8px; border-bottom: 1px solid #eee;">$${plato.precio_total?.toFixed(2) || '0.00'}</td>
+      </tr>
+    `).join('');
+  } else {
+    platosHTML = '<tr><td colspan="3" style="padding: 8px; text-align: center;">No hay platos registrados</td></tr>';
+  }
+  
+  // Generar HTML de pagos
+  let pagosHTML = '';
+  if (evento.pagos && evento.pagos.length > 0) {
+    pagosHTML = evento.pagos.map(pago => `
+      <tr>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${new Date(pago.fecha).toLocaleDateString('es-ES')}</td>
+        <td style="text-align: right; padding: 8px; border-bottom: 1px solid #eee;">$${pago.monto?.toFixed(2) || '0.00'}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${pago.metodo}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #eee;">${pago.notas || ''}</td>
+      </tr>
+    `).join('');
+  } else {
+    pagosHTML = '<tr><td colspan="4" style="padding: 8px; text-align: center;">No hay pagos registrados</td></tr>';
+  }
+
+  const totalPagado = Array.isArray(evento.pagos) 
+    ? evento.pagos.reduce((suma, pago) => suma + (parseFloat(pago.monto)) || 0, 0)
+    : 0;
+  const saldoPendiente = Math.max(0, (evento.precioTotal || 0) - totalPagado);
+
+  // HTML principal
+  const detallesHTML = `
+    <div style="font-family: 'Poppins', sans-serif; width: 100%; background: #fff; border-radius: 8px; overflow: hidden;">
+      <!-- Encabezado con logo -->
+
+      
+      <div style="background: #3a6a8a; padding: 1.5rem; text-align: center; border-bottom: 4px solid #e63946;">
+        <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" style="max-height: 80px; margin-bottom: 0.5rem;">
+        <h2 style="margin: 0; color: white; font-weight: 600;">Chef Cristina Martinez Catering</h2>
+        <h3 style="margin: 0.5rem 0 0; color: white; font-weight: 400;">Detalle del Evento</h3>
+
+        
+      </div>
+<div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+  <strong style="display: inline-block; width: 150px; color: #555;">Estado:</strong>
+  <span class="status-badge ${evento.status}">${statusText}</span>
+</div>
+      
+<div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; position: relative;">
+  <!-- Información de creación (esquina superior derecha) -->
+  <div style="position: absolute; top: 1rem; right: 1rem; text-align: right; font-size: 0.9rem; color: #555;">
+    <p style="margin: 0;"><strong>Creado el:</strong> ${createdAt}</p>
+    <p style="margin: 0;"><strong>Por:</strong> ${evento.creadoPor || 'Desconocido'}</p>
+  </div>
+      <!-- Contenido principal -->
+      <div style="padding: 1.5rem;">
+        <!-- Información básica -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+          <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+            <h4 style="margin-top: 0; color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">Información del Cliente</h4>
+            <p><strong>Nombre:</strong> ${evento.cliente || 'No especificado'}</p>
+            <p><strong>Teléfono:</strong> ${evento.numero || 'No especificado'}</p>
+            <p><strong>Contacto:</strong> ${evento.contacto || 'No especificado'}</p>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+            <h4 style="margin-top: 0; color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">.</h4>
+            <p><strong>Fecha:</strong> ${fecha} (${evento.dia || 'No especificado'})</p>
+            <p><strong>Servicio:</strong> ${evento.servicio || 'No especificado'}</p>
+            <p><strong>Ubicación:</strong> ${evento.ubicacion || 'No especificado'}</p>
+            <p><strong>Hora Evento:</strong> ${evento.hora_evento || 'No especificado'}</p>
+          </div>
+        </div>
+
+        <!-- Platos -->
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">Menú Seleccionado</h4>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+              <tr style="background: #3a6a8a; color: white;">
+                <th style="padding: 10px; text-align: center;">Cantidad</th>
+                <th style="padding: 10px; text-align: left;">Plato</th>
+                <th style="padding: 10px; text-align: right;">Precio</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${platosHTML}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagos -->
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">Historial de Pagos</h4>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+            <thead>
+              <tr style="background: #3a6a8a; color: white;">
+                <th style="padding: 10px; text-align: left;">Fecha</th>
+                <th style="padding: 10px; text-align: right;">Monto</th>
+                <th style="padding: 10px; text-align: left;">Método</th>
+                <th style="padding: 10px; text-align: left;">Notas</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pagosHTML}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Resumen de pagos -->
+       
+
+
+  <h4 style="margin-top: 0; color: #3a6a8a; border-bottom: 2px solid #3a6a8a; padding-bottom: 0.5rem;">Total a pagar</h4>
+  
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div>
+      <p><strong>Subtotal:</strong> $${evento.subtotal?.toFixed(2) || '0.00'}</p>
+      <p><strong>Tax (${evento.taxPercentage || 8}%):</strong> $${evento.tax?.toFixed(2) || '0.00'}</p>
+      <p><strong>Propina (${evento.gratuityPercentage || 20}%):</strong> $${evento.gratuity?.toFixed(2) || '0.00'}</p>
+      ${evento.deliveryFee ? `<p><strong>Delivery Fee:</strong> $${evento.deliveryFee.toFixed(2)}</p>` : ''}
+      <p style="font-weight: bold; font-size: 1.1rem;"><strong>Total:</strong> $${evento.precioTotal?.toFixed(2) || '0.00'}</p>
+    </div>
+  </div>
+
+  <!-- Estado de pagos (nuevo item) -->
+  <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #ccc;">
+    <h5 style="margin-top: 0; color: #3a6a8a;">Estado de Pagos</h5>
+    <p><strong>Total Pagado:</strong> $${totalPagado.toFixed(2)}</p>
+    ${saldoPendiente > 0 ? `
+      <p style="color: #c1121f; font-weight: bold;"><strong>Saldo Pendiente:</strong> $${saldoPendiente.toFixed(2)}</p>
+    ` : `
+      <p style="color: #2ecc71; font-weight: bold;"><strong>Pagado completamente</strong></p>
+    `}
+  </div>
+</div>
+
+        <!-- Notas -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; border-left: 4px solid #3a6a8a;">
+            <h5 style="margin-top: 0; color: #3a6a8a;">Notas Generales</h5>
+            <p>${evento.notas || 'Ninguna'}</p>
+          </div>
+          <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; border-left: 4px solid #e63946;">
+            <h5 style="margin-top: 0; color: #3a6a8a;">Notas para Cocina</h5>
+            <p>${evento.notasCocina || 'Ninguna'}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('eventDetails').innerHTML = detallesHTML;
+  document.getElementById('eventModal').style.display = 'flex';
+}
+
+
+function configurarEventos() {
+      // Navegación del calendario
+      document.getElementById('prevMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar();
+      });
+
+      document.getElementById('nextMonth').addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar();
+      });
+
+      document.getElementById('todayBtn').addEventListener('click', () => {
+        currentDate = new Date();
+        renderCalendar();
+      });
+
+      // Botón volver
+      document.getElementById('backBtn').addEventListener('click', () => {
+        window.location.href = '/cotizador';
+      });
+
+      // Cerrar modal
+      document.querySelector('.close-modal').addEventListener('click', () => {
+        document.getElementById('eventModal').style.display = 'none';
+      });
+
+      // Cerrar modal haciendo clic fuera
+      window.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('eventModal')) {
+          document.getElementById('eventModal').style.display = 'none';
+        }
+      });
+
+     
+
+    
+    }
+
+    function mostrarLoading(mensaje) {
+      document.getElementById('loadingText').textContent = mensaje;
+      document.getElementById('loadingOverlay').style.display = 'flex';
+    }
+
+    function ocultarLoading() {
+      document.getElementById('loadingOverlay').style.display = 'none';
+    }
+  </script>
 </body>
 </html>

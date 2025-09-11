@@ -1955,18 +1955,25 @@ if (cotizacion.rentalFee && cotizacion.rentalFee > 0) {
                 }
                 break;
 
-              case 'Tacos':
-                if (categoria === 'Tacos') {
-  selectInput.value = plato.cantidadTexto?.includes('T') ? '30' : '15';
-}
+             case 'Tacos':
+  if (categoria === 'Tacos') {
+    if (plato.cantidadTexto?.includes('/2')) {
+      selectInput.value = '15'; // medio T = 15 personas
+    } else {
+      selectInput.value = '30'; // T = 30 personas
+    }
+  }
+  break;
 
-                break;
-
-              case 'Specialty':
-                if (categoria === 'Specialty') {
-  selectInput.value = plato.cantidadTexto?.includes('T') ? '20' : '10';
-}
-                break;
+case 'Specialty':
+  if (categoria === 'Specialty') {
+    if (plato.cantidadTexto?.includes('10')) {
+      selectInput.value = '10'; // 10 pcs
+    } else {
+      selectInput.value = '20'; // 20 pcs
+    }
+  }
+  break;
 
               default:
                 selectInput.value = 'half';
@@ -2622,4 +2629,3 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
-

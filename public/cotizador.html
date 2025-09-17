@@ -1025,7 +1025,9 @@ a.tab {
               <button class="categoria-btn" data-categoria="Specialty">Specialty</button>
               <button class="categoria-btn" data-categoria="Desserts">Dessert & Aguas</button>
                <button class="categoria-btn" data-categoria="Chef Cristina Experience">Chef Cristina Experience</button>
-            </div>
+              <button class="categoria-btn" data-categoria="Barbacoa">Barbacoa</button>
+
+              </div>
             
            <div class="platos-list" id="platosList">
   <!-- Los platos se cargarán dinámicamente aquí -->
@@ -1648,7 +1650,16 @@ function actualizarResumenPlatos() {
   
   cantidadTexto = `${cantidad} T`;
 }
-
+// En la función actualizarResumenPlatos(), modifica el caso para Barbacoa:
+ else if (categoria === 'Barbacoa') {
+  // Para Barbacoa, usamos el precio base directamente (ya que son platos separados)
+  // y determinamos la cantidadTexto basado en el nombre del plato
+  if (nombre.toLowerCase().includes('1/2') || nombre.toLowerCase().includes('medio')) {
+    cantidadTexto = `${cantidad}/2 T`; // 1/2T para ½ Kg
+  } else {
+    cantidadTexto = `${cantidad}T`; // 1T para 1 Kg
+  }
+}
 
 
 
@@ -2381,7 +2392,7 @@ async function cargarPlatosDesdeBD() {
     const platosList = document.getElementById('platosList');
     platosList.innerHTML = '';
     
-    const categorias = ['Appetizers', 'Tacos', 'Specialty', 'Desserts', 'Chef Cristina Experience'];
+    const categorias = ['Appetizers', 'Tacos', 'Specialty', 'Desserts', 'Chef Cristina Experience', 'Barbacoa'];
     
     categorias.forEach(categoria => {
       const platosCategoria = data.platos.filter(p => p.categoria === categoria);
@@ -2494,6 +2505,25 @@ async function cargarPlatosDesdeBD() {
         </div>
       `;
     }
+     else if (categoria === 'Barbacoa') {
+  platoItem.innerHTML = `
+    <div class="plato-header">
+      <input type="checkbox" id="plato-${plato._id}"
+             data-nombre="${plato.nombre}"
+             data-precio="${plato.precio_full}">
+      <label for="plato-${plato._id}" class="plato-nombre">${plato.nombre}</label>
+    </div>
+    <div class="plato-precio">$${plato.precio_full.toFixed(2)}</div>
+    <div class="plato-cantidad">
+      <label>Cantidad:</label>
+      <input type="number" min="1" value="1" class="cantidad-plato">
+    </div>
+    ${plato.descripcion ? `<div class="plato-descripcion" style="font-size: 0.8rem; color: var(--gray);">
+      ${plato.descripcion}
+    </div>` : ''}
+  `;
+}
+
 if (categoria === 'Chef Cristina Experience') {
   const precioInput = platoItem.querySelector('.precio-personalizado');
   const cantidadInput = platoItem.querySelector('.cantidad-plato');

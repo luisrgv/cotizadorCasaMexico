@@ -9,21 +9,28 @@ const PlatoSchema = new mongoose.Schema({
   categoria: {
     type: String,
     required: true,
-    enum: ['Appetizers', 'Tacos', 'Specialty', 'Desserts']
+    enum: ['Appetizers', 'Tacos', 'Specialty', 'Desserts', 'Chef Cristina Experience', 'Barbacoa']
   },
   precio_15: {
     type: Number,
-    required: function() { return this.categoria !== 'Desserts'; },
+    required: function() {
+      return this.categoria === 'Appetizers' || this.categoria === 'Tacos' || this.categoria === 'Specialty';
+    },
     min: 0
   },
   precio_30: {
     type: Number,
-    required: function() { return this.categoria !== 'Desserts'; },
+    required: function() {
+      return this.categoria === 'Appetizers' || this.categoria === 'Tacos' || this.categoria === 'Specialty';
+    },
     min: 0
   },
   precio_full: {
     type: Number,
-    required: function() { return this.categoria === 'Desserts'; },
+    required: function () {
+      // Ahora obligatorio SOLO para 'Desserts' y 'Barbacoa'
+      return this.categoria === 'Desserts' || this.categoria === 'Barbacoa';
+    },
     min: 0
   },
   descripcion: {
@@ -45,5 +52,7 @@ PlatoSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
+PlatoSchema.index({ nombre: 1, categoria: 1 }, { unique: true });
+PlatoSchema.index({ nombre: 1 }, { unique: true });
 
 module.exports = mongoose.model('Plato', PlatoSchema);

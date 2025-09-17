@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -703,6 +702,7 @@
         <div class="category-tab" data-category="Specialty">Specialty</div>
         <div class="category-tab" data-category="Desserts">Desserts</div>
         <div class="category-tab" data-category="Chef Cristina Experience">Chef Cristina Experience</div>
+        <div class="category-tab" data-category="Barbacoa">Barbacoa</div>
       </div>
       
       <!-- Contenido de categorías -->
@@ -751,6 +751,13 @@
           <p class="category-description">Servicios de la Chef Cristina M.</p>
           <div id="chefCristinaList" class="platos-container"></div>
       </div>
+      <div class="category-content" data-category="Barbacoa">
+  <div class="category-header">
+    <h3 class="category-title">Barbacoa</h3>
+  </div>
+  <p class="category-description">Agrega como platos: "Barbacoa - 1/2 Kilo (2p)" o "Barbacoa - 1 Kilo (5p)". Precio único por presentación.</p>
+  <div id="barbacoaList" class="platos-container"></div>
+</div>
     </div>
   </div>
   
@@ -770,6 +777,8 @@
             <option value="Specialty">Specialty (10/20 PCS)</option>
             <option value="Desserts">Dessert & Aguas (Full)</option>
             <option value="Chef Cristina Experience">Chef Cristina Experience</option>
+            <option value="Barbacoa">Barbacoa</option>
+
           </select>
         </div>
         
@@ -870,6 +879,8 @@
       document.getElementById('specialtyList').innerHTML = '';
       document.getElementById('dessertsList').innerHTML = '';
       document.getElementById('chefCristinaList').innerHTML = '';
+      document.getElementById('barbacoaList').innerHTML = '';
+
       
       if (platos.length === 0) {
         const emptyMessage = document.createElement('div');
@@ -892,6 +903,8 @@
       renderizarCategoria('Specialty', document.getElementById('specialtyList'));
       renderizarCategoria('Desserts', document.getElementById('dessertsList'));
       renderizarCategoria('Chef Cristina Experience', document.getElementById('chefCristinaList'));
+      renderizarCategoria('Barbacoa', document.getElementById('barbacoaList'));
+
     }
     
     // Función para renderizar una categoría específica
@@ -949,7 +962,7 @@
         const pricesContainer = document.createElement('div');
         pricesContainer.className = 'plato-prices';
         
-        if (categoria === 'Desserts') {
+        if (categoria === 'Desserts'|| categoria === 'Barbacoa') {
           if (plato.precio_full) {
             const priceItem = document.createElement('div');
             priceItem.className = 'price-item';
@@ -1053,7 +1066,15 @@
       </div>
     `;
   } 
-      
+   if (categoria === 'Barbacoa') {
+  preciosContainer.innerHTML = `
+    <div class="form-group col-md-12">
+      <label for="platoPrecioFull">Precio</label>
+      <input type="number" step="0.01" min="0" id="platoPrecioFull" class="form-control precio-input" required>
+    </div>
+  `;
+}
+   
       // Actualizar el modal para que los nuevos campos se muestren correctamente
       const modal = document.getElementById('platoModal');
       if (modal.style.display === 'flex') {
@@ -1079,7 +1100,7 @@
     actualizarCamposPrecio(); // Esto generará los campos de precio
     
     // Rellenar precios según la categoría
-    if (plato.categoria === 'Desserts' || plato.categoria === 'Chef Cristina Experience') {
+    if (plato.categoria === 'Desserts' || plato.categoria === 'Chef Cristina Experience'|| plato.categoria === 'Barbacoa') {
       const precioFullInput = document.getElementById('platoPrecioFull');
       if (precioFullInput) precioFullInput.value = plato.precio_full ?? '';
     } else {
@@ -1117,7 +1138,7 @@
       };
       
        // Manejo específico para Chef Cristina Experience
-  if (categoria === 'Chef Cristina Experience' || categoria === 'Desserts') {
+  if (categoria === 'Chef Cristina Experience' || categoria === 'Desserts'|| categoria === 'Barbacoa') {
     platoData.precio_full = parseFloat(document.getElementById('platoPrecioFull').value);
   } else {
     platoData.precio_15 = parseFloat(document.getElementById('platoPrecio15').value);

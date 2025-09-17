@@ -906,11 +906,21 @@ app.post('/api/platos', requireLogin, async (req, res) => {
       descripcion
     };
     
-    if (categoria === 'Desserts') {
-      platoData.precio_full = precio_full;
+    // Si la categoría maneja precio full (Desserts o Barbacoa o Chef Cristina Experience)
+    if (categoria === 'Desserts' || categoria === 'Barbacoa' || categoria === 'Chef Cristina Experience') {
+      // Si el frontend envía precio_full, lo convertimos a Number y lo asignamos.
+      if (typeof precio_full !== 'undefined' && precio_full !== null && precio_full !== '') {
+        platoData.precio_full = Number(precio_full);
+      }
+      // No asignamos precio_15/30 para estas categorías
     } else {
-      platoData.precio_15 = precio_15;
-      platoData.precio_30 = precio_30;
+      // Categorías que usan precio_15 y precio_30
+      if (typeof precio_15 !== 'undefined' && precio_15 !== null && precio_15 !== '') {
+        platoData.precio_15 = Number(precio_15);
+      }
+      if (typeof precio_30 !== 'undefined' && precio_30 !== null && precio_30 !== '') {
+        platoData.precio_30 = Number(precio_30);
+      }
     }
     
     const plato = new Plato(platoData);
@@ -919,7 +929,7 @@ app.post('/api/platos', requireLogin, async (req, res) => {
     res.json({ success: true, plato });
   } catch (error) {
     console.error('Error al crear plato:', error);
-    res.status(500).json({ error: 'Error al crear plato' });
+    res.status(500).json({ error: 'Error al crear plato', detalles: error.message });
   }
 });
 
@@ -933,11 +943,20 @@ app.put('/api/platos/:id', requireLogin, async (req, res) => {
       descripcion
     };
     
-    if (categoria === 'Desserts') {
-      platoData.precio_full = precio_full;
+    if (categoria === 'Desserts' || categoria === 'Barbacoa' || categoria === 'Chef Cristina Experience') {
+      if (typeof precio_full !== 'undefined' && precio_full !== null && precio_full !== '') {
+        platoData.precio_full = Number(precio_full);
+      } else {
+        // Si viene vacío explícitamente, eliminamos la propiedad para no pasar undefined
+        // (dejamos que mongoose maneje la falta de valor)
+      }
     } else {
-      platoData.precio_15 = precio_15;
-      platoData.precio_30 = precio_30;
+      if (typeof precio_15 !== 'undefined' && precio_15 !== null && precio_15 !== '') {
+        platoData.precio_15 = Number(precio_15);
+      }
+      if (typeof precio_30 !== 'undefined' && precio_30 !== null && precio_30 !== '') {
+        platoData.precio_30 = Number(precio_30);
+      }
     }
     
     const plato = await Plato.findByIdAndUpdate(req.params.id, platoData, { new: true });
@@ -949,9 +968,10 @@ app.put('/api/platos/:id', requireLogin, async (req, res) => {
     res.json({ success: true, plato });
   } catch (error) {
     console.error('Error al actualizar plato:', error);
-    res.status(500).json({ error: 'Error al actualizar plato' });
+    res.status(500).json({ error: 'Error al actualizar plato', detalles: error.message });
   }
 });
+
 
 app.delete('/api/platos/:id', requireLogin, async (req, res) => {
   try {

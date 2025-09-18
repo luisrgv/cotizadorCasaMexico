@@ -1655,9 +1655,9 @@ function actualizarResumenPlatos() {
   // Para Barbacoa, usamos el precio base directamente (ya que son platos separados)
   // y determinamos la cantidadTexto basado en el nombre del plato
   if (nombre.toLowerCase().includes('1/2') || nombre.toLowerCase().includes('medio')) {
-    cantidadTexto = `${cantidad}/2 T`; // 1/2T para ½ Kg
+    cantidadTexto = `${cantidad}/2 Kg`; // 1/2T para ½ Kg
   } else {
-    cantidadTexto = `${cantidad}T`; // 1T para 1 Kg
+    cantidadTexto = `${cantidad}Kg`; // 1T para 1 Kg
   }
 }
 

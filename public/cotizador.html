@@ -1648,7 +1648,7 @@ function actualizarResumenPlatos() {
   cantidadTexto = `${cantidad}T`;
 } else if (categoria === 'Desserts') {
   
-  cantidadTexto = `${cantidad} U`;
+  cantidadTexto = `${cantidad} T`;
 }
 // En la función actualizarResumenPlatos(), modifica el caso para Barbacoa:
  else if (categoria === 'Barbacoa') {
@@ -1664,7 +1664,18 @@ function actualizarResumenPlatos() {
 
 
 
-    const precioTotal = parseFloat((precioPorPersona * cantidad).toFixed(2));
+   // --- REEMPLAZA CÁLCULO DE precioTotal 
+const precioModificadoRaw = checkbox.getAttribute('data-precio-modificado');
+let precioTotal;
+if (precioModificadoRaw !== null && precioModificadoRaw !== undefined && precioModificadoRaw !== '') {
+  // Si la cotización trae un precio_total guardado, lo usamos como total de línea
+  precioTotal = parseFloat(precioModificadoRaw);
+} else {
+  // Comportamiento original: precio por persona * cantidad
+  precioTotal = parseFloat((precioPorPersona * cantidad).toFixed(2));
+}
+// ----------------------------------------------------------------
+
 
     if (!isNaN(precioTotal) && nombre && categoria) {
       platosSeleccionados.push({
@@ -1953,7 +1964,13 @@ if (cotizacion.rentalFee && cotizacion.rentalFee > 0) {
           
           // Establecer cantidad para categorías especiales
           cantidadInput.value = plato.cantidad || 1;
-          
+          // --- INSERTAR AQUI ---
+if (plato.precio_total !== undefined && !isNaN(plato.precio_total)) {
+  // guardamos el total de línea (precio_total) en el checkbox para que actualizarResumenPlatos lo use
+  checkbox.setAttribute('data-precio-modificado', plato.precio_total);
+}
+// ----------------------
+
           // Establecer valor en el selectInput
           if (selectInput) {
             switch (categoria) {
@@ -2659,4 +2676,3 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
-

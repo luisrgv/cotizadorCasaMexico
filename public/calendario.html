@@ -614,7 +614,7 @@ function normalizarStatus(s) {
         eventosDelDia.slice(0, 3).forEach(evento => { // Mostrar máximo 3 eventos
           const eventElement = document.createElement('div');
           eventElement.className = `event-item ${evento.status}`;
-          eventElement.textContent = `${evento.hora_evento} - ${evento.cliente}`;
+          eventElement.textContent = `Invoice ${evento.invoiceNumber} - ${evento.cliente}`;
           eventElement.addEventListener('click', () => mostrarDetalleEvento(evento));
           dayCell.appendChild(eventElement);
         });
@@ -654,9 +654,9 @@ eventosDelDia.forEach(evento => {
 const statusText = statusMap[evento.status] || evento.status;
 
   // Formatear fechas
-  const fecha = evento.fecha ? new Date(evento.fecha).toLocaleDateString('es-ES') : 'No especificada';
-  const createdAt = evento.createdAt ? new Date(evento.createdAt).toLocaleDateString('es-ES') : 'No especificada';
-  
+ const fecha = evento.fecha ? new Date(evento.fecha).toLocaleDateString('en-US') : 'No especificada';
+const createdAt = evento.createdAt ? new Date(evento.createdAt).toLocaleDateString('en-US') : 'No especificada';
+
   // Generar HTML de platos
   let platosHTML = '';
   if (evento.platos && evento.platos.length > 0) {
@@ -699,9 +699,8 @@ const statusText = statusMap[evento.status] || evento.status;
       
       <div style="background: #3a6a8a; padding: 1.5rem; text-align: center; border-bottom: 4px solid #e63946;">
         <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" style="max-height: 80px; margin-bottom: 0.5rem;">
-        <h2 style="margin: 0; color: white; font-weight: 600;">Chef Cristina Martinez Catering</h2>
-        <h3 style="margin: 0.5rem 0 0; color: white; font-weight: 400;">Detalle del Evento</h3>
-
+               <h3 style="margin: 0.5rem 0 0; color: white; font-weight: 600;">Detalle del Evento</h3>
+                 <p><strong>INVOICE # :</strong> ${evento.invoiceNumber || 'No especificado'}</p>
         
       </div>
 <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">

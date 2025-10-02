@@ -1654,12 +1654,10 @@ function actualizarResumenPlatos() {
 else if (categoria === 'Barbacoa') {
   const nombreLower = nombre.toLowerCase();
 
-  if (
-    nombreLower.includes('1/2') ||
-    nombreLower.includes('medio') ||
-    nombreLower.includes('half')
-  ) {
-    cantidadTexto = `${cantidad}/2 T`; // Medio → 1/2 T
+  if (nombreLower.includes('1/2') || nombreLower.includes('medio')) {
+    cantidadTexto = `${cantidad}/2 Kg`; // Medio → 1/2 Kg
+  } else if (nombreLower.includes('half')) {
+    cantidadTexto = `${cantidad}/2 T`; // Half → 1/2 T
   } else if (
     nombreLower.includes('per tray') ||
     nombreLower.includes('por bandeja') ||

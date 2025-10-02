@@ -1651,13 +1651,24 @@ function actualizarResumenPlatos() {
   cantidadTexto = `${cantidad} U`;
 }
 // En la función actualizarResumenPlatos(), modifica el caso para Barbacoa:
- else if (categoria === 'Barbacoa') {
-  // Para Barbacoa, usamos el precio base directamente (ya que son platos separados)
-  // y determinamos la cantidadTexto basado en el nombre del plato
-  if (nombre.toLowerCase().includes('1/2') || nombre.toLowerCase().includes('medio')) {
-    cantidadTexto = `${cantidad}/2 Kg`; // 1/2T para ½ Kg
+else if (categoria === 'Barbacoa') {
+  const nombreLower = nombre.toLowerCase();
+
+  if (
+    nombreLower.includes('1/2') ||
+    nombreLower.includes('medio') ||
+    nombreLower.includes('half')
+  ) {
+    cantidadTexto = `${cantidad}/2 T`; // Medio → 1/2 T
+  } else if (
+    nombreLower.includes('per tray') ||
+    nombreLower.includes('por bandeja') ||
+    nombreLower.includes('bandeja') ||
+    nombreLower.includes('tray')
+  ) {
+    cantidadTexto = `${cantidad} T`; // Por bandeja → 1 T
   } else {
-    cantidadTexto = `${cantidad}Kg`; // 1T para 1 Kg
+    cantidadTexto = `${cantidad} Kg`; // Por defecto → 1 Kg
   }
 }
 
@@ -2676,4 +2687,3 @@ function inicializarBotonesEstado() {
 
 </body>
 </html>
-

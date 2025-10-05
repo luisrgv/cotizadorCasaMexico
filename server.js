@@ -561,6 +561,8 @@ const generarPDF = (tipo, datos) => {
       agregarFila('Contacto en lugar:', datos.contacto, false, true);
       agregarFila('Hora de servir:', datos.hora_servir, false, true);
       agregarFila('Hora de salida:', datos.hora_salida, false, true);
+      agregarFila('Número de personas:', datos.numeroPersonas || '-', true, true);
+
       
       // Status con etiqueta en negrita pero valor con color especial
       doc.font('Helvetica-Bold') // Etiqueta en negrita

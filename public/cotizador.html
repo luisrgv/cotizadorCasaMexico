@@ -981,12 +981,7 @@ a.tab {
                 <option value="Donación">
               </datalist>
             </div>
-            <div class="form-check">
-  <input class="form-check-input" type="checkbox" id="chkDeliveryManual">
-  <label class="form-check-label" for="chkDeliveryManual">
-    Delivery Fee
-  </label>
-</div>
+
 
             <div class="form-group">
               <label for="ubicacion">📍 Ubicación del Evento</label>
@@ -1012,6 +1007,11 @@ a.tab {
             <div class="form-group">
               <label for="hora_salida">⏰ Hora de Salida de Casa México</label>
               <input type="time" id="hora_salida" class="form-control">
+            </div>
+
+             <div class="form-group">
+              <label for="numeroPersonas">👤 Número de personas</label>
+              <input type="number" id="numeroPersonas" class="form-control" required>
             </div>
           </div>
           
@@ -1090,7 +1090,12 @@ a.tab {
     <input class="form-check-input" type="checkbox" id="chkRentalManual">
     <label class="form-check-label" for="chkRentalManual">Rental Fee</label>
   </div>
-
+            <div class="form-check">
+  <input class="form-check-input" type="checkbox" id="chkDeliveryManual">
+  <label class="form-check-label" for="chkDeliveryManual">
+    Delivery Fee
+  </label>
+  </div>
 
 <div class="resumen-linea" id="rentalContainer" style="display:none; flex-direction:column; gap:6px;">
   <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
@@ -1904,6 +1909,8 @@ inicializarBotonesEstado();
     document.getElementById('servicio').value = cotizacion.servicio || '';
     document.getElementById('ubicacion').value = cotizacion.ubicacion || '';
     document.getElementById('contacto').value = cotizacion.contacto || '';
+    document.getElementById('numeroPersonas').value = cotizacion.numeroPersonas || 0;
+
 
     // Establecer los valores guardados de TAX y Gratuity
 document.getElementById('taxPercentage').value = cotizacion.taxPercentage || 0;
@@ -2174,6 +2181,7 @@ async function generarPDF(tipo) {
     hora_evento: document.getElementById('hora_evento').value,
     hora_servir: document.getElementById('hora_servir').value,
     hora_salida: document.getElementById('hora_salida').value,
+     numeroPersonas: parseInt(document.getElementById('numeroPersonas').value) || 0,
     servicio: document.getElementById('servicio').value,
     ubicacion: document.getElementById('ubicacion').value,
     contacto: document.getElementById('contacto').value,
@@ -2300,6 +2308,8 @@ async function guardarCotizacion() {
     contacto: document.getElementById('contacto').value,
     status: document.getElementById('estadoHidden').value,
      marca: document.getElementById('marcaHidden').value,
+    numeroPersonas: parseInt(document.getElementById('numeroPersonas').value) || 0,
+    
 
      platos: platosSeleccionados.map(p => {
       const platoItem = document.querySelector(`.plato-item[data-categoria="${p.categoria}"] input[data-nombre="${p.nombre}"]`)?.closest('.plato-item');

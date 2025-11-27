@@ -259,7 +259,8 @@ const generarPDF = (tipo, datos) => {
     // Formato de fecha
     const fechaObj = new Date(datos.fecha);
     fechaObj.setMinutes(fechaObj.getMinutes() + fechaObj.getTimezoneOffset());
-    const fechaFormateada = fechaObj.toLocaleDateString('es-ES');
+   const fechaFormateada = fechaObj.toLocaleDateString('en-US');
+
 
     // Agrega fila de texto - MODIFICADO: Etiquetas en negrita hasta Status
     const agregarFila = (label, value, isBold = false, isLabelBold = false) => {
@@ -994,3 +995,4 @@ app.delete('/api/platos/:id', requireLogin, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor en http://localhost:${PORT}`);
 });
+

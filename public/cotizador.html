@@ -1096,6 +1096,21 @@ a.tab {
     Delivery Fee
   </label>
   </div>
+  <div class="form-check">
+  <input class="form-check-input" type="checkbox" id="chkServiceFee">
+  <label class="form-check-label">
+    Service Fee
+  </label>
+</div>
+
+<div class="resumen-linea" id="serviceContainer" style="display:none;">
+  <span class="resumen-label">
+    Service Fee:
+    <input type="number" id="servicePercentage" value="10" min="0" step="1" class="resumen-input"> %
+  </span>
+
+  <span class="resumen-valor">$<span id="serviceResumen">0.00</span></span>
+</div>
 
 <div class="resumen-linea" id="rentalContainer" style="display:none; flex-direction:column; gap:6px;">
   <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
@@ -1245,6 +1260,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 document.getElementById('rentalFee').addEventListener('input', actualizarTotalesDesdeTabla);
 
+document.getElementById("chkServiceFee").addEventListener("change", function () {
+  const cont = document.getElementById("serviceContainer");
+  cont.style.display = this.checked ? "flex" : "none";
+  actualizarTotalesDesdeTabla();
+});
 
   // Verificar sesión
   await verificarSesion();
@@ -1575,11 +1595,19 @@ const rentalFee = (document.getElementById('chkRentalManual')?.checked)
     ? (parseFloat(document.getElementById('rentalFee')?.value) || 0)
     : 0;
 
-  const total = subtotal + tax + gratuity + deliveryFee + rentalFee;
+const servicePercentage = document.getElementById('chkServiceFee').checked
+  ? parseFloat(document.getElementById('servicePercentage').value) || 0
+  : 0;
+
+const serviceFee = subtotal * (servicePercentage / 100);
+  
+  
+  const total = subtotal + tax + gratuity + serviceFee + deliveryFee + rentalFee;
   
   document.getElementById('subtotalResumen').textContent = subtotal.toFixed(2);
   document.getElementById('taxResumen').textContent = tax.toFixed(2);
   document.getElementById('gratuityResumen').textContent = gratuity.toFixed(2);
+  document.getElementById('serviceResumen').textContent = serviceFee.toFixed(2);
   document.getElementById('deliveryResumen').textContent = deliveryFee.toFixed(2);
   document.getElementById('rentalResumen').textContent = rentalFee.toFixed(2);
   document.getElementById('totalResumen').textContent = total.toFixed(2);
@@ -1947,6 +1975,12 @@ if (cotizacion.rentalFee && cotizacion.rentalFee > 0) {
       document.getElementById('deliveryFee').value = cotizacion.deliveryFee;
     }
 
+    if (cotizacion.serviceFee > 0) {
+  document.getElementById("chkServiceFee").checked = true;
+  document.getElementById("serviceContainer").style.display = "flex";
+  document.getElementById("servicePercentage").value = cotizacion.servicePercentage || 10;
+}
+
     document.getElementById('chkDeliveryManual').addEventListener('change', function () {
       document.getElementById('deliveryContainer').style.display = this.checked ? 'flex' : 'none';
       actualizarResumenPlatos();
@@ -2094,7 +2128,8 @@ case 'Specialty':
     document.getElementById('taxPercentage').addEventListener('change', actualizarTotalesDesdeTabla);
     document.getElementById('gratuityPercentage').addEventListener('change', actualizarTotalesDesdeTabla);
     document.getElementById('deliveryFee').addEventListener('change', actualizarTotalesDesdeTabla);
-    
+     document.getElementById('servicePercentage').addEventListener('change', actualizarTotalesDesdeTabla);
+
     document.querySelectorAll('#platosList input[type="checkbox"]').forEach(checkbox => {
       checkbox.addEventListener('change', function() {
         actualizarResumenPlatos();
@@ -2189,9 +2224,13 @@ async function generarPDF(tipo) {
     marca: document.getElementById('marcaHidden').value,
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
     gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) ,
+    servicePercentage: document.getElementById('chkServiceFee').checked
+  ? (parseFloat(document.getElementById('servicePercentage').value) || 0)
+  : 0,
+serviceFee: 0,
     rentalFee: document.getElementById('chkRentalManual').checked ? (parseFloat(document.getElementById('rentalFee').value) || 0) : 0,
 rentalDescripcion: document.getElementById('rentalDescripcion')?.value?.trim() || '',
-
+    
     deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
       (parseFloat(document.getElementById('deliveryFee').value)) || 0 : 0,
     notas: document.getElementById('notasArea').innerText,
@@ -2252,7 +2291,8 @@ rentalDescripcion: document.getElementById('rentalDescripcion')?.value?.trim() |
   datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
   datos.tax = datos.subtotal * (datos.taxPercentage / 100);
   datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
-  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee + datos.rentalFee;
+  datos.serviceFee = datos.subtotal * (datos.servicePercentage / 100);
+  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.serviceFee + datos.deliveryFee + datos.rentalFee;
 
   // 5. Mostrar loading y enviar al servidor
   mostrarLoading(`Generando PDF para ${tipo === 'cliente' ? 'cliente' : 'cocina'}...`);
@@ -2332,6 +2372,12 @@ async function guardarCotizacion() {
 
      gratuityPercentage: parseFloat(document.getElementById('gratuityPercentage').value) , // Cambiado para permitir 0
 
+
+    servicePercentage: document.getElementById('chkServiceFee').checked ? 
+  (parseFloat(document.getElementById('servicePercentage').value) || 0) : 0,
+
+serviceFee: 0,
+
     taxPercentage: parseFloat(document.getElementById('taxPercentage').value) || 0,
     rentalFee: parseFloat(document.getElementById('rentalFee').value) || 0,
     deliveryFee: document.getElementById('chkDeliveryManual').checked ? 
@@ -2361,8 +2407,8 @@ rentalDescripcion: document.getElementById('rentalDescripcion')?.value?.trim() |
   datos.subtotal = datos.platos.reduce((sum, p) => sum + (p.precio_total || 0), 0);
   datos.tax = datos.subtotal * (datos.taxPercentage / 100);
   datos.gratuity = datos.subtotal * (datos.gratuityPercentage / 100);
-  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.deliveryFee + datos.rentalFee;
-  
+  datos.serviceFee = datos.subtotal * (datos.servicePercentage / 100);
+  datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + datos.serviceFee + datos.deliveryFee + datos.rentalFee;
   datos.pagos = Array.from(document.querySelectorAll('.pago-item')).map(item => ({
     fecha: item.querySelector('.pago-fecha')?.value || new Date().toISOString().split('T')[0],
     monto: parseFloat(item.querySelector('.pago-monto')?.value) || 0,

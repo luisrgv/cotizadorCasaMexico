@@ -55,6 +55,8 @@ const CotizacionSchema = new mongoose.Schema({
   gratuityPercentage: { type: Number, default: 20 }, // Porcentaje editable
   deliveryFee: { type: Number, default: 0, required: true  },
   rentalFee: { type: Number, default: 0, required: true  },         // <-- NUEVO
+  serviceFee: { type: Number, default: 0, required: true },        // <-- NUEVO
+  servicePercentage: { type: Number, default: 10 },                // <-- NUEVO
 rentalDescripcion: { type: String, default: '' },  
   precioTotal: { type: Number, required: true },
   notas: String,

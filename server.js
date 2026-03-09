@@ -504,6 +504,9 @@ const generarPDF = (tipo, datos) => {
       asegurarEspacio(60);
       agregarFilaDerecha(`Gratuity (${datos.gratuityPercentage}%):`, `$${datos.gratuity.toFixed(2)}`);
       
+      if (datos.serviceFee > 0) {
+  agregarFilaDerecha(`Service Fee (${datos.servicePercentage}%):`, `$${datos.serviceFee.toFixed(2)}`);
+}
       if (datos.deliveryFee > 0) {
         agregarFilaDerecha('Delivery Fee:', `$${datos.deliveryFee.toFixed(2)}`);
       }
@@ -743,6 +746,8 @@ app.post('/api/cotizaciones', requireLogin, async (req, res) => {
       taxPercentage: datos.taxPercentage ,
       gratuity: datos.gratuity,
       gratuityPercentage: datos.gratuityPercentage ,
+      serviceFee: datos.serviceFee || 0,
+      servicePercentage: datos.servicePercentage || 0,
       deliveryFee: datos.deliveryFee || 0,
       rentalFee: datos.rentalFee || 0,
       rentalDescripcion: datos.rentalDescripcion || '',
@@ -840,7 +845,7 @@ app.post('/api/generar-pdf', requireLogin, async (req, res) => {
       datos.subtotal = datos.platosSeleccionados.reduce((sum, p) => sum + (p.precio_total || 0), 0);
       datos.tax = datos.subtotal * ((datos.taxPercentage || 8) / 100);
       datos.gratuity = datos.subtotal * ((datos.gratuityPercentage || 20) / 100);
-      datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + (datos.deliveryFee || 0 ) + (datos.rentalFee || 0);
+      datos.precioTotal = datos.subtotal + datos.tax + datos.gratuity + (datos.serviceFee || 0) + (datos.deliveryFee || 0 ) + (datos.rentalFee || 0);
     }
 
     // Crear directorio para PDFs si no existe

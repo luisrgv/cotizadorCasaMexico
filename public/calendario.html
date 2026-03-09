@@ -780,6 +780,10 @@ const createdAt = evento.createdAt ? new Date(evento.createdAt).toLocaleDateStri
       <p><strong>Subtotal:</strong> $${evento.subtotal?.toFixed(2) || '0.00'}</p>
       <p><strong>Tax (${evento.taxPercentage || 8}%):</strong> $${evento.tax?.toFixed(2) || '0.00'}</p>
       <p><strong>Propina (${evento.gratuityPercentage || 20}%):</strong> $${evento.gratuity?.toFixed(2) || '0.00'}</p>
+     ${Number(evento.serviceFee) > 0 
+? `<p><strong>Service Fee (${evento.servicePercentage}%):</strong> $${Number(evento.serviceFee).toFixed(2)}</p>` 
+: ''}
+     
       ${evento.deliveryFee ? `<p><strong>Delivery Fee:</strong> $${evento.deliveryFee.toFixed(2)}</p>` : ''}
       <p style="font-weight: bold; font-size: 1.1rem;"><strong>Total:</strong> $${evento.precioTotal?.toFixed(2) || '0.00'}</p>
     </div>

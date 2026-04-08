@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotizaciones con Tax Exempt- Casa México</title>
+  <title>Cotizaciones con Tax Exempt - Casa México</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -938,10 +938,10 @@
 
 </head>
 <body>
-  <div class="header">
+ <div class="header">
     <div class="branding">
       <img src="/img/logo-casa-mexico.png" alt="Logo Casa México" class="logo-img">
-      <div class="logo-text"> <span>Cotizaciones con TaxExempt </span></div>
+      <div class="logo-text"> <span>Cotizaciones con Tax Exempt</span></div>
     </div>
     <div class="user-info">
       <div class="avatar" id="userAvatar">CM</div>
@@ -970,26 +970,25 @@
   <a href="impagas.html" class="tab impagas" data-tab="impaga">
     <i class="fas fa-times-circle"></i> Impagas <span class="tab-badge" id="badgeImpagas">0</span>
   </a>
-      <a href="cancelado.html" class="tab canceladas" data-tab="canceladas">
-    <i class="fas fa-times-circle"></i> canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
-    
+  <a href="cancelado.html" class="tab canceladas" data-tab="cancelada">
+    <i class="fas fa-ban"></i> Canceladas <span class="tab-badge" id="badgeCanceladas">0</span>
   </a>
-  <a href="TaxExempt.html" class="tab TaxExempt active" data-tab="tax-exempt">
-    <i class="fas fa-ban"></i> TaxExempt <span class="tab-badge" id="badgeTaxExempt">0</span>
-    
+   <a href="Tax-Exempt.html" class="tab TaxExempt active" data-tab="tax-exempt">
+    <i class="fas fa-file-invoice-dollar"></i> Tax Exempt <span class="tab-badge" id="badgeTaxExempt">0</span>
  </a>
-  <button type="button" class="tab btn-calendario" id="verCalendarioBtn">
+    <button type="button" class="tab btn-calendario" id="verCalendarioBtn">
     <i class="fas fa-calendar-alt"></i> Ver Calendario
   </button>
   <a href="menu.html" class="tab menu" data-tab="menu">
     <i class="fas fa-utensils"></i> Menú
   </a>
 </div>
+
     
-   <div class="tab-content active" id="taxexempt-tab">
+    <div class="tab-content active" id="en_proceso-tab">
       <div class="card">
-      
-         <!-- Agregar este campo de búsqueda -->
+        
+        <!-- Agregar este campo de búsqueda -->
   <div class="form-group" style="margin-bottom: 1.5rem;">
     <div style="display: flex; gap: 0.5rem;">
       <input type="text" id="buscadorCotizaciones" class="form-control" 
@@ -1000,7 +999,7 @@
     </div>
   </div>
   
-        <div class="cotizaciones-list" id="cotizacionesTaxExempt">
+        <div class="cotizaciones-list" id="cotizacionesEnProceso">
           <!-- Se llenará dinámicamente -->
         </div>
       </div>
@@ -1034,7 +1033,6 @@
               <option value="en_proceso">En Proceso</option>
               <option value="pagada">Pagada</option>
               <option value="impaga">Impaga</option>
-                <option value="cancelada">Cancelada</option>
             </select>
           </div>
           
